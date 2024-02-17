@@ -3,6 +3,7 @@ from flask_login import current_user
 from flask import jsonify
 from flask import redirect, url_for
 import datetime
+from humanize import naturaltime
 
 
 from .models.product import Product
@@ -21,8 +22,13 @@ def wishlist():
     if current_user.is_authenticated:
         items = WishlistItem.get_all_by_uid(current_user.id)
     else:
-        return jsonfiy({}), 404
-    return jsonify([item.__dict__ for item in items])
+        items = None
+        # return jsonfiy({}), 404
+    # return jsonify([item.__dict__ for item in items])
+    return render_template('wishlist.html',
+                       items=items,
+                       humanize_time=humanize_time)
+
 
 @bp.route('/wishlist/add/<int:product_id>', methods=['POST'])
 def wishlist_add(product_id):
@@ -33,3 +39,7 @@ def wishlist_add(product_id):
         # TODO redirect it to an error page
         return None
     return redirect(url_for('/wishlist.wishlist'))
+
+
+def humanize_time(dt):
+    return naturaltime(datetime.datetime.now() - dt)
