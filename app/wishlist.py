@@ -1,3 +1,5 @@
+# This class is no longer used in the following milestones.
+
 from flask import render_template
 from flask_login import current_user
 from flask import jsonify
