@@ -11,9 +11,8 @@ from flask import current_app as app
 # );
 
 class SellerInventory:
-    def __init__(self, id, sellerid, productid, priceid, quantity):
+    def __init__(self, id, sellerid, productid, quantity):
         self.id = id
         self.sellerid = sellerid
         self.productid = productid
-        self.priceid = priceid
         self.quantity = quantity
