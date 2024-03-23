@@ -9,7 +9,8 @@ from flask import current_app as app
 # );
 
 class PriceHistory:
-    def __init__(self, id, price, time_changed):
+    def __init__(self, id, inventory_id, price, time_changed):
         self.id = id
+        self.inventory_id = inventory_id
         self.price = price
         self.time_changed = time_changed
