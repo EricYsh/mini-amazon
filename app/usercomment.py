@@ -1,14 +1,15 @@
 # This file perfroms Social Guru
 # Given a user id, find the 5 most recent feedback they posted
-from flask import Blueprint, render_template
-from flask_login import login_required
+from flask import Blueprint, jsonify, request
 from .models.productcomment import ProductComment
-from .db import db
 
-bp = Blueprint('usercomments', __name__)
+bp = Blueprint('usercomment', __name__, url_prefix='/usercomments')
 
-@bp.route('/usercomments/<int:user_id>')
-@login_required
-def user_comments(user_id):
-    comments = ProductComment.query.filter_by(user_id=user_id).order_by(ProductComment.time_commented.desc()).limit(5).all()
-    return render_template('user_comments.html', comments=comments)
+@bp.route('/<int:userid>', methods=['GET'])
+def get_user_comments(userid):
+    # 假设 ProductComment 类中有一个方法 get_comments_by_user(userid)
+    # 该方法根据用户ID获取最新的5条评论
+    comments = ProductComment.get_comments_by_user(userid)
+    # 将查询结果转换为 JSON 格式并返回
+    return jsonify(comments)
+
