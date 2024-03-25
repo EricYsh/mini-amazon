@@ -62,3 +62,58 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
         # Create a list of dictionaries for each row in the query result
         cart_items = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3]} for row in rows]
         return cart_items
+    
+# a method for entering a new object into the database
+    @staticmethod
+    def add_cart_item(userid, quantity, saved_for_later, productid):
+        try:
+            # First, find the sellerinventoryid and sellerid for the given productid
+            seller_inventory_row = app.db.execute("""
+        SELECT si.id, si.sellerid
+        FROM SellerInventories si
+        JOIN Products p ON si.productid = p.id
+        WHERE p.id = :productid
+        """, productid=productid)
+
+            if len(seller_inventory_row) > 1:
+                print("No seller inventory found for the given product.")
+                return None, False
+        
+            sellerinventoryid, sellerid = seller_inventory_row[0]
+
+            print('Found sellerinventoryid:', sellerinventoryid, 'for productid:', productid)
+                  
+            # Check if the cart item already exists
+            existing_cart_item = app.db.execute("""
+                SELECT id, quantity
+                FROM Carts
+                WHERE userid = :userid AND sellerinventoryid = :sellerinventoryid AND saved_for_later = :saved_for_later
+                """, userid=userid, sellerinventoryid=sellerinventoryid, saved_for_later=saved_for_later)
+            print(f'Existing cart item: {existing_cart_item}')
+
+            if len(existing_cart_item) == 1:
+                # Update the existing cart item
+                cart_id, existing_quantity = existing_cart_item[0]
+                new_quantity = existing_quantity + quantity
+                app.db.execute("""
+                    UPDATE Carts
+                    SET quantity = :quantity
+                    WHERE id = :id
+                    """, quantity=new_quantity, id=cart_id)
+                print(f'Updated cart item {cart_id} with new quantity: {new_quantity}')
+            else:
+                # Insert a new cart item
+                new_cart_item = app.db.execute("""
+                    INSERT INTO Carts(userid, quantity, sellerinventoryid, saved_for_later)
+                    VALUES(:userid, :quantity, :sellerinventoryid, :saved_for_later)
+                    RETURNING id
+                    """, userid=userid, quantity=quantity, sellerinventoryid=sellerinventoryid, saved_for_later=saved_for_later)
+                cart_id = new_cart_item[0]
+                print(f'New cart item added with id: {cart_id}')
+
+            return True
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return False

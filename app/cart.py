@@ -3,7 +3,7 @@
 from flask import render_template
 from flask_login import current_user
 from flask import redirect, url_for
-
+from flask import jsonify
 
 from .models.product import Product
 from .models.cart import Cart
@@ -25,3 +25,28 @@ def cart():
     return render_template('cart.html',
                        items=cart_items,
                        items_saved=cart_items_saved)
+
+
+@bp.route('/cart/add/<int:product_id>', methods=['POST'])
+def cart_add(product_id):
+    # add a product to the current user's cart
+    if current_user.is_authenticated:
+        success = Cart.add_cart_item(current_user.id, 1, False, product_id)
+        print("Add successfully", success)
+    else:
+        # TODO redirect it to an error page
+        return None
+    return redirect(url_for('cart.cart'))
+
+
+
+@bp.route('/cart/add_saved_for_later/<int:product_id>', methods=['POST'])
+def cart_add_saved_for_later(product_id):
+    # add a product to the current user's cart's saved for later list
+    if current_user.is_authenticated:
+        success = Cart.add_cart_item(current_user.id, 1, True, product_id)
+        print("Save for later successfully", success)
+    else:
+        # TODO redirect it to an error page
+        return None
+    return redirect(url_for('cart.cart'))

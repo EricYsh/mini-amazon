@@ -47,7 +47,12 @@
 <body>
   <div class="sidenav">
     {% block msg %}
-    <h1 style="color:aliceblue">Welcome to CompSci 516 Mini Amazon!</h1>
+    <h1 style="color:aliceblue">
+      <a href="/" style="color: aliceblue; text-decoration: none;">
+        <img src="{{ url_for('static', filename='img/store-homepage.svg') }}" alt="Home" width="45" style="vertical-align: middle; margin-right: 5px;">
+        Welcome to PentaDevil's Amazon!
+      </a>
+    </h1>
     <div style="color: aliceblue; text-align: right; margin-bottom: 25px">
       {% if current_user.is_authenticated %}
       Hello {{current_user.firstname}}! <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log
