@@ -11,12 +11,13 @@ from flask import current_app as app
 # );
 
 class Product:
-    def __init__(self, id, categoryid, name, description, image):
+    def __init__(self, id, categoryid, name, description, image, price=None):
         self.id = id
         self.categoryid = categoryid
         self.name = name
         self.description = description
         self.image = image
+        self.price = price
 
     @staticmethod
     def get(id):
@@ -34,4 +35,22 @@ WHERE id = :id
 SELECT *
 FROM Products
 ''',)
+        return [Product(*row) for row in rows]
+
+    @staticmethod
+    def get_top_k_expensive_products(k):
+        rows = app.db.execute('''
+    SELECT p.id, p.categoryid, p.name, p.description, p.image, ph.price
+    FROM Products p
+    JOIN SellerInventories si ON p.id = si.productid
+    JOIN PriceHistory ph ON si.id = ph.inventoryid
+    JOIN (
+        SELECT inventoryid, MAX(time_changed) AS latest_time
+        FROM PriceHistory
+        GROUP BY inventoryid
+    ) ph_latest ON ph.inventoryid = ph_latest.inventoryid AND ph.time_changed = ph_latest.latest_time
+    ORDER BY ph.price DESC
+    LIMIT :k
+    ''',
+                            k=k)
         return [Product(*row) for row in rows]

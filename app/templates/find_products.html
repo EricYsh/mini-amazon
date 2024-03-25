@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="login-main-text">
+                <h2>Find k Most Expensive Products</h2>
+                <p>Enter the value of k to find the k most expensive products.</p>
+            </div>
+            <form action="{{ url_for('product.product') }}" method="post" class="mt-5">
+                <div class="form-group">
+                    <label for="kValue">Enter k:</label>
+                    <input type="number" class="form-control" id="kValue" name="k" required>
+                </div>
+                <button type="submit" class="btn btn-black">Find</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
