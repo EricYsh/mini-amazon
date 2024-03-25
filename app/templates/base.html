@@ -55,6 +55,10 @@
           <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">Your Cart</a>
           <!-- Add a link to the user's comments -->
           <a href="{{ url_for('usercomment.usercomments') }}" type="button" class="btn btn-light">Your Comments</a>
+          <a href="{{ url_for('purchases.user_purchases') }}" type="button" class="btn btn-light">Your Purchases</a>
+          {% if current_user.isSeller %}
+          <a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-light">Your Inventory</a>
+          {% endif %}
         {% else %}
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}

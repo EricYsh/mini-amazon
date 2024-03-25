@@ -15,3 +15,21 @@ class SellerInventory:
         self.sellerid = sellerid
         self.productid = productid
         self.quantity = quantity
+
+    @staticmethod
+    def get_all_by_uid(uid):
+        rows = app.db.execute('''
+SELECT p.name, p.image, pri.price, s.quantity
+FROM SellerInventories AS s
+JOIN Products AS p ON s.productid = p.id
+JOIN (
+    SELECT inventoryid, price, ROW_NUMBER() 
+    OVER (PARTITION BY inventoryid ORDER BY time_changed DESC) AS row_num
+    FROM PriceHistory
+) AS pri ON pri.inventoryid = s.id AND pri.row_num = 1
+WHERE s.sellerid = :uid;
+''',
+                        uid=uid
+        )
+        inventory_rows = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3]} for row in rows]
+        return inventory_rows

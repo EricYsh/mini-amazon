@@ -30,4 +30,10 @@ def create_app():
     from .usercomment import bp as usercomment_bp
     app.register_blueprint(usercomment_bp)
 
+    from .purchases import bp as purchases_bp
+    app.register_blueprint(purchases_bp)
+
+    from .inventory import bp as inventory_bp
+    app.register_blueprint(inventory_bp)
+
     return app
