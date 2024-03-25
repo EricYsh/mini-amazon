@@ -21,3 +21,23 @@ class OrderItem:
         self.quantity = quantity
         self.brought_price = brought_price
         self.fulfilled = fulfilled
+
+    @staticmethod
+    def get_user_purchases(user_id):
+        query = """
+        SELECT 
+            P.name AS product_name,
+            OI.quantity,
+            OI.brought_price,
+            O.time_brought AS order_time,
+            O.order_status
+        FROM Orders O
+        JOIN OrderItems OI ON O.id = OI.orderid
+        JOIN Products P ON OI.productid = P.id
+        WHERE O.userid = :user_id
+        ORDER BY O.time_brought DESC;
+        """
+        rows = app.db.execute(query, user_id=user_id)
+        purchase_items = [{'product_name': row[0], 'quantity': row[1], 'brought_price': row[2], 'order_time': row[3], 'order_status':row[4]} for row in rows]
+        return purchase_items
+    
