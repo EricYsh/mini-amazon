@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+{% if current_user.is_authenticated %}
+<h2>Your Recent Comments:</h2>
+<div id="userComments"></div>
+<script>
+$(document).ready(function() {
+    $.getJSON("/usercomments/{{current_user.id}}", function(data) {
+        if (data.length > 0) {
+            var commentsHtml = '<table class="table table-hover table-bordered"><thead class="thead-dark"><tr><th scope="col">Comment</th><th scope="col">Time Commented</th></tr></thead><tbody>';
+            $.each(data, function(key, val) {
+                commentsHtml += '<tr><td>' + val.comment + '</td><td>' + val.time_commented + '</td></tr>';
+            });
+            commentsHtml += '</tbody></table>';
+            $('#userComments').html(commentsHtml);
+        } else {
+            $('#userComments').html('<p>No comments found.</p>');
+        }
+    }).fail(function() {
+        $('#userComments').html('<p>Error loading comments.</p>');
+    });
+});
+</script>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your recent comments!</p>
+{% endif %}
+
+{% endblock %}

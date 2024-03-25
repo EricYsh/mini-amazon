@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2>Products for sale:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Product Description</th>
+      <th scope="col">Product Category ID</th>
+      <th scope="col">Product Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in avail_products%}
+      <tr>
+        <th scope="row">{{product.id}}
+
+          {% if current_user.is_authenticated %}
+          <form action="{{ url_for('/wishlist.wishlist_add', product_id=product.id) }}"
+      method="POST">
+          <input type="submit" value="Add to Wishlist,点这个会报错因为表删了"/>
+          </form>
+          {% endif %}
+
+        </th>
+        <td>{{product.name}}</td>
+        <td>{{product.description}}</td>
+        <td>{{product.categoryid}}</td>
+        <td><img src="{{product.image}}" alt="Product Image 需要 url 替换" style="width:100px;height:100px;"></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br><br>
+{% if current_user.is_authenticated %}
+<h2>Your recent orders:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Order ID</th>
+      <th scope="col">Time Brought</th>
+      <th scope="col">Order Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in purchase_history%}
+      <tr>
+        <th scope="row">{{order.id}}</th>
+        <td>{{order.time_brought}}</td>
+        <td>{{order.order_status}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your order history!</p>
+{% endif %}
+
+{% endblock %}
