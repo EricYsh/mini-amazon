@@ -15,3 +15,15 @@ class SellerInventory:
         self.sellerid = sellerid
         self.productid = productid
         self.quantity = quantity
+
+    @staticmethod
+    def get_all_by_uid(uid):
+        rows = app.db.execute('''
+select p.name, s.image, pri.price, s.quantity
+from SellerInventories as s, Products as p, PriceHitsory as pri
+where s.productid = p.id and pri.inventoryid = s.id and s.sellerid = :uid;
+''',
+                        uid=uid
+        )
+        inventory_rows = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3]} for row in rows]
+        return inventory_rows
