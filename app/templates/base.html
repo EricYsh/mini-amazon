@@ -54,7 +54,7 @@
           <!-- Add a link to the user's cart -->
           <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">Your Cart</a>
           <!-- Add a link to the user's comments -->
-          <a href="{{ url_for('user_comments') }}" type="button" class="btn btn-light">Your Comments</a>
+          <a href="{{ url_for('usercomment.usercomments') }}" type="button" class="btn btn-light">Your Comments</a>
         {% else %}
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}
