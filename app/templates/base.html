@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Mini Amazon</title>
+  <title>PentaDevilZon</title>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -50,7 +50,7 @@
     <h1 style="color:aliceblue">
       <a href="/" style="color: aliceblue; text-decoration: none;">
         <img src="{{ url_for('static', filename='img/store-homepage.svg') }}" alt="Home" width="45" style="vertical-align: middle; margin-right: 5px;">
-        Welcome to PentaDevil's Amazon!
+        Welcome to PentaDevilZon!
       </a>
     </h1>
     <div style="color: aliceblue; text-align: right; margin-bottom: 25px">
@@ -59,15 +59,18 @@
         out</a>
       <!-- Add a link to the user's cart -->
       <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">Your Cart</a>
+
       <a href="{{ url_for('purchases.user_purchases') }}" type="button" class="btn btn-light">Your Purchases</a>
+
+      <a href="{{ url_for('product.product') }}" type="button" class="btn btn-light">Product</a>
+      <a href="{{ url_for('usercomment.usercomments') }}" type="button" class="btn btn-light">Your Comments</a>
       {% if current_user.isSeller %}
       <a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-light">Your Inventory</a>
       {% endif %}
       {% else %}
       <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
       {% endif %}
-      <a href="{{ url_for('product.product') }}" type="button" class="btn btn-light">Product</a>
-      <a href="{{ url_for('usercomment.usercomments') }}" type="button" class="btn btn-light">Your Comments</a>
+      
     </div>
     {% endblock %}
   </div>
