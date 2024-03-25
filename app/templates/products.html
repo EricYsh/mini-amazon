@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="main-head">
+                <h2>K Most Expensive Products</h2>
+            </div>
+            <!-- 检查产品列表是否存在且不为空 -->
+            {% if products %}
+            <ul class="list-group">
+                <!-- 遍历产品列表并显示每个产品的信息 -->
+                {% for product in products %}
+                <li class="list-group-item">
+                    <h5 class="mb-1">{{ product.name }}</h5>
+                    <p>{{ product.image }}</p>
+                    <p><strong>Price:</strong> ${{ product.price }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No products found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
