@@ -21,17 +21,17 @@ class ProductComment:
         self.time_commented = time_commented
         self.rate = rate
 
-@staticmethod
-def get_comments_by_user(userid):
-    query = """
+    @staticmethod
+    def get_comments_by_user(userid):
+        sqlstr = """
         SELECT comment, time_commented
         FROM ProductComments
-        WHERE userid = %s
+        WHERE userid = :userid
         ORDER BY time_commented DESC
         LIMIT 5;
-    """
-    cursor = app.db.get_cursor()
-    cursor.execute(query, (userid,))
-    comments = cursor.fetchall()
-    cursor.close()
-    return comments
+        """
+        results = app.db.execute(sqlstr, userid=userid)
+        comments = [{'comment': row[0], 'time_commented': row[1]} for row in results]
+        return comments
+
+
