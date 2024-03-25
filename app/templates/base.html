@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Mini Amazon</title>
+  <title>PentaDevilZon</title>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/example.css') }}">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+
   <style>
     body {
       font-family: "Lato", sans-serif;
@@ -18,9 +21,10 @@
 
     .sidenav {
       height: 100%;
-      background-color: #000;
+      background-color: #012169;
       overflow-x: hidden;
       padding-top: 20px;
+      padding-bottom: 10px;
     }
 
     .main {
@@ -45,24 +49,46 @@
 </head>
 
 <body>
-  <div class="sidenav">
+  <!-- Introducting Bootstrap: jQuery and Bootstrap Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+
+  <div class="sidenav" style="padding-right: 15px;">
     {% block msg %}
-    <h1 style="color:aliceblue">Welcome to CompSci 516 Mini Amazon!</h1>
+    <h1 style="color:aliceblue">
+      <a href="/" style="color: aliceblue; text-decoration: none;">
+        <img src="{{ url_for('static', filename='img/store-homepage.svg') }}" alt="Home" width="70" style="vertical-align: middle; margin-right: 5px; padding-left: 10px;">
+        PentaDevil Shop
+      </a>
+    </h1>
     <div style="color: aliceblue; text-align: right; margin-bottom: 25px">
       {% if current_user.is_authenticated %}
-      Hello {{current_user.firstname}}! <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log
-        out</a>
-      <!-- Add a link to the user's cart -->
-      <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">Your Cart</a>
-      <a href="{{ url_for('purchases.user_purchases') }}" type="button" class="btn btn-light">Your Purchases</a>
-      {% if current_user.isSeller %}
-      <a href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-light">Your Inventory</a>
-      {% endif %}
+        
+        <div class="dropdown">
+          Hello {{current_user.firstname }}! 
+          <button class="btn btn-info dropdown-toggle" type="button" 
+          data-toggle="dropdown" aria-expanded="false" data-boundary="viewport">
+            Account
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/" type="button" class="btn btn-light">Your Profile</a>
+            <a class="dropdown-item" href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">Your Cart</a>
+            <a class="dropdown-item" href="{{ url_for('purchases.user_purchases') }}" type="button" class="btn btn-light">Your Purchases</a>
+            <a class="dropdown-item" href="{{ url_for('usercomment.usercomments') }}" type="button" class="btn btn-light">Your Comments</a>
+            {% if current_user.isSeller %}
+            <a class="dropdown-item" href="{{ url_for('inventory.inventory') }}" type="button" class="btn btn-light">Your Inventory</a>
+            {% endif %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('product.product') }}" type="button" class="btn btn-light">Find Product</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
+          </div>
+        </div>
       {% else %}
       <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
       {% endif %}
-      <a href="{{ url_for('product.product') }}" type="button" class="btn btn-light">Product</a>
-      <a href="{{ url_for('usercomment.usercomments') }}" type="button" class="btn btn-light">Your Comments</a>
+      
     </div>
     {% endblock %}
   </div>
