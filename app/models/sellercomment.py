@@ -19,3 +19,19 @@ class SellerComment:
         self.comment = comment
         self.date_commented = date_commented
         self.rate = rate
+
+    @staticmethod
+    def get_seller_comments_by_user(userid):
+        sqlstr = """
+        SELECT comment, rate, date_commented, sellerid
+        FROM SellerComments
+        WHERE userid = :userid
+        ORDER BY date_commented DESC
+        LIMIT 5;
+        """
+        results = app.db.execute(sqlstr, userid=userid)
+        comments = [{'comment': row[0], 'rate': row[1],
+                     'date_commented': row[2],
+                     'sellerid': row[3]
+                     } for row in results]
+        return comments

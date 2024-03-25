@@ -20,3 +20,21 @@ class ProductComment:
         self.comment = comment
         self.time_commented = time_commented
         self.rate = rate
+
+    @staticmethod
+    def get_product_comments_by_user(userid):
+        sqlstr = """
+        SELECT comment, rate, time_commented, productid
+        FROM ProductComments
+        WHERE userid = :userid
+        ORDER BY time_commented DESC
+        LIMIT 5;
+        """
+        results = app.db.execute(sqlstr, userid=userid)
+        comments = [{'comment': row[0], 'rate': row[1],
+                     'time_commented': row[2],
+                     'productid': row[3]
+                     } for row in results]
+        return comments
+
+

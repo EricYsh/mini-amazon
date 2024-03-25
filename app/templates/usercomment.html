@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+<h2>Your Comment for Product:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+        <th scope="col">Product ID</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Comment Rate</th>
+      <th scope="col">Comment Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for comment in product_comments%}
+      <tr>
+        <th scope="row">{{comment.productid}}</th>
+        <td>{{comment.comment}}</td>
+        <td>{{comment.rate}}</td>
+        <td>{{comment.time_commented}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p>
+{% endif %}
+
+<br><br>
+
+{% if current_user.is_authenticated %}
+<h2>Your Comment for Seller:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Seller ID</th>
+      <th scope="col">Comment </th>
+      <th scope="col">Comment Rate</th>
+      <th scope="col">Comment Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for comment in seller_comments%}
+      <tr>
+        <th scope="row">{{comment.sellerid}}</th>
+        <td>{{comment.comment}}</td>
+        <td>{{comment.rate}}</td>
+        <td>{{comment.date_commented}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p>
+{% endif %}
+
+{% endblock %}
