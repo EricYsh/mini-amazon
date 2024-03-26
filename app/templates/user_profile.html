@@ -9,22 +9,22 @@
     <h2 class="profile-heading">User Profile</h2>
     
     <div class="profile-detail">
-        <span class="profile-detail-label">Email:</span> <span id="email">email@example.com</span>
+        <span class="profile-detail-label">Email:</span> <span id="email">{{user_info.email}}</span>
     </div>
     <div class="profile-detail">
-        <span class="profile-detail-label">First Name:</span> <span id="firstname">John</span>
+        <span class="profile-detail-label">First Name:</span> <span id="firstname">{{user_info.firstname}}</span>
     </div>
     <div class="profile-detail">
-        <span class="profile-detail-label">Last Name:</span> <span id="lastname">Doe</span>
+        <span class="profile-detail-label">Last Name:</span> <span id="lastname">{{user_info.lastname}}</span>
     </div>
     <div class="profile-detail">
-        <span class="profile-detail-label">Address:</span> <span id="address">1234 Street Name, City</span>
+        <span class="profile-detail-label">Address:</span> <span id="address">{{user_info.address}}</span>
     </div>
     <div class="profile-detail">
-        <span class="profile-detail-label">Seller Status:</span> <span id="isSeller">Yes</span>
+        <span class="profile-detail-label">Seller Status:</span> <span id="isSeller">{{user_info.isSeller}}</span>
     </div>
     <div class="profile-detail">
-        <span class="profile-detail-label">Balance:</span> <span id="balance">$100.00</span>
+        <span class="profile-detail-label">Balance:</span> <span id="balance">{{user_info.balance}}</span>
     </div>
 </div>
 <a href="/" class="btn btn-primary">Return to Home</a>
