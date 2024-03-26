@@ -72,7 +72,7 @@
             Account
           </button>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="/" type="button" class="btn btn-light">Your Profile</a>
+            <a class="dropdown-item" href="{{ url_for('users.user_profile') }}" type="button" class="btn btn-light">Your Profile</a>
             <a class="dropdown-item" href="{{ url_for('cart.cart') }}" type="button" class="btn btn-light">Your Cart</a>
             <a class="dropdown-item" href="{{ url_for('purchases.user_purchases') }}" type="button" class="btn btn-light">Your Purchases</a>
             <a class="dropdown-item" href="{{ url_for('usercomment.usercomments') }}" type="button" class="btn btn-light">Your Comments</a>

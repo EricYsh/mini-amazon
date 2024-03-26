@@ -83,3 +83,22 @@ WHERE id = :id
 """,
                               id=id)
         return User(*(rows[0])) if rows else None
+
+
+    @staticmethod
+    def show_user_profile(id):
+        row = app.db.execute("""
+select email, firstname, lastname, address, isSeller, balance
+from Users
+where id = :id
+""",
+                              id = id)
+
+        return {
+        'email': row[0][0], 
+        'firstname': row[0][1], 
+        'lastname': row[0][2], 
+        'address': row[0][3], 
+        'isSeller': row[0][4], 
+        'balance': row[0][5]}
+       
