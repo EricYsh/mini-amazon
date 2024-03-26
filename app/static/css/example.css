@@ -21,3 +21,21 @@ position: absolute;
 right: 0px;
 width: 50%;
 }
+
+.profile-container { 
+    max-width: 600px; 
+    margin: auto; 
+    padding: 20px; 
+    border: 1px solid #cccccc; 
+    border-radius: 8px; 
+}
+.profile-heading { 
+    text-align: center; 
+    margin-bottom: 20px; 
+}
+.profile-detail { 
+    margin-bottom: 10px; 
+}
+.profile-detail-label { 
+    font-weight: bold; 
+}

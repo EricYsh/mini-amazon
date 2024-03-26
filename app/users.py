@@ -72,3 +72,9 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('index.index'))
+
+
+@bp.route('/user_profile')
+def user_profile():
+    user_info = User.show_user_profile(current_user.id)
+    return render_template('user_profile.html',user_info=user_info)
