@@ -1,41 +1,72 @@
 section {
-color: #fff;
-text-align: center;
+    color: #fff;
+    text-align: center;
 }
 
 .container {
-display: table;
-width: 100%;
+    display: table;
+    width: 100%;
 }
 
 .left-half {
-background-color: #ff9e2c;
-position: absolute;
-left: 0px;
-width: 50%;
+    background-color: #ff9e2c;
+    position: absolute;
+    left: 0px;
+    width: 50%;
 }
 
 .right-half {
-background-color: #b6701e;
-position: absolute;
-right: 0px;
-width: 50%;
+    background-color: #b6701e;
+    position: absolute;
+    right: 0px;
+    width: 50%;
 }
 
-.profile-container { 
-    max-width: 600px; 
-    margin: auto; 
-    padding: 20px; 
-    border: 1px solid #cccccc; 
-    border-radius: 8px; 
+.profile-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
 }
-.profile-heading { 
-    text-align: center; 
-    margin-bottom: 20px; 
+
+.profile-heading {
+    text-align: center;
+    margin-bottom: 20px;
 }
-.profile-detail { 
-    margin-bottom: 10px; 
+
+.profile-detail {
+    margin-bottom: 10px;
 }
-.profile-detail-label { 
-    font-weight: bold; 
+
+.profile-detail-label {
+    font-weight: bold;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+.product-table th,
+.product-table td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 8px;
+}
+
+.product-image-cell {
+    width: 120px;
+}
+
+.product-name {}
+
+.product-image {
+    max-width: 100%;
+    height: auto;
+}
+
+thead th {
+    background-color: #f2f2f2;
 }

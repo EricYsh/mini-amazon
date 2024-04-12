@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <!-- Product Image -->
+    <div class="col-md-5">
+      <img class="product-image w-100" src="{{ product.image }}" alt="{{ product.name }}">
+    </div>
+
+    <!-- Product Info -->
+    <div class="col-md-7">
+      <div class="product-info">
+        <h5 class="product-name">{{ product.name }}</h5>
+        <p class="product-description">{{ product.description }}</p>
+        <p class="product-price">Rating: {{ product.rating }}</p>
+        <p class="product-price">Price Information</p>
+        <p class="product-price">$ {{ product.price }}</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="sellers-container">
+    <h3>Related Sellers</h3>
+    {% if sellers %}
+        <div class="sellers-grid">
+            {% for seller in sellers %}
+            <div class="seller">
+                <p>By: {{ seller.firstname }} {{ seller.lastname }}</p>
+                <p>Quantity available: {{ seller.quantity }}</p>
+                <div class="quantity-controls">
+                  <button type="button" class="decrease-quantity"><i class="fas fa-minus"></i></button>
+                  <input type="number" class="quantity-input" value="1" min="1" max="{{ seller.quantity }}" readonly>
+                  <button type="button" class="increase-quantity"><i class="fas fa-plus"></i></button>
+                </div>
+            <p class="add-cart">add to cart</p>
+
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No sellers available for this product.</p>
+    {% endif %}
+</div>
+
+
+
+
+<!-- User Reviews -->
+  <div class="user-reviews">
+    <h3>User Reviews</h3>
+    {% for review in reviews %}
+    <div class="review">
+      <h4 class="reviewer-name">Reviewer: {{ review.firstname }} {{ review.lastname }}</h4>
+      <p class="rating">Rating: 
+        {% for _ in range(review.rate) %}
+          <i class="fas fa-star"></i>
+        {% endfor %}
+        {% for _ in range(5-review.rate) %}
+          <i class="far fa-star"></i> 
+        {% endfor %}
+      </p>
+      <p class="comment">{{ review.comment }}</p>
+    </div>
+    {% else %}
+    <p>No reviews available.</p>
+    {% endfor %}
+</div>
+
+
+
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('.increase-quantity').forEach(button => {
+          button.addEventListener('click', function() {
+              const controlsContainer = this.closest('.quantity-controls');
+              const input = controlsContainer.querySelector('.quantity-input');
+              const currentValue = parseInt(input.value, 10);
+              if (currentValue < input.max) {
+                  input.value = currentValue + 1;
+              }
+          });
+      });
+  
+      document.querySelectorAll('.decrease-quantity').forEach(button => {
+          button.addEventListener('click', function() {
+              const controlsContainer = this.closest('.quantity-controls');
+              const input = controlsContainer.querySelector('.quantity-input');
+              const currentValue = parseInt(input.value, 10);
+              if (currentValue > input.min) {
+                  input.value = currentValue - 1;
+              }
+          });
+      });
+  });
+  </script>
+  
+{% endblock %}
