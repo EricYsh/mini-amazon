@@ -23,6 +23,7 @@
 
 .product-info {
     text-align: left;
+    margin-bottom: 7px;
 }
 
 .product-name {
@@ -35,7 +36,7 @@
 .product-description {
     font-size: 14px;
     color: #666;
-    margin-bottom: 15px; /* 描述与价格之间的间距 */
+    margin-bottom: 10px; /* 描述与价格之间的间距 */
 }
 
 .product-price {
@@ -55,6 +56,7 @@
     text-align: center; /* 文本居中 */
     text-decoration: none; /* 去除下划线 */
     transition: background-color 0.2s, color 0.2s; 
+    margin-bottom: 5px;
   }
   
   .add-cart:hover {
@@ -117,6 +119,10 @@
 .reviewer-name {
     color: #007bff;
     font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%
 }
 
 .rating {
@@ -200,4 +206,31 @@
     display: block;
     justify-content: center;
     margin-top: 20px;
+}
+
+
+.custom-select{
+    text-align: center;
+    color: #333;
+    background-color:aliceblue;
+}
+.left-tight {
+    border-radius: 5px 0 0 5px;
+}
+
+
+.input-group-append {
+    background-color:#eaecef;
+
+}
+
+.main-head {
+    margin-top: 10px;
+
+}
+
+
+
+.review-time{
+    color: black;
 }
