@@ -1,7 +1,7 @@
 from flask import render_template
 from flask_login import current_user
 import datetime
-from flask import request
+from flask import request, redirect, url_for
 
 from .models.product import Product
 from .models.order import Order
@@ -12,6 +12,7 @@ bp = Blueprint('index', __name__)
 
 @bp.route('/')
 def index():
+    return redirect(url_for('product.product'))
     # get all available products for sale:
     products = Product.get_all()
     # find the products current user has bought:
