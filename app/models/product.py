@@ -184,13 +184,25 @@ class Product:
     @staticmethod
     def get_sellers(product_id):
         sellers = app.db.execute('''
-            SELECT u.id, u.firstname, u.lastname, u.email, si.quantity
+            SELECT u.id, u.firstname, u.lastname, u.email, si.quantity, ph.price AS current_price
             FROM Users u
             JOIN SellerInventories si ON u.id = si.sellerid
+            JOIN (
+                SELECT ph.inventoryid, ph.price
+                FROM PriceHistory ph
+                JOIN (
+                    SELECT ph2.inventoryid, MAX(ph2.time_changed) AS latest_time
+                    FROM PriceHistory ph2
+                    GROUP BY ph2.inventoryid
+                ) latest_prices ON ph.inventoryid = latest_prices.inventoryid
+                                AND ph.time_changed = latest_prices.latest_time
+            ) ph ON si.id = ph.inventoryid
             WHERE si.productid = :product_id
             ''',
             product_id=product_id)
         return sellers if sellers is not None else None
+
+
         
     @staticmethod
     def get_all_categories():

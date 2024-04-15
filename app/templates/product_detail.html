@@ -14,8 +14,8 @@
         <h5 class="product-name">{{ product.name }}</h5>
         <p class="product-description">{{ product.description }}</p>
         <p class="product-price">Rating: {{ product.rating }}</p>
-        <p class="product-price">Price Information</p>
-        <p class="product-price">$ {{ product.price }}</p>
+        <!-- <p class="product-price">Price Information</p>
+        <p class="product-price">$ {{ product.price }}</p> -->
       </div>
     </div>
   </div>
@@ -28,6 +28,7 @@
             {% for seller in sellers %}
             <div class="seller">
                 <p>By: {{ seller.firstname }} {{ seller.lastname }}</p>
+                <p>Price: $ {{ seller.current_price }}</p>
                 <p>Quantity available: {{ seller.quantity }}</p>
                 <div class="quantity-controls">
                   <button type="button" class="decrease-quantity"><i class="fas fa-minus"></i></button>
