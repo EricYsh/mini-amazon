@@ -41,8 +41,11 @@
             <div class="products-container">
                 {% for product in products %}
                 <div class="product-card">
-                    <img class="product-image" src="{{ product.image }}" alt="{{ product.name }}" onclick="window.location='{{ url_for('product.product_detail', product_id=product.id) }}';" style="cursor: pointer;">
-
+                    <img class="product-image" src="{{ product.image }}" alt="{{ product.name }}"
+                        onclick="window.location='{{ url_for('product.product_detail', product_id=product.id) }}';"
+                        style="cursor: pointer;"
+                        onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/huh.gif') }}';">
+<!--  -->
                     <div class="product-info">
                         <h5 class="product-name">{{ product.name }}</h5>
                         <p class="product-description">{{ product.description }}</p>
@@ -56,26 +59,78 @@
                 </div>
                 {% endfor %}
             </div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {% if current_page <= 1 %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('product.product_search', page=current_page-1, search_type=request.args.get('search_type'), keyword=request.args.get('keyword')) }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+            
+                    {% for i in range(current_page - 2, current_page + 3) %}
+                        {% if i > 0 and i <= total_pages %}
+                            <li class="page-item {% if i == current_page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('product.product_search', page=i, search_type=request.args.get('search_type'), keyword=request.args.get('keyword')) }}">{{ i }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+            
+                    <li class="page-item {% if current_page >= total_pages %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('product.product_search', page=current_page+1, search_type=request.args.get('search_type'), keyword=request.args.get('keyword')) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
             {% else %}
-            <p>No products found.</p>
+            <p style="text-align: center;">No products found!</p>
+            <img src="{{ url_for('static', filename='img/sheep.gif')}}" alt="luelueluelue" style="display: block; margin: auto;">
             {% endif %}
         </div>
     </div>
 </div>
+
 <script>
     console.log('products.html script loaded');
     document.addEventListener('DOMContentLoaded', function () {
-        var elem = document.querySelector('.products-container');
-        var msnry = new Masonry(elem, {
-          itemSelector: '.product-card',
-          columnWidth: '.product-card',
-          percentPosition: true,
-          gutter: 10,
-          fitWidth: true,
-          horizontalOrder: true
-        });
+    var elem = document.querySelector('.products-container');
+    var images = elem.getElementsByTagName('img');
+    var totalImages = images.length;
+    var imagesLoaded = 0;
+
+    var msnry = new Masonry(elem, {
+        itemSelector: '.product-card',
+        columnWidth: '.product-card',
+        percentPosition: true,
+        gutter: 10,
+        fitWidth: true,
+        horizontalOrder: true
     });
+
+    function imageLoaded() {
+        imagesLoaded++;
+        if (imagesLoaded === totalImages) {
+            msnry.layout();
+        }
+    }
+
+    for (var i = 0; i < totalImages; i++) {
+        if (images[i].complete) {
+            imageLoaded();  
+        } else {
+            images[i].addEventListener('load', imageLoaded);
+            images[i].addEventListener('error', imageLoaded); 
+        }
+    }
+
+    if (totalImages === 0) {
+        msnry.layout();
+    }
+});
+
 </script>
 
 {% endblock %}
+
 

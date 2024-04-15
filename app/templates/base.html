@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
 
+
   <style>
     body {
       font-family: "Lato", sans-serif;
@@ -57,6 +58,7 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/imagesloaded/4.1.4/imagesloaded.pkgd.min.js"></script>
   <div class="sidenav" style="padding-right: 15px; display: flex; align-items: center; justify-content: space-between;">
     {% block msg %}
     <h1 style="color: aliceblue; margin: 0;">
@@ -73,7 +75,7 @@
                       <option value="description" {% if search_type == 'description' %}selected{% endif %}>Description</option>
                   </select>
               </div>
-              <input type="text" class="form-control " name="keyword" placeholder="Search products...">
+              <input type="text" class="form-control" name="keyword" placeholder="Search products..." value="{{ request.args.get('keyword', '') }}">
               <div class="input-group-append">
                   <button class="btn btn-outline-secondary" type="submit">
                       <i class="fas fa-search"></i>

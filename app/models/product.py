@@ -30,6 +30,7 @@ class Product:
                               id=id)
         return Product(*(rows[0])) if rows is not None else None
 
+
     @staticmethod
     def get_all():
         rows = app.db.execute('''
@@ -37,9 +38,20 @@ class Product:
             FROM Products
             ''',)
         return [Product(*row) for row in rows]
+    
 
     @staticmethod
-    def get_top_k_expensive_products(k):
+    def get_product_number():
+        row = app.db.execute('''
+            SELECT COUNT(*)
+            FROM Products
+            ''',)
+        return row[0][0]
+    
+
+    @staticmethod
+    def get_expensive_products_paged(page, limit):
+        offset = (page - 1) * limit
         rows = app.db.execute('''
             SELECT p.id, p.categoryid, p.name, p.description, p.image, ph.price, COALESCE(ROUND(avg_rating.avg_rate, 2), 0)
             FROM Products p
@@ -56,10 +68,11 @@ class Product:
                 GROUP BY productid
             ) avg_rating ON p.id = avg_rating.productid
             ORDER BY ph.price DESC
-            LIMIT :k
+            LIMIT :limit OFFSET :offset
             ''',
-                            k=k)
+                            limit=limit, offset=offset)
         return [Product(*row) for row in rows]
+
     
 
 
