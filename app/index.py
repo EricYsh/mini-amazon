@@ -12,6 +12,9 @@ bp = Blueprint('index', __name__)
 
 @bp.route('/')
 def index():
+    total_products = Product.get_product_number()
+    per_page = 20
+    total_pages = (total_products + per_page - 1) // per_page
     
     return redirect(url_for('product.product'))
     # # get all available products for sale:
