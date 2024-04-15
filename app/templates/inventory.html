@@ -7,6 +7,15 @@
 {% if current_user.isSeller %}
 
 <h2>Your Inventory:</h2>
+
+  <div>
+
+  <button type="button" class="btn btn-primary" onclick="window.location='{{ url_for('product.add_product') }}';">
+    Add/Edit Product
+  </button>
+</div>
+
+
 <table class='table table-hover table-bordered container'>
   <thead class="thead-custom" style="background-color: #00539B; color: aliceblue;">
     <tr>

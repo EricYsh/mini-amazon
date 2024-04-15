@@ -65,6 +65,24 @@
         PentaDevil Shop
       </a>
     </h1>
+    <form action="/product/search" method="GET" class="search-form flexible-input">
+          <div class="input-group mb-3 ">
+              <div class="input-group-prepend">
+                  <select class="custom-select left-tight" name="search_type">
+                      <option value="name" {% if search_type == 'name' %}selected{% endif %}>Name</option>
+                      <option value="description" {% if search_type == 'description' %}selected{% endif %}>Description</option>
+                  </select>
+              </div>
+              <input type="text" class="form-control " name="keyword" placeholder="Search products...">
+              <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="submit">
+                      <i class="fas fa-search"></i>
+                  </button>
+              </div>
+        </div>
+  </form>
+  
+
     <div style="color: aliceblue; text-align: right;">
       {% if current_user.is_authenticated %}
       <div class="dropdown">

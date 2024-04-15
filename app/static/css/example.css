@@ -60,7 +60,6 @@ section {
     width: 120px;
 }
 
-.product-name {}
 
 .product-image {
     max-width: 100%;
@@ -69,4 +68,14 @@ section {
 
 thead th {
     background-color: #f2f2f2;
+}
+
+
+.flexible-input {
+    flex-grow: 0.75;
+}
+
+.fas.fa-search {
+    border: none;
+    outline: none;
 }

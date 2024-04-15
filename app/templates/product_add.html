@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Directly Displayed Add Product Form with Narrower Width -->
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6"> <!-- Adjusted column size for narrower form -->
+      <form method="post" action="{{ url_for('inventory.add_product') }}" enctype="multipart/form-data">
+        <!-- Category Selector -->
+        <div class="form-group">
+          <label for="category">Category:</label>
+          <select id="category" name="category" class="custom-select mb-3" required oninvalid="this.setCustomValidity('Please select a category.')" onchange="this.setCustomValidity('')">
+              <option value="">All Categories</option>
+              {% for category in categories %}
+              <option value="{{ category.id }}" {% if selected_category == category.id|string %}selected{% endif %}>
+                  {{ category.name }}
+              </option>
+              {% endfor %}
+          </select>
+      </div>
+      
+        <!-- Product Name -->
+        <div class="form-group">
+            <label for="productName">Product Name:</label>
+            <input type="text" class="form-control" id="productName" name="productName" required>
+        </div>
+        <!-- Product Image Link -->
+        <div class="form-group">
+            <label for="productImage">Product Image Link:</label>
+            <input type="text" class="form-control" id="productImage" name="productImage" required>
+        </div>
+        <!-- Product Price -->
+        <div class="form-group">
+            <label for="productPrice">Price($):</label>
+            <input type="number" step="0.01" class="form-control" id="productPrice" name="productPrice" min="0.01" required>
+        </div>
+        <!-- Product Description -->
+        <div class="form-group">
+            <label for="productDescription">Description:</label>
+            <input type="text" class="form-control" id="productDescription" name="productDescription" required>
+        </div>
+        <!-- Product Quantity -->
+        <div class="form-group">
+            <label for="productQuantity">Quantity:</label>
+            <input type="number" class="form-control" id="productQuantity" name="productQuantity" min="1" required>
+        </div>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Add Product</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var categorySelect = document.getElementById('category');
+      if (categorySelect.options.length > 1) {  
+          categorySelect.value = categorySelect.options[1].value;  
+      }
+      document.getElementById('productName').value = 'test';
+      document.getElementById('productImage').value = 'https://example.com/image.jpg';
+      document.getElementById('productPrice').value = '100';
+      document.getElementById('productDescription').value = 'this is a test product.';
+      document.getElementById('productQuantity').value = '10';
+  });
+  </script> -->
+{% endblock %}
