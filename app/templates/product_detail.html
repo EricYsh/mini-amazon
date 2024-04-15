@@ -35,7 +35,7 @@
                   <button type="button" class="increase-quantity"><i class="fas fa-plus"></i></button>
                 </div>
             <p class="add-cart">add to cart</p>
-
+            <p class="add-cart">save for later</p>
             </div>
             {% endfor %}
         </div>
@@ -52,7 +52,10 @@
     <h3>User Reviews</h3>
     {% for review in reviews %}
     <div class="review">
-      <h4 class="reviewer-name">Reviewer: {{ review.firstname }} {{ review.lastname }}</h4>
+      <h4 class="reviewer-name">
+        Reviewer: {{ review.firstname }} {{ review.lastname }}
+        <span class="review-time">{{ review.time_commented }}</span>
+    </h4>
       <p class="rating">Rating: 
         {% for _ in range(review.rate) %}
           <i class="fas fa-star"></i>

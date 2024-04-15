@@ -50,3 +50,8 @@ def product_detail(product_id):
     return render_template('product_detail.html', product=product, sellers = sellers, reviews = reviews) 
 
 
+@bp.route('/product_add', methods=['GET'])
+def add_product():
+    categories = Product.get_all_categories()
+    return render_template('product_add.html', categories=categories)
+
