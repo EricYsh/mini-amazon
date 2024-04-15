@@ -103,7 +103,6 @@ class Product:
             ) avg_rating ON p.id = avg_rating.productid
             WHERE p.name ILIKE '%' || :search || '%' {category_condition}
             ORDER BY ph.price DESC
-            LIMIT 50
             ''', **query_params)
         print("rows", rows)
         return [Product(*row) for row in rows]
@@ -136,7 +135,6 @@ class Product:
             ) avg_rating ON p.id = avg_rating.productid
             WHERE p.description ILIKE '%' || :search || '%' {category_condition}
             ORDER BY ph.price DESC
-            LIMIT 50
             ''', **query_params)
         return [Product(*row) for row in rows]
 
