@@ -11,7 +11,7 @@ def product():
     total_products = Product.get_product_number()
     per_page = 20
     total_pages = (total_products + per_page - 1) // per_page
-
+    print("total_products", total_products, "total_pages", total_pages)
     product_items = Product.get_expensive_products_paged(page, per_page)
     categories = Product.get_all_categories()
     return render_template('products.html', products=product_items, categories=categories, current_page=page, total_pages=total_pages)
@@ -25,7 +25,7 @@ def product_search():
     sort = request.args.get('sort', None)
     page = request.args.get('page', 1, type=int)
     per_page = 20  
-
+    print(search, search_type, category_id, sort, page)
  
     if search_type == 'name':
         all_products = Product.search_products_by_name(search, category_id)
@@ -41,7 +41,7 @@ def product_search():
 
     total_products = len(all_products)
     total_pages = (total_products + per_page - 1) // per_page
-
+    print("total_products", total_products, "total_pages", total_pages)
     start = (page - 1) * per_page
     end = start + per_page
     products = all_products[start:end]

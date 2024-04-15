@@ -12,6 +12,7 @@ bp = Blueprint('index', __name__)
 
 @bp.route('/')
 def index():
+    
     return redirect(url_for('product.product'))
     # # get all available products for sale:
     # products = Product.get_all()

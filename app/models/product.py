@@ -80,7 +80,8 @@ class Product:
     def search_products_by_name(search, category_id=None):
         query_params = {'search': search}
         category_condition = ''
-
+        print("category_id", category_id)
+        print("search", search)
         if category_id:
             category_condition = 'AND p.categoryid = :category_id'
             query_params['category_id'] = category_id
@@ -104,6 +105,7 @@ class Product:
             ORDER BY ph.price DESC
             LIMIT 50
             ''', **query_params)
+        print("rows", rows)
         return [Product(*row) for row in rows]
 
     
