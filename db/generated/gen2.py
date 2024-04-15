@@ -4,10 +4,10 @@ from faker import Faker
 import random
 
 num_users = 100
-num_products = 20
+num_products = 500
 num_purchases = 2500
 num_categories = 10
-num_sellerinvertories = 20
+num_sellerinvertories = 2000
 num_orderitems = 500
 num_orders = 10
 
@@ -66,7 +66,7 @@ def gen_sellerinventories(num_sellerinvertories):
                 print(f'{sid}', end=' ', flush=True)
             sellerid = fake.random_int(min=50, max=99)
             pid = fake.random_int(min=0, max=num_products-1)
-            quantity = fake.random_int(min=0, max=100)
+            quantity = fake.random_int(min=1, max=100)
             writer.writerow([sid, sellerid, pid, quantity])
         print(f'{num_sellerinvertories} generated')
     return
