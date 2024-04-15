@@ -2,8 +2,8 @@ from flask import render_template, redirect, url_for, flash, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, DecimalField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Optional, InputRequired
 
 from .models.user import User
 
@@ -46,6 +46,8 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
+    address = StringField('Address', validators=[DataRequired()])  
+    isSeller = BooleanField('Register as seller')
     submit = SubmitField('Register')
 
     def validate_email(self, email):
@@ -59,12 +61,19 @@ def register():
         return redirect(url_for('index.index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        if User.register(form.email.data,
-                         form.password.data,
-                         form.firstname.data,
-                         form.lastname.data):
+        user = User.register(
+            form.email.data,
+            form.password.data,
+            form.firstname.data,
+            form.lastname.data,
+            form.address.data,  
+            form.isSeller.data  
+        )
+        if user:
             flash('Congratulations, you are now a registered user!')
             return redirect(url_for('users.login'))
+        else:
+            flash('Registration failed. Email might be already in use or other error occurred.')  
     return render_template('register.html', title='Register', form=form)
 
 
@@ -74,7 +83,48 @@ def logout():
     return redirect(url_for('index.index'))
 
 
-@bp.route('/user_profile')
+
+class UserProfileForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    firstname = StringField('First Name', validators=[DataRequired()])
+    lastname = StringField('Last Name', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    isSeller = BooleanField('Are you a seller?')
+    new_password = PasswordField('New Password', validators=[Optional()])
+    balance = DecimalField('Balance', validators=[InputRequired()])
+    submit = SubmitField('Update Profile')
+
+
+
+@bp.route('/profile', methods=['GET'])
 def user_profile():
-    user_info = User.show_user_profile(current_user.id)
-    return render_template('user_profile.html',user_info=user_info)
+    user_info = User.show_user_profile(current_user.id)  
+    return render_template('user_profile.html', user=user_info)
+
+@bp.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    user = User.get(current_user.id)
+    form = UserProfileForm(obj=user)
+    
+    if form.validate_on_submit():
+        user_updates = {
+            'email': form.email.data,
+            'firstname': form.firstname.data,
+            'lastname': form.lastname.data,
+            'address': form.address.data,
+            'isSeller': form.isSeller.data,
+            'balance': form.balance.data  
+        }
+        
+        if form.new_password.data:
+            user_updates['password'] = User.set_password(form.new_password.data)
+
+        success = User.update_user_profile(current_user.id, **user_updates)
+        if success:
+            flash('Your profile has been updated.')
+            return redirect(url_for('users.user_profile')) 
+        else:
+            flash('Failed to update profile.')
+
+    return render_template('edit_profile.html', form=form)
+
