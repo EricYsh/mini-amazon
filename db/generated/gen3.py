@@ -5,7 +5,7 @@ from faker import Faker
 num_users = 100
 num_carts = 200
 num_orders = 50
-num_sellerinvertories=20000
+num_sellerinvertories=2000
 
 Faker.seed(0)
 fake = Faker()
@@ -36,7 +36,7 @@ def gen_carts(num_carts):
                 print(f'{id}', end=' ', flush=True)
             userid = fake.random_int(min=0, max=num_users-1)
             quantity = fake.random_int(min=1, max=100)
-            sellerinventoryid = fake.random_int(min=0, max=num_sellerinvertories-1)
+            sellerinventoryid = fake.random_int(min=0, max=num_sellerinventories-1)
             saved_for_later = fake.random_element(elements=('true', 'false'))
             writer.writerow([id, userid, quantity, sellerinventoryid, saved_for_later])
         print(f'{num_carts} generated')
