@@ -5,40 +5,49 @@ from .models.product import Product
 from flask import Blueprint
 bp = Blueprint('product', __name__)
 
-@bp.route('/product', methods=['GET', 'POST'])
+@bp.route('/product', methods=['GET'])
 def product():
-    if request.method == 'GET':
-        # k = request.form.get('k')
-        # if k.isdigit():  # Ensure k is a number
-        #     k = int(k)  # Convert k to an integer
-        product_items = Product.get_top_k_expensive_products(20)  # Use k as the parameter
-        categories = Product.get_all_categories()  
-        return render_template('products.html', products=product_items, categories=categories)  # Pass the product_items variable
-    return render_template('404.html')
+    page = request.args.get('page', 1, type=int)
+    total_products = Product.get_product_number()
+    per_page = 20
+    total_pages = (total_products + per_page - 1) // per_page
+
+    product_items = Product.get_expensive_products_paged(page, per_page)
+    categories = Product.get_all_categories()
+    return render_template('products.html', products=product_items, categories=categories, current_page=page, total_pages=total_pages)
+
 
 @bp.route('/product/search', methods=['GET'])
 def product_search():
     search = request.args.get('keyword', '')
     search_type = request.args.get('search_type', 'name')
-    category_id = request.args.get('category', None)  # 获取类别ID
+    category_id = request.args.get('category', None) 
     sort = request.args.get('sort', None)
+    page = request.args.get('page', 1, type=int)
+    per_page = 20  
 
-    # 根据搜索类型和类别筛选产品
+ 
     if search_type == 'name':
-        products = Product.search_products_by_name(search, category_id)
+        all_products = Product.search_products_by_name(search, category_id)
     elif search_type == 'description':
-        products = Product.search_products_by_description(search, category_id)
+        all_products = Product.search_products_by_description(search, category_id)
     else:
         return render_template('404.html')
 
-    # 排序逻辑保持不变
     if sort:
         reverse = True if 'desc' in sort else False
         key = 'price' if 'price' in sort else 'rating'
-        products = sorted(products, key=lambda x: getattr(x, key), reverse=reverse)
+        all_products = sorted(all_products, key=lambda x: getattr(x, key), reverse=reverse)
 
-    categories = Product.get_all_categories()  
-    return render_template('products.html', products=products, categories=categories, search_type=search_type, sort=sort, selected_category=category_id)
+    total_products = len(all_products)
+    total_pages = (total_products + per_page - 1) // per_page
+
+    start = (page - 1) * per_page
+    end = start + per_page
+    products = all_products[start:end]
+
+    categories = Product.get_all_categories()
+    return render_template('products.html', products=products, categories=categories, search_type=search_type, sort=sort, selected_category=category_id, current_page=page, total_pages=total_pages)
 
 
 
