@@ -55,16 +55,20 @@ WHERE email = :email
         return len(rows) > 0
 
     @staticmethod
-    def register(email, password, firstname, lastname):
+    def register(email, password, firstname, lastname,address, isSeller=False):
         try:
             rows = app.db.execute("""
-INSERT INTO Users(email, password, firstname, lastname)
-VALUES(:email, :password, :firstname, :lastname)
+INSERT INTO Users(email, password, firstname, lastname, address, isSeller, balance)
+VALUES(:email, :password, :firstname, :lastname, :address, :isSeller, :balance)
 RETURNING id
 """,
-                                  email=email,
-                                  password=generate_password_hash(password),
-                                  firstname=firstname, lastname=lastname)
+                              email=email,
+                              password=generate_password_hash(password),
+                              firstname=firstname, 
+                              lastname=lastname,
+                              address=address,
+                              isSeller=isSeller,
+                              balance=0.00)
             id = rows[0][0]
             return User.get(id)
         except Exception as e:
@@ -101,4 +105,23 @@ where id = :id
         'address': row[0][3], 
         'isSeller': row[0][4], 
         'balance': row[0][5]}
+    
+    @staticmethod
+    def set_password(password):
+        return generate_password_hash(password)
+
+    @staticmethod
+    def update_user_profile(id, **kwargs):
+        if 'new_password' in kwargs:
+            kwargs['password'] = User.set_password(kwargs['new_password'])
+            del kwargs['new_password']  
+
+        update_stmt = ", ".join(f"{key} = :{key}" for key in kwargs.keys())
+        try:
+            sql = f"UPDATE Users SET {update_stmt} WHERE id = :id"
+            app.db.execute(sql, id=id, **kwargs)
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
        
