@@ -4,10 +4,10 @@ from faker import Faker
 import random
 
 num_users = 100
-num_products = 20
+num_products = 500
 num_purchases = 2500
 num_categories = 10
-num_sellerinvertories = 20
+num_sellerinvertories = 2000
 num_orderitems = 500
 num_orders = 10
 
@@ -58,23 +58,23 @@ def gen_products(num_products):
 
 
 def gen_sellerinventories(num_sellerinvertories):
-    with open('Sellerinventories.csv', 'w') as f:
+    with open('SellerInventories.csv', 'w') as f:
         writer = get_csv_writer(f)
-        print('Sellerinventories...', end=' ', flush=True)
+        print('SellerInventories...', end=' ', flush=True)
         for sid in range(num_sellerinvertories):
             if sid % 10 == 0:
                 print(f'{sid}', end=' ', flush=True)
             sellerid = fake.random_int(min=50, max=99)
             pid = fake.random_int(min=0, max=num_products-1)
-            quantity = fake.random_int(min=0, max=100)
+            quantity = fake.random_int(min=1, max=100)
             writer.writerow([sid, sellerid, pid, quantity])
         print(f'{num_sellerinvertories} generated')
     return
 
 def gen_orderitems(num_orderitems):
-    with open('Orderitems.csv', 'w') as f:
+    with open('OrderItems.csv', 'w') as f:
         writer = get_csv_writer(f)
-        print('Orderitems...', end=' ', flush=True)
+        print('OrderItems...', end=' ', flush=True)
         for oiid in range(num_orderitems):
             if oiid % 10 == 0:
                 print(f'{oiid}', end=' ', flush=True)

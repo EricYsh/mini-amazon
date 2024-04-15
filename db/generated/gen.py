@@ -122,9 +122,9 @@ def gen_products(num_products):
 
 
 def gen_sellerinventories(num_sellerinventories):
-    with open('Sellerinventories.csv', 'w') as f:
+    with open('SellerInventories.csv', 'w') as f:
         writer = get_csv_writer(f)
-        print('Sellerinventories...', end=' ', flush=True)
+        print('SellerInventories...', end=' ', flush=True)
         for sid in range(num_sellerinventories):
             if sid % 10 == 0:
                 print(f'{sid}', end=' ', flush=True)
@@ -136,9 +136,9 @@ def gen_sellerinventories(num_sellerinventories):
     return
 
 def gen_orderitems(num_orderitems):
-    with open('Orderitems.csv', 'w') as f:
+    with open('OrderItems.csv', 'w') as f:
         writer = get_csv_writer(f)
-        print('Orderitems...', end=' ', flush=True)
+        print('OrderItems...', end=' ', flush=True)
         for oiid in range(num_orderitems):
             if oiid % 10 == 0:
                 print(f'{oiid}', end=' ', flush=True)
