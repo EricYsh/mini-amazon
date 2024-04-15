@@ -87,7 +87,7 @@ class Product:
             query_params['category_id'] = category_id
 
         rows = app.db.execute(f'''
-            SELECT p.id, p.categoryid, p.name, p.description, p.image, ph.price, COALESCE(ROUND(avg_rating.avg_rate, 2), 0) AS average_rating
+            SELECT p.id, p.categoryid, p.name, p.description, p.image, MIN(ph.price) AS min_price, COALESCE(ROUND(avg_rating.avg_rate, 2), 0) AS average_rating
             FROM Products p
             JOIN SellerInventories si ON p.id = si.productid
             JOIN PriceHistory ph ON si.id = ph.inventoryid
@@ -102,7 +102,8 @@ class Product:
                 GROUP BY productid
             ) avg_rating ON p.id = avg_rating.productid
             WHERE p.name ILIKE '%' || :search || '%' {category_condition}
-            ORDER BY ph.price DESC
+            GROUP BY p.id, p.categoryid, p.name, p.description, p.image, avg_rating.avg_rate
+            ORDER BY min_price ASC
             ''', **query_params)
         print("rows", rows)
         return [Product(*row) for row in rows]
@@ -113,13 +114,12 @@ class Product:
         query_params = {'search': search}
         category_condition = ''
 
-        # 如果提供了 category_id，则在查询中加入一个额外的条件
         if category_id:
             category_condition = 'AND p.categoryid = :category_id'
             query_params['category_id'] = category_id
 
         rows = app.db.execute(f'''
-            SELECT p.id, p.categoryid, p.name, p.description, p.image, ph.price, COALESCE(ROUND(avg_rating.avg_rate, 2), 0) AS average_rating
+            SELECT p.id, p.categoryid, p.name, p.description, p.image, MIN(ph.price) AS min_price, COALESCE(ROUND(avg_rating.avg_rate, 2), 0) AS average_rating
             FROM Products p
             JOIN SellerInventories si ON p.id = si.productid
             JOIN PriceHistory ph ON si.id = ph.inventoryid
@@ -134,10 +134,10 @@ class Product:
                 GROUP BY productid
             ) avg_rating ON p.id = avg_rating.productid
             WHERE p.description ILIKE '%' || :search || '%' {category_condition}
-            ORDER BY ph.price DESC
+            GROUP BY p.id, p.categoryid, p.name, p.description, p.image, avg_rating.avg_rate
+            ORDER BY min_price ASC
             ''', **query_params)
         return [Product(*row) for row in rows]
-
 
 
     @staticmethod
@@ -184,13 +184,25 @@ class Product:
     @staticmethod
     def get_sellers(product_id):
         sellers = app.db.execute('''
-            SELECT u.id, u.firstname, u.lastname, u.email, si.quantity
+            SELECT u.id, u.firstname, u.lastname, u.email, si.quantity, ph.price AS current_price
             FROM Users u
             JOIN SellerInventories si ON u.id = si.sellerid
+            JOIN (
+                SELECT ph.inventoryid, ph.price
+                FROM PriceHistory ph
+                JOIN (
+                    SELECT ph2.inventoryid, MAX(ph2.time_changed) AS latest_time
+                    FROM PriceHistory ph2
+                    GROUP BY ph2.inventoryid
+                ) latest_prices ON ph.inventoryid = latest_prices.inventoryid
+                                AND ph.time_changed = latest_prices.latest_time
+            ) ph ON si.id = ph.inventoryid
             WHERE si.productid = :product_id
             ''',
             product_id=product_id)
         return sellers if sellers is not None else None
+
+
         
     @staticmethod
     def get_all_categories():
