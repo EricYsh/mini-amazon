@@ -1,6 +1,7 @@
 .products-container {
-    min-width: 100%;
+    /* min-width: 100%; */
     gap: 10px; 
+    width: 1190px;
 }
 
 .product-card {
@@ -36,7 +37,10 @@
 .product-description {
     font-size: 14px;
     color: #666;
-    margin-bottom: 10px; /* 描述与价格之间的间距 */
+    margin-bottom: 10px;
+    overflow: hidden;
+    max-width: 165px;
+    max-height: 9em;
 }
 
 .product-price {
@@ -280,4 +284,8 @@
 }
 nav {
     width: 100%; 
+}
+
+.footer-custom {
+    background-color: #012169;
 }
