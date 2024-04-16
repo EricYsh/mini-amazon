@@ -54,7 +54,11 @@
                         </div>
 
                         <p class="product-price">$ {{ product.price }}</p>
-                        <p class="add-cart">add to cart</p>
+                        {% if current_user.is_authenticated %}
+                        <form action="{{ url_for('cart.cart_add', product_id=product.id) }}" method="POST">
+                            <input class="btn btn-primary" type="submit" value="Add to cart"/>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
                 {% endfor %}
