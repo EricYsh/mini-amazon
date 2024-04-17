@@ -1,6 +1,7 @@
 .products-container {
-    min-width: 100%;
+    /* min-width: 100%; */
     gap: 10px; 
+    width: 1190px;
 }
 
 .product-card {
@@ -36,9 +37,17 @@
 .product-description {
     font-size: 14px;
     color: #666;
-    margin-bottom: 10px; /* 描述与价格之间的间距 */
+    margin-bottom: 10px;
+    overflow: hidden;
+    max-width: 165px;
+    max-height: 9em;
 }
 
+.product-description1 {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
 .product-price {
     font-weight: bold;
     font-size: 16px;
@@ -171,7 +180,7 @@
 
 .seller {
     flex: 0 0 auto; /* 不允许元素增长或缩小，且基础宽度为自动，我们将通过width属性明确指定 */
-    width: calc(20% - 10px); /* 假设 gap 是 10px，这样计算可以确保一行正好放下五个元素 */
+    width: calc(33% - 10px); /* 假设 gap 是 10px，这样计算可以确保一行正好放下五个元素 */
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 10px; /* 为了保持行间距 */
@@ -280,4 +289,8 @@
 }
 nav {
     width: 100%; 
+}
+
+.footer-custom {
+    background-color: #012169;
 }
