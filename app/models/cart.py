@@ -45,7 +45,7 @@ class Cart:
     @staticmethod
     def get_all_by_uid(uid, saved_for_later=False):
         rows = app.db.execute('''
-SELECT p.name, p.image, ph.price, c.quantity
+SELECT p.name, p.image, ph.price, c.quantity, p.id, c.id, si.id
 FROM Carts c
 JOIN SellerInventories si ON c.sellerinventoryid = si.id
 JOIN Products p ON si.productid = p.id
@@ -60,10 +60,11 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
                               uid=uid,
                               saved_for_later=saved_for_later)
         # Create a list of dictionaries for each row in the query result
-        cart_items = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3]} for row in rows]
+        cart_items = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3], 
+                       'productid': row[4], 'cartid': row[5], 'sellerinventoryid': row[6]} for row in rows]
         return cart_items
     
-# a method for entering a new object into the database
+    # a method for entering a new object into the database
     @staticmethod
     def add_cart_item(userid, quantity, saved_for_later, productid):
         try:
@@ -115,5 +116,30 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
         except Exception as e:
             # likely email already in use; better error checking and reporting needed;
             # the following simply prints the error to the console:
+            print(str(e))
+            return False
+        
+    @staticmethod
+    def move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id):
+        try:
+            app.db.execute("""
+                UPDATE Carts
+                SET saved_for_later = :saved_for_later
+                WHERE id = :cart_id
+                """, saved_for_later=in_cart, cart_id=cart_id)
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
+        
+    @staticmethod
+    def remove_item(userid, cartid):
+        try:
+            app.db.execute("""
+                DELETE FROM Carts
+                WHERE userid = :userid AND id = :cartid
+                """, userid=userid, cartid=cartid)
+            return True
+        except Exception as e:
             print(str(e))
             return False

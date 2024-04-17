@@ -1,59 +1,107 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container mt-5">
+    {% if current_user.is_authenticated %}
+    <!-- Cart Section -->
+    <h2>Your Cart:</h2>
+    <table class='table table-hover'>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Product Name</th>
+                <th scope="col">Product Image</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <th scope="row">{{ item.name }}</th>
+                <td><img src="{{ item.image }}" alt="{{ item.name }}" class="img-fluid" style="max-width: 100px;"></td>
+                <td>${{ item.price }}</td>
+                <td>
+                  <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1">
+                </td>
+                <td>
+                    <!-- <a href="{{ url_for('cart.cart_add_saved_for_later', product_id=item.productid) }}" class="btn btn-info btn-sm">Save for Later</a> -->
+                    <!-- <a href="{{ url_for('cart.remove', cart_id=item.cartid) }}" class="btn btn-danger btn-sm">Remove</a> -->
+                    <form method="POST" action="{{ url_for('cart.cart_and_save') }}">
+                      <input type="hidden" name="cart_id" value="{{ item.cartid }}">
+                      <input type="hidden" name="in_cart" value="true">
+                      <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
+                      <button type="submit" class="btn btn-info btn-sm">Save for Later</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('cart.remove') }}">
+                      <input type="hidden" name="cart_id" value="{{ item.cartid }}">
+                      <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">Your cart is empty.</td></tr>
+            {% endfor %}
+            <tr>
+              <th colspan="3">Total</th>
+              <td>{{ total_quantity }}</td>
+              <td>${{ total_price }}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td colspan="5">
+                <a href="{{ url_for('cart.checkout') }}" class="btn btn-success">Proceed to Checkout</a>
+              </td>
+            </tr>
+        </tbody>
+    </table>
 
-<br><br>
-{% if current_user.is_authenticated %}
-<h2>Your Cart:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-custom" style="background-color: #00539B; color: aliceblue;">
-    <tr>
-      <th scope="col">Product Name</th>
-      <th scope="col">Product Image</th>
-      <th scope="col">Price</th>
-      <th scope="col">Quantity</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in items%}
-      <tr>
-        <th scope="row">{{item.name}}</th>
-        <td>{{item.image}}</td>
-        <td>{{item.price}}</td>
-        <td>{{item.quantity}}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p>
-{% endif %}
-
-<br><br>
-{% if current_user.is_authenticated %}
-<h2>Your Items Saved for Later:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-custom" style="background-color: #00539B; color: aliceblue;">
-    <tr>
-      <th scope="col">Product Name</th>
-      <th scope="col">Product Image</th>
-      <th scope="col">Price</th>
-      <th scope="col">Quantity</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in items_saved%}
-      <tr>
-        <th scope="row">{{item.name}}</th>
-        <td>{{item.image}}</td>
-        <td>{{item.price}}</td>
-        <td>{{item.quantity}}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p>
-{% endif %}
-
+    <!-- Saved for Later Section -->
+    <h2 class="mt-5">Your Items Saved for Later:</h2>
+    <table class='table table-hover'>
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Product Name</th>
+                <th scope="col">Product Image</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items_saved %}
+            <tr>
+                <th scope="row">{{ item.name }}</th>
+                <td><img src="{{ item.image }}" alt="{{ item.name }}" class="img-fluid" style="max-width: 100px;"></td>
+                <td>${{ item.price }}</td>
+                <td>
+                  <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1">
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('cart.cart_and_save') }}">
+                      <input type="hidden" name="cart_id" value="{{ item.cartid }}">
+                      <input type="hidden" name="in_cart" value="false">
+                      <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
+                      <button type="submit" class="btn btn-primary btn-sm">Add Back to Cart</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('cart.remove') }}">
+                      <input type="hidden" name="cart_id" value="{{ item.cartid }}">
+                      <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                  </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No items saved for later.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        <a href="{{ url_for('users.login') }}" class="alert-link">Log in</a> to see your cart items and saved items!
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
