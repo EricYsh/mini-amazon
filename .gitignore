@@ -4,3 +4,16 @@
 poetry.lock
 
 .flaskenv
+
+# generated large data files
+db/generated/Carts.csv
+db/generated/Categories.csv
+db/generated/Coupons.csv
+db/generated/OrderItems.csv
+db/generated/Orders.csv
+db/generated/PriceHistory.csv
+db/generated/ProductComments.csv
+db/generated/Products.csv
+db/generated/SellerComments.csv
+db/generated/SellerInventories.csv
+db/generated/Users.csv
