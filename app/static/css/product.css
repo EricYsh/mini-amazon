@@ -180,7 +180,7 @@
 
 .seller {
     flex: 0 0 auto; /* 不允许元素增长或缩小，且基础宽度为自动，我们将通过width属性明确指定 */
-    width: calc(20% - 10px); /* 假设 gap 是 10px，这样计算可以确保一行正好放下五个元素 */
+    width: calc(33% - 10px); /* 假设 gap 是 10px，这样计算可以确保一行正好放下五个元素 */
     border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 10px; /* 为了保持行间距 */
