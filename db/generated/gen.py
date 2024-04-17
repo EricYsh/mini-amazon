@@ -50,6 +50,7 @@ def get_csv_writer(f):
 
 ## gen1
 def gen_users(num_users):
+    used_email = set()
     with open('Users.csv', 'w', newline='') as f:
         writer = get_csv_writer(f)
         print('Users...', end=' ', flush=True)
@@ -58,6 +59,10 @@ def gen_users(num_users):
                 print(f'{uid}', end=' ', flush=True)
             profile = fake.profile()
             email = profile['mail']
+            while email in used_email:
+                profile = fake.profile()
+                email = profile['mail']
+            used_email.add(email)
             plain_password = f'pass{uid}'
             password = generate_password_hash(plain_password)
             name = fake.name().split()
@@ -104,6 +109,7 @@ def fake_decimal(max_digits=12, decimal_places=2):
 
 
 def gen_products(num_products):
+    used_name = set()
     with open('Products.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Product...', end=' ', flush=True)
@@ -111,8 +117,12 @@ def gen_products(num_products):
             if pid % 10 == 0:
                 print(f'{pid}', end=' ', flush=True)
             category_id = fake.random_int(min=0, max=num_categories-1)
+            
             name = fake.sentence(nb_words=3)[:-1]
-            description = fake.sentence(nb_words=4)
+            while name in used_name:
+                name = fake.sentence(nb_words=3)[:-1]
+            used_name.add(name)
+            description = fake.sentence(nb_words=30)
             image = random.choice(urls)
             writer.writerow([pid, category_id, name, description, image])
         print(f'{num_products} generated')
