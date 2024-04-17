@@ -9,24 +9,26 @@
   <thead class="thead-custom" style="background-color: #00539B; color: rgb(8, 8, 8);">
     <tr>
         <th scope="col">Product ID</th>
-      <th scope="col">Comment</th>
-      <th scope="col">Comment Rate</th>
-      <th scope="col">Comment Time</th>
+        <th scope="col">Comment</th>
+        <th scope="col">Comment Rate</th>
+        <th scope="col">Comment Time</th>
+        <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
-    {% for comment in product_comments%}
+    {% for comment in product_comments %}
       <tr>
-        <th scope="row">{{comment.productid}}</th>
-        <td>{{comment.comment}}</td>
-        <td>{{comment.rate}}</td>
-        <td>{{comment.time_commented}}</td>
+        <th scope="row">{{ comment.productid }}</th>
+        <td>{{ comment.comment }}</td>
+        <td>{{ comment.rate }}</td>
+        <td>{{ comment.time_commented }}</td>
+        <td><button class="btn btn-primary">Edit</button></td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p>
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your comments!</p>
 {% endif %}
 
 <br><br>
@@ -37,18 +39,20 @@
   <thead class="thead-custom" style="background-color: #00539B; color: rgb(8, 8, 8);">
     <tr>
       <th scope="col">Seller ID</th>
-      <th scope="col">Comment </th>
+      <th scope="col">Comment</th>
       <th scope="col">Comment Rate</th>
       <th scope="col">Comment Time</th>
+      <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
-    {% for comment in seller_comments%}
+    {% for comment in seller_comments %}
       <tr>
-        <th scope="row">{{comment.sellerid}}</th>
-        <td>{{comment.comment}}</td>
-        <td>{{comment.rate}}</td>
-        <td>{{comment.date_commented}}</td>
+        <th scope="row">{{ comment.sellerid }}</th>
+        <td>{{ comment.comment }}</td>
+        <td>{{ comment.rate }}</td>
+        <td>{{ comment.date_commented }}</td>
+        <td><button class="btn btn-primary">Edit</button></td>
       </tr>
     {% endfor %}
   </tbody>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.comment.label }}
+        {{ form.comment(size=32) }}
+    </div>
+    <div>
+        {{ form.rate.label }}
+        {{ form.rate }}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}
