@@ -2,37 +2,53 @@
 
 {% block content %}
 
-<h1>Login</h1>
+<style>
+   body {
+    height: 100%;
+    margin: 0;
+}
+</style>
 
-<form action="" method="post" novalidate>
-  {{ form.hidden_tag() }}
-  <p>
-    {{ form.email.label }}<br/>
-    {{ form.email(size=32) }}<br/>
-    {% for error in form.email.errors %}
-    <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p>
-    {{ form.password.label }}<br/>
-    {{ form.password(size=32) }}<br/>
-    {% for error in form.password.errors %}
-    <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-  </p>
-  <p>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-  </p>
-  {{ form.submit(class_="btn btn-black") }}
-  <a class="btn btn-secondary" href="{{ url_for('users.register') }}" role="button">Register</a>
-</form>
+<div class="container d-flex flex-column min-vh-100 justify-content-center align-items-center">
+    <div class="row w-100">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+                <div class="card-body">
+                    <h1 class="mb-3 text-center">Login</h1>
+                    <form action="" method="post" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.email.label(class_="form-label") }}
+                            {{ form.email(class_="form-control", size=32) }}
+                            {% for error in form.email.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.password.label(class_="form-label") }}
+                            {{ form.password(class_="form-control", size=32) }}
+                            {% for error in form.password.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-group">
+                            {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                            <div class="alert alert-warning">
+                                {% for message in messages %}
+                                <p>{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        <a class="btn btn-secondary btn-block" href="{{ url_for('users.register') }}">Register</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
