@@ -139,7 +139,7 @@ def gen_sellerinventories(num_sellerinventories):
             if sid % 10 == 0:
                 print(f'{sid}', end=' ', flush=True)
             sellerid = fake.random_int(min=50, max=99)
-            pid = fake.random_int(min=0, max=num_products-1)
+            pid = sid % num_products
             quantity = fake.random_int(min=0, max=100)
             writer.writerow([sid, sellerid, pid, quantity])
         print(f'{num_sellerinventories} generated')

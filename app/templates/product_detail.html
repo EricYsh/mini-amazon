@@ -12,42 +12,59 @@
     <div class="col-md-7">
       <div class="product-info">
         <h5 class="product-name">{{ product.name }}</h5>
-        <p class="product-description">{{ product.description }}</p>
+        <p class="product-description1">{{ product.description }}</p>
         <p class="product-price">Rating: {{ product.rating }}</p>
         <!-- <p class="product-price">Price Information</p>
         <p class="product-price">$ {{ product.price }}</p> -->
       </div>
-    </div>
-  </div>
-
-
-  <div class="sellers-container">
-    <h3>Related Sellers</h3>
-    {% if sellers %}
-        <div class="sellers-grid">
-            {% for seller in sellers %}
-            <div class="seller">
-                <p>By: {{ seller.firstname }} {{ seller.lastname }}</p>
-                <p>Price: $ {{ seller.current_price }}</p>
-                <p>Quantity available: {{ seller.quantity }}</p>
-                <div class="quantity-controls">
-                  <button type="button" class="decrease-quantity"><i class="fas fa-minus"></i></button>
-                  <input type="number" class="quantity-input" value="1" min="1" max="{{ seller.quantity }}" readonly>
-                  <button type="button" class="increase-quantity"><i class="fas fa-plus"></i></button>
+      <div class="sellers-container">
+        <h3>Related Sellers</h3>
+        {% if sellers %}
+            <div class="sellers-grid">
+                {% for seller in sellers %}
+                <div class="seller">
+                    <p>By: {{ seller.firstname }} {{ seller.lastname }}</p>
+                    <p>Price: $ {{ seller.current_price }}</p>
+                    <p>Quantity available: {{ seller.quantity }}</p>
+                    
+                {% if current_user.is_authenticated %}
+                <!-- <form action="{{ url_for('cart.cart_add', product_id=product.id) }}" method="POST">
+                    <div class="quantity-controls">
+                      <button type="button" class="decrease-quantity"><i class="fas fa-minus"></i></button>
+                      <input type="number" name="quantity" class="quantity-input" value="1" min="1" max="{{ seller.quantity }}">
+                      <button type="button" class="increase-quantity"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Add to cart"/>
+                </form> -->
+                <!-- <form action="{{ url_for('cart.cart_add_saved_for_later', product_id=product.id) }}" method="POST">
+                    <input class="btn btn-primary" type="submit" value="Save for later"/>
+                </form> -->
+                <form id="productActionForm" action="" method="POST">
+                  <div class="quantity-controls">
+                      <button type="button" class="decrease-quantity"><i class="fas fa-minus"></i></button>
+                      <input type="number" name="quantity" class="quantity-input" value="1" min="1" max="{{ seller.quantity }}">
+                      <button type="button" class="increase-quantity"><i class="fas fa-plus"></i></button>
+                  </div>
+                  <br>
+                  <input id="addToCart" class="btn btn-primary" type="submit" value="Add to cart"/>
+                  <br>
+                  <br>
+                  <input id="saveForLater" class="btn btn-info" type="submit" value="Save for later"/>
+              </form>          
+                {% endif %}
                 </div>
-            <p class="add-cart">add to cart</p>
-            <p class="add-cart">save for later</p>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>No sellers available for this product.</p>
-    {% endif %}
-</div>
+        {% else %}
+            <p>No sellers available for this product.</p>
+        {% endif %}
+      </div>
+    </div>
+  
+    </div>
+    
 
-
-
-
+ 
 <!-- User Reviews -->
   <div class="user-reviews">
     <h3>User Reviews</h3>
@@ -98,7 +115,42 @@
               }
           });
       });
+  
+      // Set the form action based on the button clicked
+      const form = document.getElementById('productActionForm');
+      document.getElementById('addToCart').addEventListener('click', function() {
+          form.action = "{{ url_for('cart.cart_add', product_id=product.id) }}";
+      });
+      document.getElementById('saveForLater').addEventListener('click', function() {
+          form.action = "{{ url_for('cart.cart_add_saved_for_later', product_id=product.id) }}";
+      });
   });
   </script>
+  
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('.increase-quantity').forEach(button => {
+          button.addEventListener('click', function() {
+              const controlsContainer = this.closest('.quantity-controls');
+              const input = controlsContainer.querySelector('.quantity-input');
+              const currentValue = parseInt(input.value, 10);
+              if (currentValue < input.max) {
+                  input.value = currentValue + 1;
+              }
+          });
+      });
+  
+      document.querySelectorAll('.decrease-quantity').forEach(button => {
+          button.addEventListener('click', function() {
+              const controlsContainer = this.closest('.quantity-controls');
+              const input = controlsContainer.querySelector('.quantity-input');
+              const currentValue = parseInt(input.value, 10);
+              if (currentValue > input.min) {
+                  input.value = currentValue - 1;
+              }
+          });
+      });
+  });
+  </script> -->
   
 {% endblock %}
