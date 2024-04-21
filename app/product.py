@@ -56,6 +56,7 @@ def product_detail(product_id):
     product = Product.get_product_by_id(product_id)
     sellers = Product.get_sellers(product_id)
     reviews = Product.get_reviews(product_id)
+    print("product", product.description)
     return render_template('product_detail.html', product=product, sellers = sellers, reviews = reviews) 
 
 
