@@ -75,18 +75,28 @@ class Product:
 
     
 
-
     @staticmethod
-    def search_products_by_name(search, category_id=None):
-        query_params = {'search': search}
-        category_condition = ''
-        # print("category_id", category_id)
-        # print("search", search)
+    def search_products_by_name(search, category_id=None, min_rating=None, min_price=None, max_price=None):
+        query_params = {
+            'search': search,
+            'min_price': min_price,
+            'max_price': max_price
+        }
+        conditions = []
+
         if category_id:
-            category_condition = 'AND p.categoryid = :category_id'
+            conditions.append('p.categoryid = :category_id')
             query_params['category_id'] = category_id
 
-        rows = app.db.execute(f'''
+        if min_rating is not None:
+            conditions.append('COALESCE(avg_rating.avg_rate, 0) >= :min_rating')
+            query_params['min_rating'] = min_rating
+
+        condition_string = ' AND '.join(conditions)
+        if condition_string:
+            condition_string = 'AND ' + condition_string
+
+        query = f'''
             SELECT p.id, p.categoryid, p.name, p.description, p.image, MIN(ph.price) AS min_price, COALESCE(ROUND(avg_rating.avg_rate, 2), 0) AS average_rating
             FROM Products p
             JOIN SellerInventories si ON p.id = si.productid
@@ -101,24 +111,37 @@ class Product:
                 FROM ProductComments
                 GROUP BY productid
             ) avg_rating ON p.id = avg_rating.productid
-            WHERE p.name ILIKE '%' || :search || '%' {category_condition}
+            WHERE p.name ILIKE '%' || :search || '%' {condition_string}
             GROUP BY p.id, p.categoryid, p.name, p.description, p.image, avg_rating.avg_rate
+            HAVING (MIN(ph.price) >= :min_price OR :min_price IS NULL) AND (MIN(ph.price) <= :max_price OR :max_price IS NULL)
             ORDER BY min_price ASC
-            ''', **query_params)
-        print("rows", rows)
+            '''
+        rows = app.db.execute(query, **query_params)
         return [Product(*row) for row in rows]
 
-    
+        
     @staticmethod
-    def search_products_by_description(search, category_id=None):
-        query_params = {'search': search}
-        category_condition = ''
+    def search_products_by_description(search, category_id=None, min_rating=None, min_price=None, max_price=None):
+        query_params = {
+            'search': search,
+            'min_price': min_price,
+            'max_price': max_price
+        }
+        conditions = []
 
         if category_id:
-            category_condition = 'AND p.categoryid = :category_id'
+            conditions.append('p.categoryid = :category_id')
             query_params['category_id'] = category_id
 
-        rows = app.db.execute(f'''
+        if min_rating is not None:
+            conditions.append('COALESCE(avg_rating.avg_rate, 0) >= :min_rating')
+            query_params['min_rating'] = min_rating
+
+        condition_string = ' AND '.join(conditions)
+        if condition_string:
+            condition_string = 'AND ' + condition_string
+
+        query = f'''
             SELECT p.id, p.categoryid, p.name, p.description, p.image, MIN(ph.price) AS min_price, COALESCE(ROUND(avg_rating.avg_rate, 2), 0) AS average_rating
             FROM Products p
             JOIN SellerInventories si ON p.id = si.productid
@@ -133,10 +156,12 @@ class Product:
                 FROM ProductComments
                 GROUP BY productid
             ) avg_rating ON p.id = avg_rating.productid
-            WHERE p.description ILIKE '%' || :search || '%' {category_condition}
+            WHERE p.description ILIKE '%' || :search || '%' {condition_string}
             GROUP BY p.id, p.categoryid, p.name, p.description, p.image, avg_rating.avg_rate
+            HAVING (MIN(ph.price) >= :min_price OR :min_price IS NULL) AND (MIN(ph.price) <= :max_price OR :max_price IS NULL)
             ORDER BY min_price ASC
-            ''', **query_params)
+            '''
+        rows = app.db.execute(query, **query_params)
         return [Product(*row) for row in rows]
 
 
@@ -165,8 +190,6 @@ class Product:
             return Product(*row)
         else:
             return None
-
-
     @staticmethod
     def get_reviews(product_id):
         reviews = app.db.execute('''
