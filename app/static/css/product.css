@@ -319,7 +319,7 @@ nav {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px; /* 控制间距 */
+    gap: 8px;
 }
 .price-input {
     flex-grow: 1;
@@ -397,3 +397,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 
+.row {
+    display: flex;
+    width: 100%;
+}
