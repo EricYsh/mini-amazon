@@ -1,19 +1,67 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<script src="{{ url_for('static', filename='js/product.js') }}"></script>
 <div class="container">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-2">
+            <div class="filters">
+                
+                <div class="filter-item">
+                    <h5 data-toggle="collapse" href="#ratingCollapse" role="button" aria-expanded="false" aria-controls="ratingCollapse" style="cursor:pointer;">
+                        Rating Above<i class="fas fa-chevron-down"></i> 
+                    </h5>
+                    <div class="collapse" id="ratingCollapse">
+                        <form action="/product/search" method="GET"> 
+                            <div class="rating-button"><button type="submit" name="min_rating" value="1" class="btn star-rating"><i class="fa fa-star"></i></button></div>
+                            <div class="rating-button"><button type="submit" name="min_rating" value="2" class="btn star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i></button></div>
+                            <div class="rating-button"><button type="submit" name="min_rating" value="3" class="btn star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></button></div>
+                            <div class="rating-button"><button type="submit" name="min_rating" value="4" class="btn star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></button></div>
+                            <div class="rating-button"><button type="submit" name="min_rating" value="5" class="btn star-rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></button></div>
+                        </form>
+                    </div>
+                </div>
+                
+                
+                <div class="filter-item">
+                    <h5 data-toggle="collapse" href="#priceRangeCollapse" role="button" aria-expanded="false" aria-controls="priceRangeCollapse" style="cursor:pointer;">
+                        Price Range <i class="fas fa-chevron-down"></i>
+                    </h5>
+                    <div class="collapse" id="priceRangeCollapse" id="priceForm">
+                        <form action="/product/search" method="GET" id="priceForm">
+                            <div class="input-group">
+                                <input type="number" name="min_price" placeholder="Min" class="form-control">
+                                <span class="input-group-text clickable" id="submitPrice">to</span>
+                                <input type="number" name="max_price" placeholder="Max" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- <div class="filter-item">
+                    <h5 data-toggle="collapse" href="#topRatedSellersCollapse" role="button" aria-expanded="false" aria-controls="topRatedSellersCollapse" style="cursor:pointer;">
+                        Top Rated Sellers <i class="fas fa-chevron-down"></i>
+                    </h5>
+                    <div class="collapse" id="topRatedSellersCollapse">
+                        <input type="checkbox" name="top_sellers" class="form-check-input">
+                        <label class="form-check-label">Only from top rated sellers</label>
+                    </div>
+                </div> -->
+
+            </div>
+        </div>
+        
+
+
+        <div class="col-lg-10">
             <div class="main-head">
                 <form action="/product/search" method="GET" class="search-form">
                     <div class="row">
                         <!-- Search type and keyword input -->
-                        <div class="col-md-6">
+                        <div class="col-md-2">
                             
                         </div>
                         <!-- Sorting options -->
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <select class="custom-select mb-3" name="sort" onchange="this.form.submit()">
                                 <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price Ascending</option>
                                 <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price Descending</option>
@@ -22,7 +70,7 @@
                             </select>
                         </div>
                         <!-- Category filter -->
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <select name="category" onchange="this.form.submit()" class="custom-select mb-3">
                                 <option value="">All Categories</option>
                                 {% for category in categories %}
@@ -95,47 +143,7 @@
         </div>
     </div>
 </div>
-
-<script>
-    console.log('products.html script loaded');
-    document.addEventListener('DOMContentLoaded', function () {
-    var elem = document.querySelector('.products-container');
-    var images = elem.getElementsByTagName('img');
-    var totalImages = images.length;
-    var imagesLoaded = 0;
-
-    var msnry = new Masonry(elem, {
-        itemSelector: '.product-card',
-        columnWidth: '.product-card',
-        percentPosition: true,
-        gutter: 10,
-        fitWidth: true,
-        horizontalOrder: true
-    });
-
-    function imageLoaded() {
-        imagesLoaded++;
-        if (imagesLoaded === totalImages) {
-            msnry.layout();
-        }
-    }
-
-    for (var i = 0; i < totalImages; i++) {
-        if (images[i].complete) {
-            imageLoaded();  
-        } else {
-            images[i].addEventListener('load', imageLoaded);
-            images[i].addEventListener('error', imageLoaded); 
-        }
-    }
-
-    if (totalImages === 0) {
-        msnry.layout();
-    }
-});
-
-</script>
-
+    
 {% endblock %}
 
 
