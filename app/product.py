@@ -64,7 +64,7 @@ def product_detail(product_id):
 
 
 @bp.route('/product_add', methods=['GET'])
-def add_product():
+def product_add():
     categories = Product.get_all_categories()
     return render_template('product_add.html', categories=categories)
 
