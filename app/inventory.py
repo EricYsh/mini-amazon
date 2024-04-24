@@ -38,10 +38,10 @@ def add_product():
         print(name, image, price, quantity,description, current_user.id, category)
         
         reply = SellerInventory.insert_new_product(current_user.id, name, description, image, price, quantity, category)
-        if reply == 'success':
+        if reply == '1':
             return redirect(url_for('inventory.inventory'))
         else:
-            return redirect(url_for('inventory.add_product'))
+            return redirect(url_for('product.product_add'))
     
 @bp.route('/edit_product', methods=['POST'])
 def edit_product():
