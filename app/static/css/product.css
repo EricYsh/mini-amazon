@@ -4,6 +4,11 @@
     /* width: 1190px; */
 }
 
+
+.body {
+    height: 100%;
+    margin: 0;
+}
 .product-card {
     display: flex;
     width: calc(20% - 10px);
