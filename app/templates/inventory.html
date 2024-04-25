@@ -10,19 +10,20 @@
 
   <div>
 
-  <button type="button" class="btn btn-primary" onclick="window.location='{{ url_for('product.add_product') }}';">
+  <button type="button" class="btn btn-primary" onclick="window.location='{{ url_for('product.product_add') }}';">
     Add/Edit Product
   </button>
 </div>
 
 
 <table class='table table-hover table-bordered container'>
-  <thead class="thead-custom" style="background-color: #00539B; color: aliceblue;">
+  <thead class="thead-custom" style="background-color: #00539B; color: rgb(18, 32, 46);">
     <tr>
       <th scope="col">Product Name</th>
       <th scope="col">Product Image</th>
       <th scope="col">Price</th>
       <th scope="col">Quantity</th>
+      <th scope="col">Edit</th>
     </tr>
   </thead>
   <tbody>
@@ -32,6 +33,7 @@
         <td>{{item.image}}</td>
         <td>{{item.price}}</td>
         <td>{{item.quantity}}</td>
+        <td><a href="/edit-inventory" class="btn btn-primary">Edit</a></td>
       </tr>
     {% endfor %}
   </tbody>

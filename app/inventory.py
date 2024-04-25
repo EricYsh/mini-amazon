@@ -43,7 +43,7 @@ def add_product():
         else:
             return redirect(url_for('inventory.add_product'))
     
-@bp.route('/edit_product', methods=['POST'])
+@bp.route('/edit_product/<item_id>', methods=['POST'])
 def edit_product():
     if request.method == 'POST':
         product_id = request.form['productID']
@@ -53,3 +53,5 @@ def edit_product():
         quantity = request.form['productQuantity']
         print(product_id, name, image, price, quantity)
         return redirect(url_for('inventory.inventory'))
+
+
