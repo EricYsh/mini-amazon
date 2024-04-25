@@ -21,16 +21,19 @@ def product():
 def product_search():
     search = request.args.get('keyword', '')
     search_type = request.args.get('search_type', 'name')
-    category_id = request.args.get('category', None) 
+    category_id = request.args.get('category', None)
     sort = request.args.get('sort', None)
     page = request.args.get('page', 1, type=int)
-    per_page = 20  
-    print(search, search_type, category_id, sort, page)
- 
+    min_rating = request.args.get('min_rating', None, type=int)
+    min_price = request.args.get('min_price', None, type=float)  
+    max_price = request.args.get('max_price', None, type=float) 
+    per_page = 20
+    print(search, search_type, category_id, sort, page, min_rating, min_price, max_price)
+
     if search_type == 'name':
-        all_products = Product.search_products_by_name(search, category_id)
+        all_products = Product.search_products_by_name(search, category_id, min_rating, min_price, max_price)
     elif search_type == 'description':
-        all_products = Product.search_products_by_description(search, category_id)
+        all_products = Product.search_products_by_description(search, category_id, min_rating, min_price, max_price)
     else:
         return render_template('404.html')
 
@@ -61,7 +64,7 @@ def product_detail(product_id):
 
 
 @bp.route('/product_add', methods=['GET'])
-def add_product():
+def product_add():
     categories = Product.get_all_categories()
     return render_template('product_add.html', categories=categories)
 
