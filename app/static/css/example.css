@@ -79,3 +79,11 @@ thead th {
     border: none;
     outline: none;
 }
+
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}

@@ -51,7 +51,6 @@ WHERE s.sellerid = :uid;
     @staticmethod
     def insert_new_product(uid, name, description, image, price, quantity, category):
         session = Session()
-        errmessage = ""
         try:
             existing_product = session.execute(
                 text('SELECT id FROM Products WHERE name = :name'),
@@ -128,7 +127,7 @@ WHERE s.sellerid = :uid;
             )
 
             session.commit()
-            return 1
+            return '1'
         except Exception as e:
             session.rollback()
             print("Error:", e)

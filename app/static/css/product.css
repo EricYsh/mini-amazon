@@ -1,9 +1,14 @@
 .products-container {
     /* min-width: 100%; */
     gap: 10px; 
-    width: 1190px;
+    /* width: 1190px; */
 }
 
+
+.body {
+    height: 100%;
+    margin: 0;
+}
 .product-card {
     display: flex;
     width: calc(20% - 10px);
@@ -55,56 +60,56 @@
 
 
 .add-cart {
-    display: inline-block; /* 让p标签像块级元素一样显示，但仍然在行内 */
-    background-color: #007bff; /* Bootstrap主题蓝色 */
-    color: white; /* 文字颜色为白色 */
-    padding: 10px 20px; /* 内填充，上下10px，左右20px */
-    font-size: 16px; /* 字体大小 */
-    cursor: pointer; /* 鼠标悬停时显示指针，增加可点击的直观感受 */
-    border-radius: 5px; /* 边角圆滑处理 */
-    text-align: center; /* 文本居中 */
-    text-decoration: none; /* 去除下划线 */
-    transition: background-color 0.2s, color 0.2s; 
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.2s, color 0.2s;
     margin-bottom: 5px;
-  }
+}
+
+.add-cart:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
   
-  .add-cart:hover {
-    background-color: #0056b3; /* 鼠标悬停时的背景颜色 */
-    color: #fff; /* 鼠标悬停时的文字颜色 */
-  }
-  
 
 
 
-
-/* 基本的布局和字体样式 */
 .product-info {
-    background-color: #f9f9f9; /* 浅灰色背景，增加对比 */
-    padding: 20px; /* 内边距增加空间感 */
-    border-radius: 8px; /* 轻微圆角 */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 轻微阴影，增加层次感 */
-    margin-bottom: 20px; /* 与价格信息间距 */
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
 }
 
 .product-name {
-    color: #007bff; /* 蓝色，增加视觉焦点 */
-    margin-bottom: 10px; /* 名称与描述间的间距 */
+    color: #007bff;
+    margin-bottom: 10px;
 }
 
 .product-description {
-    font-size: 16px; /* 适当的字体大小，提高可读性 */
-    color: #333; /* 深灰色字体，减少眼睛疲劳 */
-    margin-bottom: 15px; /* 描述与评分间的间距 */
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 15px;
 }
 
+
 .product-rating {
-    font-weight: bold; /* 加粗字体，突出显示评分 */
+    font-weight: bold;
 }
 
 
 .product-price {
-    font-size: 20px; /* 较大的字体大小，突出价格 */
-    font-weight: bold; /* 加粗显示，强调价格 */
+    font-size: 20px;
+    font-weight: bold;
 }
 
 
@@ -157,19 +162,19 @@
 
 
 .rating .fas, .rating .far {
-    color: #ffc107; /* 星星的颜色 */
-    font-size: 20px; /* 星星的大小 */
+    color: #ffc107;
+    font-size: 20px;
 }
 
 .sellers-container .sellers-grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start; /* 这会使得 items 对齐到容器的起始边缘 */
-    gap: 10px; /* 这提供了 items 之间的间隔 */
+    justify-content: flex-start;
+    gap: 10px;
 }
 
 .seller {
-    flex: 1 1 20%; /* grow, shrink, basis */
+    flex: 1 1 20%;
     border: 1px solid #ddd;
     padding: 10px;
     border-radius: 5px;
@@ -179,11 +184,11 @@
 }
 
 .seller {
-    flex: 0 0 auto; /* 不允许元素增长或缩小，且基础宽度为自动，我们将通过width属性明确指定 */
-    width: calc(33% - 10px); /* 假设 gap 是 10px，这样计算可以确保一行正好放下五个元素 */
+    flex: 0 0 auto;
+    width: calc(33% - 10px);
     border: 1px solid #ddd;
     padding: 10px;
-    margin-bottom: 10px; /* 为了保持行间距 */
+    margin-bottom: 10px;
     border-radius: 5px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -207,8 +212,8 @@
 }
 
 .quantity-controls button i {
-    color: #007bff; /* 调整图标颜色 */
-    font-size: 16px; /* 调整图标大小 */
+    color: #007bff;
+    font-size: 16px;
 }
 
 .button-container {
@@ -293,4 +298,111 @@ nav {
 
 .footer-custom {
     background-color: #012169;
+}
+
+.container {
+    max-width: 98%;
+}
+
+
+
+.star-rating {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #FFD700; 
+    padding: 8px 12px;
+}
+.star-rating:hover {
+    color: #FFA500;
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+
+.price-range {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+.price-input {
+    flex-grow: 1;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: .375rem .75rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.price-input:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+}
+
+.range-to {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: .375rem .75rem;
+    font-weight: bold;
+    color: #495057;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.input-group .form-control, .input-group .input-group-text {
+    border: 1px solid #ced4da;
+}
+
+.input-group .form-control:focus, .input-group .input-group-text:focus {
+    z-index: 2;
+}
+
+.input-group .form-control:not(:last-child), .input-group .input-group-text:not(:last-child) {
+    border-right: none;/
+}
+
+.input-group .input-group-text {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.input-group .form-control {
+    border-radius: 0.25rem;
+}
+
+.input-group > .form-control:not(:first-child),
+.input-group > .form-control:not(:last-child),
+.input-group > .input-group-text {
+    border-radius: 0;
+}
+
+.input-group > .form-control:first-child {
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.input-group > .form-control:last-child {
+    border-top-right-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+}
+
+
+.filter-item {
+    margin-top: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.filter-item:last-child {
+    border-bottom: none; 
+}
+
+
+.row {
+    display: flex;
+    width: 100%;
 }
