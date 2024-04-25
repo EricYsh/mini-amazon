@@ -43,15 +43,29 @@ def add_product():
         else:
             return redirect(url_for('product.product_add'))
     
-@bp.route('/edit_product/<item_id>', methods=['POST'])
+@bp.route('/edit_product', methods=['POST'])
 def edit_product():
-    if request.method == 'POST':
-        product_id = request.form['productID']
-        name = request.form['productName']
-        image = request.form['productImage']
-        price = request.form['productPrice']
-        quantity = request.form['productQuantity']
-        print(product_id, name, image, price, quantity)
-        return redirect(url_for('inventory.inventory'))
+    product_id = request.form['productid']
+    price = request.form['productPrice']
+    quantity = request.form['productQuantity']
+    print(product_id, price, quantity)
+    reply = SellerInventory.edit_product(product_id, price, quantity)
+
+    return redirect(url_for('inventory.inventory'))
+
+@bp.route('/remove_product', methods=['POST'])
+def remove_product():
+
+    item_details = {
+        'name': request.form['item_name'],
+        'image': request.form['item_image'],
+        'price': request.form['item_price'],
+        'quantity': request.form['item_quantity'],
+        'id': request.form['item_id']
+    }
+    print(item_details)
+    reply = SellerInventory.edit_product(item_details['id'], item_details['price'], 0)
+
+    return redirect(url_for('inventory.inventory'))
 
 
