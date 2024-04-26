@@ -8,5 +8,15 @@ bp = Blueprint('clientorder', __name__)
 
 @bp.route('/clientorder', methods=['GET'])
 def clientorder():
-    
-    return render_template('products.html', products=product_items, categories=categories, current_page=page, total_pages=total_pages)
+    client_items = OrderItem.get_client_item(current_user.id)
+    return render_template('client_order.html', client_items=client_items)
+
+
+@bp.route('/clientorderdetial', methods=['POST'])
+def clientorderdetail():
+    product_name = request.form['product_name']
+    brought = request.form['productImage']
+    price = request.form['productPrice']
+    description = request.form['productDescription']
+    quantity = request.form['productQuantity']
+    category = request.form['category']
