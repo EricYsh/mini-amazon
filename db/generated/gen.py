@@ -201,7 +201,7 @@ def gen_carts(num_carts):
 #     time_brought timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
 #     order_status VARCHAR(255) NOT NULL
 def gen_orders(num_orders):
-    order_statuses = ['in progress', 'fulfilled']
+    order_statuses = ['in progress']
     with open('Orders.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Orders...', end=' ', flush=True)
@@ -212,8 +212,7 @@ def gen_orders(num_orders):
             time = fake.date_time_between(start_date='-1y', end_date='now', tzinfo=None)
             formatted_time = time.strftime('%Y-%m-%d %H:%M')  # Custom format
             order_status = fake.random_element(elements=order_statuses)
-            fulfilled = 'false'#fake.random_element(elements=('true', 'false'))
-            writer.writerow([id, userid, formatted_time, order_status, fulfilled])
+            writer.writerow([id, userid, formatted_time, order_status])
         print(f'{num_orders} generated')
     return
 
