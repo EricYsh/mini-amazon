@@ -212,7 +212,8 @@ def gen_orders(num_orders):
             time = fake.date_time_between(start_date='-1y', end_date='now', tzinfo=None)
             formatted_time = time.strftime('%Y-%m-%d %H:%M')  # Custom format
             order_status = fake.random_element(elements=order_statuses)
-            writer.writerow([id, userid, formatted_time, order_status])
+            fulfilled = fake.random_element(elements=('true', 'false'))
+            writer.writerow([id, userid, formatted_time, order_status, fulfilled])
         print(f'{num_orders} generated')
     return
 
