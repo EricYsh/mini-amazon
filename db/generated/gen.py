@@ -12,7 +12,7 @@ num_sellerinventories = 2000
 num_products = 500
 num_orderitems = 500
 num_carts = 200
-num_orders = 50
+num_orders = 100
 
 # Global variables
 NUM_SELLER_COMMENTS = 100
@@ -152,12 +152,12 @@ def gen_orderitems(num_orderitems):
         for oiid in range(num_orderitems):
             if oiid % 10 == 0:
                 print(f'{oiid}', end=' ', flush=True)
-            oid = oiid % 50
+            oid = oiid % 100
             pid = fake.random_int(min=0, max=num_products-1)
             sellerid = fake.random_int(min=50, max=99)
             quantity = fake.random_int(min=1, max=5)
             brought_price = fake_decimal(12, 2)
-            fulfilled = fake.random_element(elements=('true', 'false'))
+            fulfilled = 'false' #fake.random_element(elements=('true', 'false'))
             writer.writerow([oiid, oid, pid, sellerid, quantity, brought_price, fulfilled])
         print(f'{num_orderitems} generated')
     return
@@ -201,7 +201,7 @@ def gen_carts(num_carts):
 #     time_brought timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),
 #     order_status VARCHAR(255) NOT NULL
 def gen_orders(num_orders):
-    order_statuses = ['in progress', 'fulfilled']
+    order_statuses = ['in progress']
     with open('Orders.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Orders...', end=' ', flush=True)

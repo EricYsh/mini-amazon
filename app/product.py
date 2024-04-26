@@ -68,3 +68,30 @@ def product_add():
     categories = Product.get_all_categories()
     return render_template('product_add.html', categories=categories)
 
+
+
+@bp.route('/product_edit', methods=['POST'])
+def product_edit():
+    categories = Product.get_all_categories()
+    item_details = {
+    'name': request.form['item_name'],
+    'image': request.form['item_image'],
+    'price': request.form['item_price'],
+    'quantity': request.form['item_quantity'],
+    'id': request.form['item_id']
+    }
+    print(item_details)
+    return render_template('product_edit.html', categories=categories, item_details=item_details)
+
+@bp.route('/product_remove', methods=['POST'])
+def product_remove():
+    item_details = {
+    'name': request.form['item_name'],
+    'image': request.form['item_image'],
+    'price': request.form['item_price'],
+    'quantity': request.form['item_quantity'],
+    'id': request.form['item_id']
+    }
+    print(item_details)
+
+    return render_template('product_edit.html', item_details=item_details)

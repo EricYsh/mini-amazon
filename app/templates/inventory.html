@@ -11,28 +11,52 @@
   <div>
 
   <button type="button" class="btn btn-primary" onclick="window.location='{{ url_for('product.product_add') }}';">
-    Add/Edit Product
+    Add Product
   </button>
 </div>
 
 
 <table class='table table-hover table-bordered container'>
-  <thead class="thead-custom" style="background-color: #00539B; color: aliceblue;">
+  <thead class="thead-custom" style="background-color: #00539B; color: rgb(18, 32, 46);">
     <tr>
       <th scope="col">Product Name</th>
       <th scope="col">Product Image</th>
       <th scope="col">Price</th>
       <th scope="col">Quantity</th>
+      <th scope="col">Edit</th>
+      <th scope="col">Remove</th>
     </tr>
   </thead>
   <tbody>
     {% for item in items%}
-      <tr>
-        <th scope="row">{{item.name}}</th>
-        <td>{{item.image}}</td>
-        <td>{{item.price}}</td>
-        <td>{{item.quantity}}</td>
-      </tr>
+      {% if item.quantity > 0 %}
+        <tr>
+          <th scope="row">{{item.name}}</th>
+          <td>{{item.image}}</td>
+          <td>{{item.price}}</td>
+          <td>{{item.quantity}}</td>
+          <td>
+            <form action="{{ url_for('product.product_edit') }}" method="POST">
+              <input type="hidden" name="item_name" value="{{ item.name }}">
+              <input type="hidden" name="item_image" value="{{ item.image }}">
+              <input type="hidden" name="item_price" value="{{ item.price }}">
+              <input type="hidden" name="item_quantity" value="{{ item.quantity }}">
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+          </td>
+          <td>
+            <form action="{{ url_for('inventory.remove_product') }}" method="POST">
+              <input type="hidden" name="item_name" value="{{ item.name }}">
+              <input type="hidden" name="item_image" value="{{ item.image }}">
+              <input type="hidden" name="item_price" value="{{ item.price }}">
+              <input type="hidden" name="item_quantity" value="{{ item.quantity }}">
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <button type="submit" class="btn btn-primary">Remove</button>
+            </form>
+          </td>
+        </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 </table>
@@ -44,4 +68,9 @@
 {% endif %}
 
 
+
+
+
+
 {% endblock %}
+
