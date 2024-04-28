@@ -125,3 +125,22 @@ where id = :id
             print(str(e))
             return False
        
+    @staticmethod
+    def public_profile(id):
+        # Retrieve basic user data; include email and address if user is a seller
+        sql = """
+SELECT id, firstname, lastname, isSeller, balance, email, address
+FROM Users
+WHERE id = :id
+"""
+        row = app.db.execute(sql, id=id)
+        if not row:
+            return None
+        return {
+        'id': row[0][0],
+        'email': row[0][5], 
+        'firstname': row[0][1], 
+        'lastname': row[0][2], 
+        'address': row[0][6], 
+        'isSeller': row[0][3], 
+        'balance': row[0][4]}

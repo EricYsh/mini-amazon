@@ -6,7 +6,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Decim
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Optional, InputRequired
 
 from .models.user import User
-
+from .models.orderitem import OrderItem
 
 from flask import Blueprint
 bp = Blueprint('users', __name__)
@@ -94,12 +94,16 @@ class UserProfileForm(FlaskForm):
     balance = DecimalField('Balance', validators=[InputRequired()])
     submit = SubmitField('Update Profile')
 
+    def validate_email(self, email):
+        if User.email_exists(email.data):
+            raise ValidationError('Already a user with this email.')
 
 
 @bp.route('/profile', methods=['GET'])
 def user_profile():
     user_info = User.show_user_profile(current_user.id)  
-    return render_template('user_profile.html', user=user_info)
+    purchases = OrderItem.get_user_purchases(current_user.id)
+    return render_template('user_profile.html', user=user_info, purchases=purchases)
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():

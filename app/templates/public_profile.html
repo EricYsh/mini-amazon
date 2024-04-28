@@ -1,0 +1,18 @@
+<!-- templates/public_profile.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>User Profile</h2>
+  <div>
+    <p><strong>Name:</strong> {{ user.firstname }} {{ user.lastname }} </p>
+    <p><strong>Is Seller:</strong> {{ 'Yes' if user.isSeller else 'No' }}</p>
+    
+    {% if user.isSeller %}
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Address:</strong> {{ user.address }}</p>
+    {% endif %}
+   
+  </div>
+</div>
+{% endblock %}
