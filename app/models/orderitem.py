@@ -62,4 +62,60 @@ class OrderItem:
         rows = app.db.execute(query, user_id=user_id)
         client_items = [{'product_name': row[0], 'quantity': row[1], 'brought_price': row[2], 'order_time': row[3], 'order_status':row[4], 'orderitem_id':row[5]} for row in rows]
         return client_items
+
+
+    @staticmethod
+    def get_buyerid_by_itemid(item_id):
+        query = """
+        SELECT 
+            O.userid
+        FROM Orders O
+        JOIN OrderItems OI ON O.id = OI.orderid
+        WHERE OI.id = :item_id;
+        """
+        rows = app.db.execute(query, item_id=item_id)
+        if rows:
+            return rows[0][0]
+        else:
+            return None
     
+
+    @staticmethod
+    def fulfill_orderitem(item_id):
+        query = """
+        UPDATE OrderItems
+        SET fulfilled = true
+        WHERE id = :item_id;
+        """
+        rows = app.db.execute(query, item_id=item_id)
+        
+
+    @staticmethod
+    def get_order_id(item_id):
+        query = """
+        SELECT 
+            OI.orderid
+        FROM OrderItems OI
+        WHERE OI.id = :item_id;
+        """
+        rows = app.db.execute(query, item_id=item_id)
+        if rows:
+            return rows[0][0]
+        else:
+            return None
+
+
+    @staticmethod
+    def get_in_process_num(oid):
+        query = """
+        SELECT 
+            count(*)
+        FROM OrderItems
+        WHERE orderid = :oid
+        AND fulfilled = false;
+        """
+        rows = app.db.execute(query, oid=oid)
+        if rows:
+            return rows[0][0]
+        else:
+            return None
