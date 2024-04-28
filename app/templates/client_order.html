@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+<h2>Client's Order:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-custom" style="background-color: #00539B; color: rgb(18, 18, 19);">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Purchase Time</th>
+      <th scope="col">Fulfillment</th>
+      <th scope="col">detail</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in client_items %}
+      <tr>
+        <th scope="row">{{ item.product_name }}</th>
+        <td>{{ item.brought_price }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.order_time }}</td>
+        <td>{{ item.order_status }}</td>
+        <td>
+          <form action="{{ url_for('clientorder.clientorderdetail') }}" method="POST">
+            <input type="hidden" name="product_name" value="{{ item.product_name }}">
+            <input type="hidden" name="brought_price" value="{{ item.brought_price }}">
+            <input type="hidden" name="quantity" value="{{ item.quantity }}">
+            <input type="hidden" name="order_time" value="{{ item.order_time }}">
+            <input type="hidden" name="order_status" value="{{ item.order_status }}">
+            <input type="hidden" name="id" value="{{ item.orderitem_id }}">
+            <button type="submit" class="btn btn-primary">Check Detail</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to view your purchase history!</p>
+{% endif %}
+
+{% endblock %}
