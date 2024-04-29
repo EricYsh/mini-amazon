@@ -5,6 +5,10 @@ from flask import redirect, url_for, request, flash
 from .models.product import Product
 from .models.cart import Cart
 
+from .models.orderitem import OrderItem
+from .models.user import User
+from .models.order import Order
+
 from flask import Blueprint
 bp = Blueprint('cart', __name__)
 
@@ -17,19 +21,11 @@ def cart():
     if current_user.is_authenticated:
         cart_items = Cart.get_all_by_uid(current_user.id)
         cart_items_saved = Cart.get_all_by_uid(current_user.id, saved_for_later=True)
-        total_quantity = 0
-        total_price = 0
-        for item in cart_items:
-            total_quantity += item['quantity']
-            total_price += item['price'] * item['quantity']
-
     else:
         cart_items = None
     return render_template('cart.html',
                        items=cart_items,
-                       items_saved=cart_items_saved,
-                       total_quantity=total_quantity,
-                       total_price=total_price)
+                       items_saved=cart_items_saved)
 
 
 @bp.route('/cart/add/<int:product_id>', methods=['POST'])
@@ -66,11 +62,12 @@ def cart_and_save():
     cart_id = request.form.get('cart_id')
     in_cart = request.form.get('in_cart')
     seller_inventory_id = request.form.get('sellerinventoryid')
+    quantity = request.form.get('quantity')
     print("Received form data:", request.form)
     if cart_id is None:
         flash('Invalid request.', 'error')
     
-    success = Cart.move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id)
+    success = Cart.move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id, quantity, current_user.id)
     if success:
         flash('Item moved.', 'success')
     else:
@@ -103,10 +100,6 @@ def remove():
 
     return redirect(url_for('cart.cart'))
 
-@bp.route('/cart', methods=['POST'])
-def checkout():
-
-    return None
 
 @bp.route('/cart/update_quantity/<int:cart_id>', methods=['POST'])
 def update_quantity(cart_id):
@@ -115,3 +108,9 @@ def update_quantity(cart_id):
         success = Cart.update_quantity(cart_id, new_quantity)
         return {'success': success}
     return {'success': False}
+
+
+# @bp.route('/cart', methods=['POST'])
+# def checkout():
+#     print("Checking out")
+#     return redirect(url_for('cart.user_order_detail'))

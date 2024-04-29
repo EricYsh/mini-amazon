@@ -167,3 +167,31 @@ WHERE s.sellerid = :uid;
             print(str(e))
         finally:
             session.close()
+
+    @staticmethod
+    def get_quantity_by_id(id):
+        row = app.db.execute('''
+                        SELECT quantity
+                        FROM SellerInventories
+                        WHERE id = :id;
+                        ''',
+                        id=id
+        )
+        print("row in get quantity by id:", row[0][0])
+        return row[0][0]
+    
+    @staticmethod
+    def update_inventory_quantity(sellerinventoryid, quantity):
+        try:
+            app.db.execute('''
+                UPDATE SellerInventories
+                SET quantity = :quantity
+                WHERE id = :sellerinventoryid
+                ''',
+                quantity=quantity,
+                sellerinventoryid=sellerinventoryid
+            )
+            return True
+        except Exception as e:
+            print(str(e))
+            return False

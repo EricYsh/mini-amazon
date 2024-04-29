@@ -25,15 +25,16 @@
                   <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1">
                 </td> -->
                 <td>
-                    <button type="button" class="btn btn-secondary btn-sm quantity-change" data-operation="decrement" data-cartid="{{ item.cartid }}">-</button>
+                    <button type="button" class="btn btn-light btn-sm quantity-change" data-operation="decrement" data-cartid="{{ item.cartid }}">-</button>
                     <span class="mx-2">{{ item.quantity }}</span>
-                    <button type="button" class="btn btn-secondary btn-sm quantity-change" data-operation="increment" data-cartid="{{ item.cartid }}">+</button>
+                    <button type="button" class="btn btn-light btn-sm quantity-change" data-operation="increment" data-cartid="{{ item.cartid }}">+</button>
                 </td>
                 <td>
                     <form method="POST" action="{{ url_for('cart.cart_and_save') }}">
                       <input type="hidden" name="cart_id" value="{{ item.cartid }}">
                       <input type="hidden" name="in_cart" value="true">
                       <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
+                      <input type="hidden" name="quantity" value="{{ item.quantity }}">
                       <button type="submit" class="btn btn-info btn-sm">Save for Later</button>
                     </form>
                     <form method="POST" action="{{ url_for('cart.remove') }}">
@@ -56,7 +57,9 @@
               <td></td>
               <td></td>
               <td colspan="5">
-                <a href="{{ url_for('cart.checkout') }}" class="btn btn-success">Proceed to Checkout</a>
+                <form action="{{ url_for('userorder.checkout') }}" method="POST">
+                    <button type="submit" class="btn btn-success">Proceed to Checkout</button>
+                </form>
               </td>
             </tr>
         </tbody>
@@ -72,6 +75,7 @@
                 <th scope="col">Price</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Actions</th>
+                <th scope="col">Seller ID</th>
             </tr>
         </thead>
         <tbody>
@@ -81,13 +85,14 @@
                 <td><img src="{{ item.image }}" alt="{{ item.name }}" class="img-fluid" style="max-width: 100px;"></td>
                 <td>${{ item.price }}</td>
                 <td>
-                  <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1">
+                  <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1" readonly>
                 </td>
                 <td>
                     <form method="POST" action="{{ url_for('cart.cart_and_save') }}">
                       <input type="hidden" name="cart_id" value="{{ item.cartid }}">
                       <input type="hidden" name="in_cart" value="false">
                       <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
+                      <input type="hidden" name="quantity" value="{{ item.quantity }}">
                       <button type="submit" class="btn btn-primary btn-sm">Add Back to Cart</button>
                     </form>
                     <form method="POST" action="{{ url_for('cart.remove') }}">
@@ -95,6 +100,7 @@
                       <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                   </form>
                 </td>
+                <td>{{ item.sellerid }}</td>
             </tr>
             {% else %}
             <tr><td colspan="5">No items saved for later.</td></tr>
@@ -108,90 +114,6 @@
     {% endif %}
 </div>
 
-
-<!-- <script type="text/javascript">
-  window.onload = function() {
-      var initialTotalQuantity = 0;
-      var initialTotalPrice = 0;
-      const quantityInputs = document.querySelectorAll('.quantity-input');
-
-      {% for item in items %}
-      initialTotalQuantity += {{ item.quantity }};
-      initialTotalPrice += {{ item.quantity * item.price }};
-      {% endfor %}
-
-      document.getElementById('totalQuantity').textContent = 'Total Quantity: ' + initialTotalQuantity;
-      document.getElementById('totalPrice').textContent = 'Total Price: $' + initialTotalPrice.toFixed(2);
-
-      function updateTotals() {
-          let totalQuantity = 0;
-          let totalPrice = 0;
-
-          quantityInputs.forEach(input => {
-              const row = input.closest('tr');
-              const price = parseFloat(row.querySelector('.item-price').textContent.replace('$', ''));
-              const quantity = parseInt(input.value);
-
-              totalQuantity += quantity;
-              totalPrice += quantity * price;
-          });
-
-          document.getElementById('totalQuantity').textContent = 'Total Quantity: ' + totalQuantity;
-          document.getElementById('totalPrice').textContent = 'Total Price: $' + totalPrice.toFixed(2);
-      }
-
-      quantityInputs.forEach(input => {
-          input.addEventListener('change', function() {
-              updateTotals();
-          });
-      });
-
-      // Initialize totals on page load
-      updateTotals();
-  };
-</script> -->
-
-<!-- <script type="text/javascript">
-  window.onload = function() {
-      var initialTotalQuantity = 0;
-      var initialTotalPrice = 0;
-      const quantityInputs = document.querySelectorAll('.quantity-input');
-
-      {% for item in items %}
-      initialTotalQuantity += {{ item.quantity }};
-      initialTotalPrice += {{ item.quantity * item.price }};
-      {% endfor %}
-
-      document.getElementById('totalQuantity').textContent = 'Total Quantity: ' + initialTotalQuantity;
-      document.getElementById('totalPrice').textContent = 'Total Price: $' + initialTotalPrice.toFixed(2);
-
-      function updateTotals() {
-          let totalQuantity = 0;
-          let totalPrice = 0;
-
-          quantityInputs.forEach(input => {
-              const row = input.closest('tr');
-              const price = parseFloat(row.querySelector('.item-price').textContent.replace('$', ''));
-              const quantity = parseInt(input.value);
-
-              totalQuantity += quantity;
-              totalPrice += quantity * price;
-          });
-
-          document.getElementById('totalQuantity').textContent = 'Total Quantity: ' + totalQuantity;
-          document.getElementById('totalPrice').textContent = 'Total Price: $' + totalPrice.toFixed(2);
-      }
-
-      quantityInputs.forEach(input => {
-          input.addEventListener('input', function() { // Change 'change' to 'input'
-              updateTotals();
-          });
-      });
-
-      // Initialize totals on page load
-      updateTotals();
-  };
-</script> -->
 
 <script type="text/javascript">
     function updateTotals() {
@@ -223,11 +145,15 @@
     
                 if (operation === 'increment') {
                     newQuantity++;
-                } else if (operation === 'decrement' && newQuantity > 1) {
-                    newQuantity--;
+                    updateQuantity(cartId, newQuantity, quantitySpan);
+                } else if (operation === 'decrement') {
+                    if (newQuantity > 1) {
+                        newQuantity--;
+                        updateQuantity(cartId, newQuantity, quantitySpan);
+                    } else {
+                        alert("Quantity cannot be less than 1.");
+                    }
                 }
-    
-                updateQuantity(cartId, newQuantity, quantitySpan);
             });
         });
     };
@@ -252,7 +178,5 @@
     }
     </script>
     
-
-
 
 {% endblock %}

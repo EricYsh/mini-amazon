@@ -119,3 +119,36 @@ class OrderItem:
             return rows[0][0]
         else:
             return None
+        
+    @staticmethod
+    def create_order_item(orderid, productid, sellerid, quantity, brought_price):
+        query = """
+        INSERT INTO OrderItems (orderid, productid, sellerid, quantity, brought_price)
+        VALUES (:orderid, :productid, :sellerid, :quantity, :brought_price)
+        RETURNING id;
+        """
+        rows = app.db.execute(query, orderid=orderid, productid=productid, sellerid=sellerid, quantity=quantity, brought_price=brought_price)
+        return rows[0][0]
+
+
+    @staticmethod
+    def get_order_items_by_order_id(order_id):
+        query = """
+        SELECT 
+            OI.id,
+            P.name AS product_name,
+            OI.quantity,
+            OI.brought_price,
+            OI.fulfilled,
+            P.image AS product_image
+        FROM OrderItems OI
+        JOIN Products P ON OI.productid = P.id
+        WHERE OI.orderid = :order_id;
+        """
+        rows = app.db.execute(query, order_id=order_id)
+        order_items = [{'id': row[0], 'product_name': row[1], 
+                        'quantity': row[2], 
+                        'brought_price': row[3], 
+                        'fulfilled': row[4], 
+                        'product_image': row[5]} for row in rows]
+        return order_items

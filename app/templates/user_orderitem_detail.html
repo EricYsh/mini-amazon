@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Order Details: #{{ order.id }}</h2>
+<p>Order Status: {{ order.order_status }}</p>
+<p>Order Time: {{ order.time_brought }}</p>
+
+<table class='table'>
+  <thead>
+    <tr>
+      <th>Product Name</th>
+      <th>Product Image</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Fulfilled?</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in order_items %}
+    <tr>
+      <td>{{ item.product_name }}</td>  <!-- Assuming you have product name in OrderItem -->
+      <td><img src="{{ item.product_image }}" alt="{{ item.product_name }}" class="img-fluid" style="max-width: 100px;"></td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.brought_price }}</td>
+      <td>{{ item.fulfilled }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
