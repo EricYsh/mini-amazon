@@ -227,6 +227,7 @@
     text-align: center;
     color: #333;
     background-color:aliceblue;
+    height: 40px;
 }
 .left-tight {
     border-radius: 5px 0 0 5px;
