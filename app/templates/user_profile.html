@@ -85,7 +85,7 @@
           <tbody>
             {% for item in purchases %}
               <tr>
-                <th scope="row">{{ item.product_name }}</th>
+                <th scope="row"><a href="{{ url_for('userorder.view_order', order_id=item.oid) }}">{{ item.product_name }}</a></th>
                 <td>{{ item.brought_price }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>{{ item.order_time }}</td>
