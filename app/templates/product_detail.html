@@ -89,7 +89,11 @@
     {% endfor %}
 </div>
 
-
+<form action="/submit-your-data" method="POST">
+  <label for="inputText">输入文本：</label>
+  <input type="text" id="inputText" name="inputText">
+  <button type="submit">提交</button>
+</form>
 
 </div>
 <script>
