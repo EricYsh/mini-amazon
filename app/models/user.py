@@ -129,6 +129,32 @@ where id = :id
         except Exception as e:
             print(str(e))
             return False
+
+
+    @staticmethod
+    def get_user_balance(id):
+        row = app.db.execute("""
+                                select balance
+                                from Users
+                                where id = :id
+                                """,
+                              id = id)
+        return row[0][0]
+    
+    @staticmethod
+    def update_user_balance(id, amount):
+        try:
+            app.db.execute("""
+                            UPDATE Users
+                            SET balance = balance - :amount
+                            WHERE id = :id
+                            """,
+                            id=id, amount=amount)
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
+
        
     @staticmethod
     def public_profile(id):
