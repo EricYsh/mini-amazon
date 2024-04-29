@@ -45,7 +45,7 @@ class Cart:
     @staticmethod
     def get_all_by_uid(uid, saved_for_later=False):
         rows = app.db.execute('''
-SELECT p.name, p.image, ph.price, c.quantity, p.id, c.id, si.id
+SELECT p.name, p.image, ph.price, c.quantity, p.id, c.id, si.id, si.sellerid
 FROM Carts c
 JOIN SellerInventories si ON c.sellerinventoryid = si.id
 JOIN Products p ON si.productid = p.id
@@ -61,7 +61,7 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
                               saved_for_later=saved_for_later)
         # Create a list of dictionaries for each row in the query result
         cart_items = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3], 
-                       'productid': row[4], 'cartid': row[5], 'sellerinventoryid': row[6]} for row in rows]
+                       'productid': row[4], 'cartid': row[5], 'sellerinventoryid': row[6], 'sellerid': row[7]} for row in rows]
         return cart_items
     
     # a method for entering a new object into the database
@@ -120,17 +120,42 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
             return False
         
     @staticmethod
-    def move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id):
+    def move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id, quantity, userid):
         try:
-            app.db.execute("""
-                UPDATE Carts
-                SET saved_for_later = :saved_for_later
-                WHERE id = :cart_id
-                """, saved_for_later=in_cart, cart_id=cart_id)
+            # Check if the cart item exists
+            existing_item = app.db.execute("""
+            SELECT id, quantity, sellerinventoryid
+            FROM Carts
+            WHERE userid = :userid AND saved_for_later = :in_cart
+            """, userid=userid, in_cart=in_cart)
+            existing_cart_id, existing_quantity, sellerinventoryid = existing_item[0]
+            print(f'Existing cart item found with ID {existing_cart_id} and quantity {existing_quantity}')
+            print(f'Adding {quantity} to existing quantity {existing_quantity}')
+            ## If the item already exists in the cart, MEANWHILE, they are belong to the same seller, update the quantity
+            print(f'Existing sellerinventoryid: {sellerinventoryid}, seller_inventory_id: {seller_inventory_id}')
+            print(type(sellerinventoryid), type(seller_inventory_id))
+            if sellerinventoryid == int(seller_inventory_id):
+                print('Same seller, updating quantity')
+                # Existing item found, update the quantity
+                new_quantity = existing_quantity + int(quantity)
+                print(f'Updating quantity to {new_quantity}')
+                app.db.execute("""
+                    UPDATE Carts
+                    SET quantity = :quantity, saved_for_later = :saved_for_later
+                    WHERE id = :cart_id
+                    """, quantity=new_quantity, cart_id=existing_cart_id, saved_for_later=in_cart)
+            else:
+                # the item does not exist in the cart, OR it belongs to anther seller, add it to the cart
+                app.db.execute("""
+                    UPDATE Carts
+                    SET saved_for_later = :saved_for_later
+                    WHERE id = :cart_id
+                    """, saved_for_later=in_cart, cart_id=cart_id)
             return True
         except Exception as e:
             print(str(e))
             return False
+
         
     @staticmethod
     def remove_item(userid, cartid):
@@ -139,6 +164,20 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
                 DELETE FROM Carts
                 WHERE userid = :userid AND id = :cartid
                 """, userid=userid, cartid=cartid)
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
+
+    @staticmethod
+    def update_quantity(cart_id, new_quantity):
+        print(f'Updating quantity for cart item {cart_id} to {new_quantity}')
+        try:
+            app.db.execute("""
+                UPDATE Carts
+                SET quantity = :quantity
+                WHERE id = :cart_id
+                """, quantity=new_quantity, cart_id=cart_id)
             return True
         except Exception as e:
             print(str(e))
