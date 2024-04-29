@@ -132,21 +132,43 @@ where id = :id
        
     @staticmethod
     def public_profile(id):
-        # Retrieve basic user data; include email and address if user is a seller
-        sql = """
-SELECT id, firstname, lastname, isSeller, balance, email, address
-FROM Users
-WHERE id = :id
-"""
-        row = app.db.execute(sql, id=id)
-        if not row:
+    # Retrieve basic user data; include email and address if user is a seller
+        user_sql = """
+    SELECT id, firstname, lastname, isSeller, balance, email, address
+    FROM Users
+    WHERE id = :id
+    """
+        user_row = app.db.execute(user_sql, id=id)
+        if not user_row:
             return None
-        return {
-        'id': row[0][0],
-        'email': row[0][5], 
-        'firstname': row[0][1], 
-        'lastname': row[0][2], 
-        'address': row[0][6], 
-        'isSeller': row[0][3], 
-        'balance': row[0][4]}
+    
+        user_data = {
+        'id': user_row[0][0],
+        'email': user_row[0][5], 
+        'firstname': user_row[0][1], 
+        'lastname': user_row[0][2], 
+        'address': user_row[0][6], 
+        'isSeller': user_row[0][3], 
+        'balance': user_row[0][4],
+        'comments': []
+        }
+
+        if user_row[0][3]:  # isSeller is True
+        # Retrieve comments about the seller
+            comments_sql = """
+        SELECT SC.comment, SC.date_commented, SC.rate, U.firstname, U.lastname
+        FROM SellerComments SC
+        JOIN Users U ON SC.userid = U.id
+        WHERE SC.sellerid = :id
+        ORDER BY SC.date_commented DESC
+        """
+            comments = app.db.execute(comments_sql, id=id)
+            user_data['comments'] = [{
+            'comment': comment[0],
+            'date_commented': comment[1].strftime("%Y-%m-%d"),
+            'rate': comment[2],
+            'commenter_name': comment[3] + ' ' + comment[4]
+            } for comment in comments]
+
+        return user_data
     

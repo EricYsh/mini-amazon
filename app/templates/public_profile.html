@@ -2,17 +2,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5">
+<style>
+  .profile-container {
+    max-width: 700px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  h2, h3 {
+    text-align: center; /* 使所有标题居中 */
+    color: #333;
+  }
+  .profile-info, .comments-section {
+    margin-top: 20px;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .profile-info p, .comments-section li {
+    font-size: 16px;
+    color: #666;
+    padding: 8px;
+  }
+  .comment-meta {
+    font-weight: bold;
+    color: #333;
+  }
+  .comment-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  li:last-child {
+    border-bottom: none;
+  }
+</style>
+
+<div class="profile-container">
   <h2>User Profile</h2>
-  <div>
-    <p><strong>Name:</strong> {{ user.firstname }} {{ user.lastname }} </p>
+  <div class="profile-info">
+    <p><strong>ID:</strong> {{ user.id }}</p>
+    <p><strong>Name:</strong> {{ user.firstname }} {{ user.lastname }}</p>
     <p><strong>Is Seller:</strong> {{ 'Yes' if user.isSeller else 'No' }}</p>
-    
     {% if user.isSeller %}
       <p><strong>Email:</strong> {{ user.email }}</p>
       <p><strong>Address:</strong> {{ user.address }}</p>
     {% endif %}
-   
   </div>
+  {% if user.isSeller %}
+    <div class="comments-section">
+      <h3>Comments for This Seller</h3>
+      {% if user.comments %}
+        <ul>
+        {% for comment in user.comments %}
+          <li>
+            <div class="comment-detail">
+              <span class="comment-meta">{{ comment.commenter_name }} (Rated: {{ comment.rate }}/5)</span>
+              <span>Date: {{ comment.date_commented }}</span>
+            </div>
+            <p>{{ comment.comment }}</p>
+          </li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p>No comments available.</p>
+      {% endif %}
+    </div>
+  {% endif %}
 </div>
 {% endblock %}
+
+
+
+
+
+
