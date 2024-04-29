@@ -94,6 +94,7 @@
           <a class="dropdown-item" href="{{ url_for('users.user_profile') }}" class="btn btn-light">Your Profile</a>
           <a class="dropdown-item" href="{{ url_for('cart.cart') }}" class="btn btn-light">Your Cart</a>
           <a class="dropdown-item" href="{{ url_for('usercomment.usercomments') }}" class="btn btn-light">Your Comments</a>
+          <a class="dropdown-item" href="{{ url_for('trend.trend') }}" class="btn btn-light">Trend</a>
           {% if current_user.isSeller %}
           <a class="dropdown-item" href="{{ url_for('inventory.inventory') }}" class="btn btn-light">Your Inventory</a>
           <a class="dropdown-item" href="{{ url_for('clientorder.clientorder') }}" class="btn btn-light">Client's order</a>

@@ -45,5 +45,7 @@ def create_app():
     from .profiles import bp as profiles_bp
     app.register_blueprint(profiles_bp)
 
+    from .trend import bp as trend_bp
+    app.register_blueprint(trend_bp)
 
     return app
