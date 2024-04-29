@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+<h2>Order detail:</h2>
+<!-- show address, date, total amount, fulfillment status, name of buyer -->
+<div class="container mt-5">
+  <div class="card">
+      <div class="card-body">
+          <h4 class="card-title">{{ user_info.firstname }} {{ user_info.lastname }}</h4>
+          <br></br>
+          <p class="card-text"><strong>Email:</strong> {{ user_info.email }}</p>
+          <p class="card-text"><strong>Address:</strong> {{ user_info.address }}</p>
+          <p class="card-text"><strong>product_name:</strong> {{ item_info.product_name }}</p>
+          <p class="card-text"><strong>brought_price:</strong> {{ item_info.brought_price }}</p>
+          <p class="card-text"><strong>quantity:</strong> {{ item_info.quantity }}</p>
+          <p class="card-text"><strong>order_time:</strong> {{ item_info.order_time }}</p>
+          <p class="card-text"><strong>order_status:</strong> {{ item_info.order_status }}</p>
+          {% if item_info.order_status == 'False' %}
+            <form action="{{ url_for('clientorder.fulfillorder') }}" method="POST">
+              <input type="hidden" name="item_id" value="{{ item_info.item_id }}">
+              <button type="submit" class="btn btn-primary">Fulfill</button>
+            </form>      
+          {% endif %}
+      </div>
+  </div>
+</div>
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to view your purchase history!</p>
+{% endif %}
+
+{% endblock %}
+

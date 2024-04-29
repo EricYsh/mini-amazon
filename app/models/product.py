@@ -193,7 +193,7 @@ class Product:
     @staticmethod
     def get_reviews(product_id):
         reviews = app.db.execute('''
-            SELECT pc.id, pc.comment, pc.time_commented, pc.rate, u.firstname, u.lastname
+            SELECT pc.id, pc.comment, pc.time_commented, pc.rate, u.firstname, u.lastname, u.id
             FROM ProductComments pc
             JOIN Users u ON pc.userid = u.id
             WHERE pc.productid = :product_id
@@ -235,3 +235,24 @@ class Product:
             ORDER BY name ASC
         ''')
         return rows  
+
+
+
+    @staticmethod
+    def get_topfive_products():
+        rows = app.db.execute('''
+            SELECT description, image, name, id
+            FROM Products
+            WHERE id IN (
+                SELECT P.id
+                FROM Products P
+                JOIN Orderitems O ON P.id = O.productid
+                GROUP BY P.id
+                ORDER BY COUNT(quantity) DESC
+                LIMIT 5
+            )
+        ''')
+        if rows:
+            return rows
+        else:
+            return None
