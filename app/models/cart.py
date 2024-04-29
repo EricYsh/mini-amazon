@@ -143,3 +143,17 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
         except Exception as e:
             print(str(e))
             return False
+
+    @staticmethod
+    def update_quantity(cart_id, new_quantity):
+        print(f'Updating quantity for cart item {cart_id} to {new_quantity}')
+        try:
+            app.db.execute("""
+                UPDATE Carts
+                SET quantity = :quantity
+                WHERE id = :cart_id
+                """, quantity=new_quantity, cart_id=cart_id)
+            return True
+        except Exception as e:
+            print(str(e))
+            return False

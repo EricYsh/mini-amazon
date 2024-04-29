@@ -1,5 +1,3 @@
-# This class is no longer used in the following milestones.
-
 from flask import render_template
 from flask_login import current_user
 from flask import redirect, url_for, request, flash
@@ -109,3 +107,11 @@ def remove():
 def checkout():
 
     return None
+
+@bp.route('/cart/update_quantity/<int:cart_id>', methods=['POST'])
+def update_quantity(cart_id):
+    new_quantity = request.json.get('quantity')
+    if new_quantity and new_quantity > 0:
+        success = Cart.update_quantity(cart_id, new_quantity)
+        return {'success': success}
+    return {'success': False}
