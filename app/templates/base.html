@@ -16,6 +16,11 @@
   <style>
     body {
       font-family: "Lato", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
     }
 
     .main-head {
@@ -33,6 +38,7 @@
 
     .main {
       padding: 0px 10px;
+      flex-grow: 1;
     }
 
     .login-main-text {
@@ -94,7 +100,6 @@
           <a class="dropdown-item" href="{{ url_for('users.user_profile') }}" class="btn btn-light">Your Profile</a>
           <a class="dropdown-item" href="{{ url_for('cart.cart') }}" class="btn btn-light">Your Cart</a>
           <a class="dropdown-item" href="{{ url_for('userorder.userorder') }}" class="btn btn-light">Your Orders</a>
-          <a class="dropdown-item" href="{{ url_for('purchases.user_purchases') }}" class="btn btn-light">Your Purchases</a>
           <a class="dropdown-item" href="{{ url_for('usercomment.usercomments') }}" class="btn btn-light">Your Comments</a>
           <a class="dropdown-item" href="{{ url_for('trend.trend') }}" class="btn btn-light">Trend</a>
           {% if current_user.isSeller %}

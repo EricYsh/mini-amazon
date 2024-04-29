@@ -45,13 +45,18 @@ WHERE email = :email
             return User(*(rows[0][1:]))
 
     @staticmethod
-    def email_exists(email):
-        rows = app.db.execute("""
-SELECT email
+    def email_exists(email, exclude_user_id=None):
+        query = """
+SELECT id
 FROM Users
 WHERE email = :email
-""",
-                              email=email)
+"""
+        params = {'email': email}
+        if exclude_user_id is not None:
+            query += "AND id != :exclude_user_id"
+            params['exclude_user_id'] = exclude_user_id
+
+        rows = app.db.execute(query, **params)
         return len(rows) > 0
 
     @staticmethod
@@ -124,7 +129,8 @@ where id = :id
         except Exception as e:
             print(str(e))
             return False
-    
+
+
     @staticmethod
     def get_user_balance(id):
         row = app.db.execute("""
@@ -148,3 +154,47 @@ where id = :id
         except Exception as e:
             print(str(e))
             return False
+
+       
+    @staticmethod
+    def public_profile(id):
+    # Retrieve basic user data; include email and address if user is a seller
+        user_sql = """
+    SELECT id, firstname, lastname, isSeller, balance, email, address
+    FROM Users
+    WHERE id = :id
+    """
+        user_row = app.db.execute(user_sql, id=id)
+        if not user_row:
+            return None
+    
+        user_data = {
+        'id': user_row[0][0],
+        'email': user_row[0][5], 
+        'firstname': user_row[0][1], 
+        'lastname': user_row[0][2], 
+        'address': user_row[0][6], 
+        'isSeller': user_row[0][3], 
+        'balance': user_row[0][4],
+        'comments': []
+        }
+
+        if user_row[0][3]:  # isSeller is True
+        # Retrieve comments about the seller
+            comments_sql = """
+        SELECT SC.comment, SC.date_commented, SC.rate, U.firstname, U.lastname
+        FROM SellerComments SC
+        JOIN Users U ON SC.userid = U.id
+        WHERE SC.sellerid = :id
+        ORDER BY SC.date_commented DESC
+        """
+            comments = app.db.execute(comments_sql, id=id)
+            user_data['comments'] = [{
+            'comment': comment[0],
+            'date_commented': comment[1].strftime("%Y-%m-%d"),
+            'rate': comment[2],
+            'commenter_name': comment[3] + ' ' + comment[4]
+            } for comment in comments]
+
+        return user_data
+    

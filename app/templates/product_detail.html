@@ -23,7 +23,7 @@
             <div class="sellers-grid">
                 {% for seller in sellers %}
                 <div class="seller">
-                    <p>By: {{ seller.firstname }} {{ seller.lastname }}</p>
+                  <p>By: <a href="{{ url_for('profiles.public_profile', user_id=seller.id) }}">{{ seller.firstname }} {{ seller.lastname }}</a></p>
                     <p>Price: $ {{ seller.current_price }}</p>
                     <p>Quantity available: {{ seller.quantity }}</p>
                     
@@ -71,7 +71,7 @@
     {% for review in reviews %}
     <div class="review">
       <h4 class="reviewer-name">
-        Reviewer: {{ review.firstname }} {{ review.lastname }}
+        <a href="{{ url_for('profiles.public_profile', user_id=review.id) }}">Reviewer: {{ review.firstname }} {{ review.lastname }}</a>
         <span class="review-time">{{ review.time_commented }}</span>
     </h4>
       <p class="rating">Rating: 
@@ -89,7 +89,20 @@
     {% endfor %}
 </div>
 
+<form action="{{ url_for('product.add_comment') }}" method="POST">
+  <label for="inputText">Comment: </label>
+  <input type="text" id="inputText" name="comment"><br>
+  <input type="hidden" name="product_id" value="{{ product_id }}">
+  <div class="star-rating1">
+      <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+      <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+      <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+      <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+      <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+  </div>
 
+  <button type="submit">Submit</button>
+</form>
 
 </div>
 <script>

@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, request
-
+from flask_login import login_user, logout_user, current_user
 from .models.product import Product
+from .models.productcomment import ProductComment
 
 from flask import Blueprint
 bp = Blueprint('product', __name__)
@@ -60,7 +61,7 @@ def product_detail(product_id):
     sellers = Product.get_sellers(product_id)
     reviews = Product.get_reviews(product_id)
     print("product", product.description)
-    return render_template('product_detail.html', product=product, sellers = sellers, reviews = reviews) 
+    return render_template('product_detail.html', product=product, sellers = sellers, reviews = reviews, product_id=product_id) 
 
 
 @bp.route('/product_add', methods=['GET'])
@@ -95,3 +96,19 @@ def product_remove():
     print(item_details)
 
     return render_template('product_edit.html', item_details=item_details)
+
+
+
+@bp.route('/add_comment', methods=['POST'])
+def add_comment():
+   
+    comment = request.form['comment']
+    product_id = request.form['product_id']
+    rating = request.form['rating']
+    
+    
+    ProductComment.insert_comment(comment, product_id, rating, current_user.id)
+
+    
+
+    return redirect(url_for('product.product_detail', product_id=product_id))
