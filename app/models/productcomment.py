@@ -38,3 +38,13 @@ class ProductComment:
         return comments
 
 
+
+    @staticmethod
+    def insert_comment(comment, product_id, rating, user_id):
+        sqlstr = """
+        INSERT INTO ProductComments (productid, userid, comment, rate, time_commented) 
+        VALUES (:product_id, :user_id, :comment, :rating, date_trunc('second', current_timestamp));
+        """
+        results = app.db.execute(sqlstr, product_id=product_id, user_id=user_id, comment=comment, rating=rating)
+   
+

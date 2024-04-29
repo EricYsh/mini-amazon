@@ -458,15 +458,55 @@ input[type="number"]::-webkit-outer-spin-button {
     background-color: #0056b3;
 }
 .highlight {
-    background-color: #1157ee; /* 
-    设置文本周围的颜色 */
+    background-color: #1157ee; 
     display: inline-block;
-    padding: 20px; /* 添加内边距 */
-    border-radius: 10px; /* 添加圆角 */
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3); /* 添加阴影 */
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3); 
   }
 .h1t {
-    font-size: 36px; /* 设置标题的字体大小 */
-    color: rgb(248, 245, 245); /* 设置标题的颜色 */
-    margin: 0; /* 清除标题的默认外边距 */
+    font-size: 36px; 
+    color: rgb(248, 245, 245); 
+    margin: 0;
   }
+
+input[type="text"] {
+    width: 1500px;  
+    height: 40px; 
+    font-size: 16px; 
+    padding: 4px; 
+}
+
+.star-rating1 {
+    direction: rtl; 
+    font-size: 30px;
+   
+}
+
+.star-rating1 input {
+    display: none; 
+}
+
+.star-rating1 label {
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s; 
+}
+
+
+.star-rating1 input:checked ~ label,
+.star-rating1 input:checked ~ label ~ label,
+.star-rating1 input:checked ~ label ~ label ~ label,
+.star-rating1 input:checked ~ label ~ label ~ label ~ label,
+.star-rating1 input:checked ~ label ~ label ~ label ~ label ~ label {
+    color: gold; 
+}
+
+.star-rating1 label:hover,
+.star-rating1 label:hover ~ label,
+.star-rating1 label:hover ~ label ~ label,
+.star-rating1 label:hover ~ label ~ label ~ label,
+.star-rating1 label:hover ~ label ~ label ~ label ~ label {
+    color: gold; 
+}
