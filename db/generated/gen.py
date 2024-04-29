@@ -156,7 +156,7 @@ def gen_orderitems(num_orderitems):
             pid = fake.random_int(min=0, max=num_products-1)
             sellerid = fake.random_int(min=50, max=99)
             quantity = fake.random_int(min=1, max=5)
-            brought_price = fake_decimal(12, 2)
+            brought_price = round(random.uniform(0.01, 500.00), 2)
             fulfilled = 'false' #fake.random_element(elements=('true', 'false'))
             writer.writerow([oiid, oid, pid, sellerid, quantity, brought_price, fulfilled])
         print(f'{num_orderitems} generated')
