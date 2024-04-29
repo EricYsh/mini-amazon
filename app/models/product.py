@@ -193,7 +193,7 @@ class Product:
     @staticmethod
     def get_reviews(product_id):
         reviews = app.db.execute('''
-            SELECT pc.id, pc.comment, pc.time_commented, pc.rate, u.firstname, u.lastname
+            SELECT pc.id, pc.comment, pc.time_commented, pc.rate, u.firstname, u.lastname, u.id
             FROM ProductComments pc
             JOIN Users u ON pc.userid = u.id
             WHERE pc.productid = :product_id

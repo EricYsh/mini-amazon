@@ -6,9 +6,9 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Decim
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Optional, InputRequired
 
 from .models.user import User
+from .models.orderitem import OrderItem
 
-
-from flask import Blueprint
+from flask import Blueprint, jsonify
 bp = Blueprint('users', __name__)
 
 
@@ -94,12 +94,25 @@ class UserProfileForm(FlaskForm):
     balance = DecimalField('Balance', validators=[InputRequired()])
     submit = SubmitField('Update Profile')
 
+    def validate_email(self, email):
+        if User.email_exists(email.data, exclude_user_id=current_user.id):
+            raise ValidationError('This email is already in use by another account.')
+
+
 
 
 @bp.route('/profile', methods=['GET'])
 def user_profile():
     user_info = User.show_user_profile(current_user.id)  
-    return render_template('user_profile.html', user=user_info)
+    filter_type = request.args.get('filter_type')
+    filter_value = request.args.get('filter_value')
+
+    if filter_type and filter_value:
+        purchases = OrderItem.get_filtered_purchases(current_user.id, filter_type, filter_value)
+    else:
+        purchases = OrderItem.get_user_purchases(current_user.id)
+    
+    return render_template('user_profile.html', user=user_info, purchases=purchases)
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -128,3 +141,25 @@ def edit_profile():
 
     return render_template('edit_profile.html', form=form)
 
+@bp.route('/get-filter-options', methods=['GET'])
+def get_filter_options():
+    filter_type = request.args.get('type')
+    user_id = current_user.id  
+    options = OrderItem.get_filter_options(filter_type, user_id)
+    return jsonify(options)
+
+@bp.route('/get-filtered-purchases')
+def get_filtered_purchases():
+    user_id = current_user.id  
+    filter_type = request.args.get('filter_type')
+    filter_value = request.args.get('filter_value')
+    
+    purchases = OrderItem.get_filtered_purchases(user_id, filter_type, filter_value)
+    
+    return jsonify(purchases)
+
+@bp.route('/get-purchases-by-category', methods=['GET'])
+def get_purchases_by_category():
+    user_id = current_user.id
+    category_data = OrderItem.get_purchases_by_category(user_id)
+    return jsonify(category_data)
