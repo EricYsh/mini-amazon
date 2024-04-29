@@ -45,13 +45,18 @@ WHERE email = :email
             return User(*(rows[0][1:]))
 
     @staticmethod
-    def email_exists(email):
-        rows = app.db.execute("""
-SELECT email
+    def email_exists(email, exclude_user_id=None):
+        query = """
+SELECT id
 FROM Users
 WHERE email = :email
-""",
-                              email=email)
+"""
+        params = {'email': email}
+        if exclude_user_id is not None:
+            query += "AND id != :exclude_user_id"
+            params['exclude_user_id'] = exclude_user_id
+
+        rows = app.db.execute(query, **params)
         return len(rows) > 0
 
     @staticmethod
@@ -144,3 +149,4 @@ WHERE id = :id
         'address': row[0][6], 
         'isSeller': row[0][3], 
         'balance': row[0][4]}
+    

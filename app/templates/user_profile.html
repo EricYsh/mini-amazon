@@ -29,42 +29,85 @@
         </div>
 
 
-    <!-- Purchase History Section -->
-    <h3>Your Purchase History:</h3>
-    <table class='table table-hover table-bordered'>
-      <thead class="thead-custom" style="background-color: #00539B; color: aliceblue;">
-        <tr>
-          <th scope="col">Product Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Purchase Time</th>
-          <th scope="col">Order Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in purchases %}
-          <tr>
-            <th scope="row">{{ item.product_name }}</th>
-            <td>{{ item.brought_price }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.order_time }}</td>
-            <td>{{ item.order_status }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>  
-
-    <div class="mt-2 text-right">
-        <a href="{{ url_for('index.index') }}" class="btn btn-secondary">Return to Home</a>
-    </div>
-    <br>
-
-    {% else %}
-        <div class="text-center">
-            <p><a href="{{ url_for('users.login') }}">Log in</a> to view your profile.</p>
+        <br><br>
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="d-flex flex-column align-items-center">
+              <h4>Purchases by Category (Quantity)</h4>
+              <div style="width: 100%; height: 400px; display: flex; justify-content: center; align-items: center;">
+                <canvas id="quantityPieChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex flex-column align-items-center">
+              <h4>Purchases by Category (Total Price)</h4>
+              <div style="width: 100%; height: 400px; display: flex; justify-content: center; align-items: center;">
+                <canvas id="amountBarChart"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
+        <br><br>
+
+        <!-- Purchase History Section -->
+        <h3>Your Purchase History:</h3>
+        <div>
+            <!-- 筛选按钮和下拉菜单 -->
+            <button id="itemFilterBtn">Filter by Item</button>
+            <select id="itemFilter" style="display:none;">
+                <!-- 动态填充项目选项 -->
+            </select>
+
+            <button id="sellerFilterBtn">Filter by Seller</button>
+            <select id="sellerFilter" style="display:none;">
+                <!-- 动态填充卖家选项 -->
+            </select>
+
+            <button id="dateFilterBtn">Filter by Date</button>
+            <select id="dateFilter" style="display:none;">
+                <!-- 动态填充日期选项 -->
+            </select>
+
+            <button id="showAllBtn">Show All</button>
+        </div>
+        
+        <table class='table table-hover table-bordered'>
+          <thead class="thead-custom" style="background-color: #d0d9e1; color:#212569;">
+            <tr>
+              <th scope="col">Product Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Purchase Time</th>
+              <th scope="col">Order Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in purchases %}
+              <tr>
+                <th scope="row">{{ item.product_name }}</th>
+                <td>{{ item.brought_price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.order_time }}</td>
+                <td>{{ item.order_status }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="mt-2 text-right">
+            <a href="{{ url_for('index.index') }}" class="btn btn-secondary">Return to Home</a>
+        </div>
+        <br>
+    {% else %}
+    <div class="text-center">
+        <p><a href="{{ url_for('users.login') }}">Log in</a> to view your profile.</p>
+    </div>
     {% endif %}
 </div>
-{% endblock %}
 
+<!-- 引入JavaScript -->
+<script src="{{ url_for('static', filename='js/filter.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 
