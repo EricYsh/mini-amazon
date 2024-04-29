@@ -68,7 +68,7 @@
         {% for comment in user.comments %}
           <li>
             <div class="comment-detail">
-              <span class="comment-meta">{{ comment.commenter_name }} (Rated: {{ comment.rate }}/5)</span>
+              <span class="comment-meta">{{ comment.commenter_name }} (Rating: {{ comment.rate }}/5)</span>
               <span>Date: {{ comment.date_commented }}</span>
             </div>
             <p>{{ comment.comment }}</p>
