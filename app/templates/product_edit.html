@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Directly Displayed Add Product Form with Narrower Width -->
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6"> <!-- Adjusted column size for narrower form -->
+      <form method="post" action="{{ url_for('inventory.edit_product') }}" enctype="multipart/form-data">
+        <!-- Category Selector -->
+
+      
+        <!-- Product Name (readonly) -->
+        <div class="form-group">
+          <label for="productName">product name:</label>
+          <input type="text" class="form-control" id="productName" name="productName" value="{{ item_details.name }}" readonly>
+      </div>
+      
+      <!-- Product Image Link (readonly) -->
+      <div class="form-group">
+          <label for="productImage">image link:</label>
+          <input type="text" class="form-control" id="productImage" name="productImage" value="{{ item_details.image }}" readonly>
+      </div>
+      
+      
+      <!-- Product Price (editable) -->
+      <div class="form-group">
+          <label for="productPrice">price ($):</label>
+          <input type="number" step="0.01" class="form-control" id="productPrice" name="productPrice" value="{{ item_details.price }}" min="0.01" required>
+      </div>
+      
+      <!-- Product Quantity (editable) -->
+      <div class="form-group">
+          <label for="productQuantity">quantity:</label>
+          <input type="number" class="form-control" id="productQuantity" name="productQuantity" value="{{ item_details.quantity }}">
+      </div>
+      
+      <!-- Hidden Inputs for non-editable fields -->
+      <input type="hidden" name="productid" value="{{ item_details.id }}">
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Edit Product</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+  </script> -->
+{% endblock %}

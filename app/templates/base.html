@@ -16,6 +16,11 @@
   <style>
     body {
       font-family: "Lato", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
     }
 
     .main-head {
@@ -33,6 +38,7 @@
 
     .main {
       padding: 0px 10px;
+      flex-grow: 1;
     }
 
     .login-main-text {
@@ -93,10 +99,12 @@
         <div class="dropdown-menu">
           <a class="dropdown-item" href="{{ url_for('users.user_profile') }}" class="btn btn-light">Your Profile</a>
           <a class="dropdown-item" href="{{ url_for('cart.cart') }}" class="btn btn-light">Your Cart</a>
-          <a class="dropdown-item" href="{{ url_for('purchases.user_purchases') }}" class="btn btn-light">Your Purchases</a>
+          <a class="dropdown-item" href="{{ url_for('userorder.userorder') }}" class="btn btn-light">Your Orders</a>
           <a class="dropdown-item" href="{{ url_for('usercomment.usercomments') }}" class="btn btn-light">Your Comments</a>
+          <a class="dropdown-item" href="{{ url_for('trend.trend') }}" class="btn btn-light">Trend</a>
           {% if current_user.isSeller %}
           <a class="dropdown-item" href="{{ url_for('inventory.inventory') }}" class="btn btn-light">Your Inventory</a>
+          <a class="dropdown-item" href="{{ url_for('clientorder.clientorder') }}" class="btn btn-light">Client's order</a>
           {% endif %}
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{{ url_for('users.logout') }}" class="btn btn-light">Log out</a>
@@ -112,6 +120,50 @@
   <div class="main">
     {% block content %}{% endblock %}
   </div>
+  <!-- Base HTML: Place this modal at the end of your body tag in base.html -->
+<div class="modal fade" id="flashMessageModal" tabindex="-1" role="dialog" aria-labelledby="flashMessageModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="flashMessageModalLabel">Notification</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Flash messages will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Inside your base.html or at the end of the body tag -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var messages = [
+          {% for category, message in messages %}
+            { category: "{{ category }}", message: "{{ message }}" },
+          {% endfor %}
+        ];
+
+        // Prepare the message text and set modal class based on category
+        var messageText = '';
+        messages.forEach(function(msg) {
+          messageText += '<p class="' + msg.category + '">' + msg.message + '</p>';
+        });
+
+        // Set the content and show the modal
+        $('#flashMessageModal .modal-body').html(messageText);
+        $('#flashMessageModal').modal('show');
+      });
+    </script>
+  {% endif %}
+{% endwith %}
+
 </body>
 <footer class="footer-custom text-white text-center py-4" style="background-color: #012169;">
   Developed by PentaDevil  All Rights Reserved &copy; 2024

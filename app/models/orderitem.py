@@ -30,7 +30,8 @@ class OrderItem:
             OI.quantity,
             OI.brought_price,
             O.time_brought AS order_time,
-            O.order_status
+            O.order_status,
+            O.id
         FROM Orders O
         JOIN OrderItems OI ON O.id = OI.orderid
         JOIN Products P ON OI.productid = P.id
@@ -38,6 +39,215 @@ class OrderItem:
         ORDER BY O.time_brought DESC;
         """
         rows = app.db.execute(query, user_id=user_id)
-        purchase_items = [{'product_name': row[0], 'quantity': row[1], 'brought_price': row[2], 'order_time': row[3], 'order_status':row[4]} for row in rows]
+        purchase_items = [{'product_name': row[0], 'quantity': row[1], 'brought_price': row[2], 'order_time': row[3], 'order_status':row[4], 'oid':row[5]} for row in rows]
         return purchase_items
+
+    @staticmethod
+    def get_filter_options(filter_type, user_id):
+        if filter_type == "item":
+            query = """
+        SELECT DISTINCT P.name AS product_name
+        FROM Orders O
+        JOIN OrderItems OI ON O.id = OI.orderid
+        JOIN Products P ON OI.productid = P.id
+        WHERE O.userid = :user_id
+        ORDER BY P.name;
+            """
+            rows = app.db.execute(query, user_id=user_id)
+            return [{'name': row[0]} for row in rows]
+        
+        elif filter_type == "seller":
+            query = """
+        SELECT DISTINCT U.firstname || ' ' || U.lastname AS seller_name, U.id AS seller_id
+        FROM Orders O
+        JOIN OrderItems OI ON O.id = OI.orderid
+        JOIN Users U ON OI.sellerid = U.id
+        WHERE O.userid = :user_id AND U.isSeller = TRUE
+        ORDER BY U.firstname || ' ' || U.lastname;
+            """
+            rows = app.db.execute(query, user_id=user_id)
+            return [{'name': row[0], 'id': row[1]} for row in rows]
+
+        elif filter_type == "date":
+            query = """
+        SELECT DISTINCT TO_CHAR(O.time_brought, 'YYYY-MM-DD') AS order_date
+        FROM Orders O
+        WHERE O.userid = :user_id
+        ORDER BY TO_CHAR(O.time_brought, 'YYYY-MM-DD') DESC;
+            """
+            rows = app.db.execute(query, user_id=user_id)
+            return [{'date': row[0]} for row in rows]
+        
+        else:
+            return []
+        
+
+    @staticmethod
+    def get_filtered_purchases(user_id, filter_type, filter_value):
+        # 构建基础查询
+        query_base = """
+            SELECT OI.productid, P.name AS product_name, OI.brought_price, OI.quantity, 
+            TO_CHAR(O.time_brought, 'YYYY-MM-DD HH24:MI:SS') AS order_time, O.order_status, O.id
+            FROM Orders O
+            JOIN OrderItems OI ON O.id = OI.orderid
+            JOIN Products P ON OI.productid = P.id
+            WHERE O.userid = :user_id
+        """
+        
+        # 添加针对不同筛选类型的条件
+        if filter_type == "item":
+            query = query_base + " AND P.name = :filter_value ORDER BY P.name;"
+        elif filter_type == "seller":
+            query = """
+            SELECT OI.productid, P.name AS product_name, OI.brought_price, OI.quantity,
+            TO_CHAR(O.time_brought, 'YYYY-MM-DD HH24:MI:SS') AS order_time, O.order_status, O.id
+            FROM Orders O
+            JOIN OrderItems OI ON O.id = OI.orderid
+            JOIN Products P ON OI.productid = P.id
+            JOIN Users U ON OI.sellerid = U.id
+            WHERE O.userid = :user_id AND U.id = :filter_value AND U.isSeller = TRUE
+        """
+        elif filter_type == "date":
+            query = query_base + " AND TO_CHAR(O.time_brought, 'YYYY-MM-DD') = :filter_value ORDER BY O.time_brought DESC;"
+        else:
+            return []  # 如果筛选类型不匹配，则返回空列表
+
+        # 执行查询
+        rows = app.db.execute(query, user_id=user_id, filter_value=filter_value)
+        return [{
+            'product_id': row[0],
+            'product_name': row[1],
+            'brought_price': row[2],
+            'quantity': row[3],
+            'order_time': row[4],
+            'order_status': row[5],
+            'oid':row[6]
+        } for row in rows]
+
+    @staticmethod
+    def get_client_item(user_id):
+        query = """
+        SELECT 
+            P.name AS product_name,
+            OI.quantity,
+            OI.brought_price,
+            O.time_brought AS order_time,
+            OI.fulfilled,
+            OI.id
+        FROM Orders O
+        JOIN OrderItems OI ON O.id = OI.orderid
+        JOIN Products P ON OI.productid = P.id
+        WHERE OI.sellerid = :user_id
+        ORDER BY O.time_brought DESC;
+        """
+        rows = app.db.execute(query, user_id=user_id)
+        client_items = [{'product_name': row[0], 'quantity': row[1], 'brought_price': row[2], 'order_time': row[3], 'order_status':row[4], 'orderitem_id':row[5]} for row in rows]
+        return client_items
+
+
+    @staticmethod
+    def get_buyerid_by_itemid(item_id):
+        query = """
+        SELECT 
+            O.userid
+        FROM Orders O
+        JOIN OrderItems OI ON O.id = OI.orderid
+        WHERE OI.id = :item_id;
+        """
+        rows = app.db.execute(query, item_id=item_id)
+        if rows:
+            return rows[0][0]
+        else:
+            return None
     
+
+    @staticmethod
+    def fulfill_orderitem(item_id):
+        query = """
+        UPDATE OrderItems
+        SET fulfilled = true
+        WHERE id = :item_id;
+        """
+        rows = app.db.execute(query, item_id=item_id)
+        
+
+    @staticmethod
+    def get_order_id(item_id):
+        query = """
+        SELECT 
+            OI.orderid
+        FROM OrderItems OI
+        WHERE OI.id = :item_id;
+        """
+        rows = app.db.execute(query, item_id=item_id)
+        if rows:
+            return rows[0][0]
+        else:
+            return None
+
+
+    @staticmethod
+    def get_in_process_num(oid):
+        query = """
+        SELECT 
+            count(*)
+        FROM OrderItems
+        WHERE orderid = :oid
+        AND fulfilled = false;
+        """
+        rows = app.db.execute(query, oid=oid)
+        if rows:
+            return rows[0][0]
+        else:
+            return None
+        
+    @staticmethod
+    def create_order_item(orderid, productid, sellerid, quantity, brought_price):
+        query = """
+        INSERT INTO OrderItems (orderid, productid, sellerid, quantity, brought_price)
+        VALUES (:orderid, :productid, :sellerid, :quantity, :brought_price)
+        RETURNING id;
+        """
+        rows = app.db.execute(query, orderid=orderid, productid=productid, sellerid=sellerid, quantity=quantity, brought_price=brought_price)
+        return rows[0][0]
+
+
+    @staticmethod
+    def get_order_items_by_order_id(order_id):
+        query = """
+        SELECT 
+            OI.id,
+            P.name AS product_name,
+            OI.quantity,
+            OI.brought_price,
+            OI.fulfilled,
+            P.image AS product_image
+        FROM OrderItems OI
+        JOIN Products P ON OI.productid = P.id
+        WHERE OI.orderid = :order_id;
+        """
+        rows = app.db.execute(query, order_id=order_id)
+        order_items = [{'id': row[0], 'product_name': row[1], 
+                        'quantity': row[2], 
+                        'brought_price': row[3], 
+                        'fulfilled': row[4], 
+                        'product_image': row[5]} for row in rows]
+        return order_items
+
+
+    def get_purchases_by_category(user_id):
+        query = """
+        SELECT C.name AS category_name, SUM(OI.quantity) AS total_quantity, SUM(OI.brought_price * OI.quantity) AS total_amount
+        FROM Orders O
+        JOIN OrderItems OI ON O.id = OI.orderid
+        JOIN Products P ON OI.productid = P.id
+        JOIN Categories C ON P.categoryid = C.id
+        WHERE O.userid = :user_id
+        GROUP BY C.name
+        """
+        rows = app.db.execute(query, user_id=user_id)
+        return [{
+        'category_name': row[0],
+        'total_quantity': row[1],
+        'total_amount': row[2]
+        } for row in rows]
