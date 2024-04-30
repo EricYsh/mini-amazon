@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="highlight">
+    <div class="h1t">Top Five Product</div>
+</div>
+
+<div class="products-container-tr">
+    {% for product in products %}
+    <div class="product-card-tr">
+        <img class="product-image-tr" src="{{ product.image }}" alt="{{ product.name }}"
+            onclick="window.location='{{ url_for('product.product_detail', product_id=product.id) }}';"
+            onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/default.gif') }}';">
+        <div class="product-info-tr">
+            <h5 class="product-name-tr">{{ product.name }}</h5>
+            <p class="product-description-tr">{{ product.description }}</p>
+
+            {% if current_user.is_authenticated %}
+            <form action="{{ url_for('cart.cart_add', product_id=product.id) }}" method="POST">
+                <input class="btn btn-primary-tr" type="submit" value="Add to cart"/>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

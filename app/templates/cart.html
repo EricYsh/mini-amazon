@@ -20,17 +20,21 @@
             <tr>
                 <th scope="row">{{ item.name }}</th>
                 <td><img src="{{ item.image }}" alt="{{ item.name }}" class="img-fluid" style="max-width: 100px;"></td>
-                <td>${{ item.price }}</td>
-                <td>
+                <td class="item-price">${{ item.price }}</td>
+                <!-- <td>
                   <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1">
+                </td> -->
+                <td>
+                    <button type="button" class="btn btn-light btn-sm quantity-change" data-operation="decrement" data-cartid="{{ item.cartid }}">-</button>
+                    <span class="mx-2">{{ item.quantity }}</span>
+                    <button type="button" class="btn btn-light btn-sm quantity-change" data-operation="increment" data-cartid="{{ item.cartid }}">+</button>
                 </td>
                 <td>
-                    <!-- <a href="{{ url_for('cart.cart_add_saved_for_later', product_id=item.productid) }}" class="btn btn-info btn-sm">Save for Later</a> -->
-                    <!-- <a href="{{ url_for('cart.remove', cart_id=item.cartid) }}" class="btn btn-danger btn-sm">Remove</a> -->
                     <form method="POST" action="{{ url_for('cart.cart_and_save') }}">
                       <input type="hidden" name="cart_id" value="{{ item.cartid }}">
                       <input type="hidden" name="in_cart" value="true">
                       <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
+                      <input type="hidden" name="quantity" value="{{ item.quantity }}">
                       <button type="submit" class="btn btn-info btn-sm">Save for Later</button>
                     </form>
                     <form method="POST" action="{{ url_for('cart.remove') }}">
@@ -44,8 +48,8 @@
             {% endfor %}
             <tr>
               <th colspan="3">Total</th>
-              <td>{{ total_quantity }}</td>
-              <td>${{ total_price }}</td>
+              <td id="totalQuantity">Total Quantity: 0</td>
+              <td id="totalPrice">Total Price: $0.00</td>
             </tr>
             <tr>
               <td></td>
@@ -53,7 +57,9 @@
               <td></td>
               <td></td>
               <td colspan="5">
-                <a href="{{ url_for('cart.checkout') }}" class="btn btn-success">Proceed to Checkout</a>
+                <form action="{{ url_for('userorder.checkout') }}" method="POST">
+                    <button type="submit" class="btn btn-success">Proceed to Checkout</button>
+                </form>
               </td>
             </tr>
         </tbody>
@@ -69,6 +75,7 @@
                 <th scope="col">Price</th>
                 <th scope="col">Quantity</th>
                 <th scope="col">Actions</th>
+                <th scope="col">Seller ID</th>
             </tr>
         </thead>
         <tbody>
@@ -78,13 +85,14 @@
                 <td><img src="{{ item.image }}" alt="{{ item.name }}" class="img-fluid" style="max-width: 100px;"></td>
                 <td>${{ item.price }}</td>
                 <td>
-                  <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1">
+                  <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1" readonly>
                 </td>
                 <td>
                     <form method="POST" action="{{ url_for('cart.cart_and_save') }}">
                       <input type="hidden" name="cart_id" value="{{ item.cartid }}">
                       <input type="hidden" name="in_cart" value="false">
                       <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
+                      <input type="hidden" name="quantity" value="{{ item.quantity }}">
                       <button type="submit" class="btn btn-primary btn-sm">Add Back to Cart</button>
                     </form>
                     <form method="POST" action="{{ url_for('cart.remove') }}">
@@ -92,6 +100,7 @@
                       <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                   </form>
                 </td>
+                <td>{{ item.sellerid }}</td>
             </tr>
             {% else %}
             <tr><td colspan="5">No items saved for later.</td></tr>
@@ -104,4 +113,70 @@
     </div>
     {% endif %}
 </div>
+
+
+<script type="text/javascript">
+    function updateTotals() {
+        let totalQuantity = 0;
+        let totalPrice = 0;
+        document.querySelectorAll('tr').forEach(row => {
+            const quantitySpan = row.querySelector('span');
+            if (quantitySpan) {
+                const quantity = parseInt(quantitySpan.textContent);
+                const price = parseFloat(row.querySelector('.item-price').textContent.replace('$', ''));
+                totalQuantity += quantity;
+                totalPrice += quantity * price;
+            }
+        });
+        document.getElementById('totalQuantity').textContent = 'Total Quantity: ' + totalQuantity;
+        document.getElementById('totalPrice').textContent = 'Total Price: $' + totalPrice.toFixed(2);
+    }
+    
+    window.onload = function() {
+        updateTotals(); // Calculate initial totals
+        const quantityChangeButtons = document.querySelectorAll('.quantity-change');
+    
+        quantityChangeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const operation = this.getAttribute('data-operation');
+                const cartId = this.getAttribute('data-cartid');
+                const quantitySpan = this.parentElement.querySelector('span');
+                let newQuantity = parseInt(quantitySpan.textContent);
+    
+                if (operation === 'increment') {
+                    newQuantity++;
+                    updateQuantity(cartId, newQuantity, quantitySpan);
+                } else if (operation === 'decrement') {
+                    if (newQuantity > 1) {
+                        newQuantity--;
+                        updateQuantity(cartId, newQuantity, quantitySpan);
+                    } else {
+                        alert("Quantity cannot be less than 1.");
+                    }
+                }
+            });
+        });
+    };
+    
+    function updateQuantity(cartId, newQuantity, quantitySpan) {
+        fetch(`/cart/update_quantity/${cartId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({quantity: newQuantity})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                quantitySpan.textContent = newQuantity;
+                updateTotals(); // Update totals after change
+            } else {
+                alert('Failed to update quantity.');
+            }
+        });
+    }
+    </script>
+    
+
 {% endblock %}

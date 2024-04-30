@@ -32,7 +32,7 @@ class SellerInventory:
     @staticmethod
     def get_all_by_uid(uid):
         rows = app.db.execute('''
-SELECT p.name, p.image, pri.price, s.quantity
+SELECT p.name, p.image, pri.price, s.quantity, s.id
 FROM SellerInventories AS s
 JOIN Products AS p ON s.productid = p.id
 JOIN (
@@ -44,7 +44,7 @@ WHERE s.sellerid = :uid;
 ''',
                         uid=uid
         )
-        inventory_rows = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3]} for row in rows]
+        inventory_rows = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3], 'id': row[4]} for row in rows]
         return inventory_rows
 
 
@@ -138,34 +138,60 @@ WHERE s.sellerid = :uid;
 
 
 
+
+
+
     @staticmethod
-    def edit_product(uid, name, description, image, category):
+    def edit_product(product_id, price, quantity):
         session = Session()
         try:
-            existing_product = session.execute(
-                text('SELECT id FROM Products WHERE name = :name AND categoryid = :category'),
-                {'name': name, 'category': category}
-            ).fetchone()
-
-            if existing_product:
-                session.execute(
-                    text('''
-                    UPDATE Products
-                    SET description = :description, image = :image
-                    WHERE id = :id
-                    '''),
-                    {'description': description, 'image': image, 'id': existing_product[0]}
-                )
-                print("Product updated:", name)
-            else:
-                print("Product does not exist:", name)
-                return "Product not found."
+            session.execute(
+                text("""
+                    UPDATE SellerInventories
+                    SET quantity = :quantity
+                    WHERE id = :product_id
+                """),
+                {'product_id': product_id, 'quantity': quantity}
+            )
+            session.execute(
+                text("""
+                    INSERT INTO PriceHistory (inventoryid, price, time_changed)
+                    VALUES (:inventoryid, :price, :time_changed)
+                """),
+                {'inventoryid': product_id, 'price': price, 'time_changed': datetime.datetime.utcnow()}
+            )
 
             session.commit()
-            return "Product successfully updated."
         except Exception as e:
             session.rollback()
-            print("Error during updating product:", e)
-            return "An error occurred. Transaction has been rolled back."
+            print(str(e))
         finally:
             session.close()
+
+    @staticmethod
+    def get_quantity_by_id(id):
+        row = app.db.execute('''
+                        SELECT quantity
+                        FROM SellerInventories
+                        WHERE id = :id;
+                        ''',
+                        id=id
+        )
+        print("row in get quantity by id:", row[0][0])
+        return row[0][0]
+    
+    @staticmethod
+    def update_inventory_quantity(sellerinventoryid, quantity):
+        try:
+            app.db.execute('''
+                UPDATE SellerInventories
+                SET quantity = :quantity
+                WHERE id = :sellerinventoryid
+                ''',
+                quantity=quantity,
+                sellerinventoryid=sellerinventoryid
+            )
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
