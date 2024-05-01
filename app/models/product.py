@@ -20,6 +20,7 @@ class Product:
         self.price = price
         self.rating = rating
 
+    # Retrieves a product by its ID
     @staticmethod
     def get(id):
         rows = app.db.execute('''
@@ -39,7 +40,7 @@ class Product:
             ''',)
         return [Product(*row) for row in rows]
     
-
+    # Returns the total number of products
     @staticmethod
     def get_product_number():
         row = app.db.execute('''
@@ -48,7 +49,7 @@ class Product:
             ''',)
         return row[0][0]
     
-
+    # Retrieves a page of the most expensive products
     @staticmethod
     def get_expensive_products_paged(page, limit):
         offset = (page - 1) * limit
@@ -74,7 +75,7 @@ class Product:
         return [Product(*row) for row in rows]
 
     
-
+    # Searches products by name with optional filters for category, rating, and price
     @staticmethod
     def search_products_by_name(search, category_id=None, min_rating=None, min_price=None, max_price=None):
         query_params = {
@@ -119,7 +120,7 @@ class Product:
         rows = app.db.execute(query, **query_params)
         return [Product(*row) for row in rows]
 
-        
+    # Similar to search_products_by_name, but searches within the product description
     @staticmethod
     def search_products_by_description(search, category_id=None, min_rating=None, min_price=None, max_price=None):
         query_params = {
@@ -162,9 +163,9 @@ class Product:
             ORDER BY min_price ASC
             '''
         rows = app.db.execute(query, **query_params)
-        return [Product(*row) for row in rows]
+        return [Product(*row) for row in rows] # return the products if found
 
-
+    # Retrieves a product by its ID along with price and average rating
     @staticmethod
     def get_product_by_id(product_id):
         rows = app.db.execute('''
@@ -187,9 +188,11 @@ class Product:
                             product_id=product_id)
         if rows:
             row = rows[0]
-            return Product(*row)
+            return Product(*row) # return the product if found
         else:
             return None
+        
+    # get all reviews of a product
     @staticmethod
     def get_reviews(product_id):
         reviews = app.db.execute('''
@@ -203,7 +206,7 @@ class Product:
 
         return reviews if reviews is not None else None
 
-
+    # get all sellers of a product
     @staticmethod
     def get_sellers(product_id):
         sellers = app.db.execute('''
@@ -223,10 +226,10 @@ class Product:
             WHERE si.productid = :product_id
             ''',
             product_id=product_id)
-        return sellers if sellers is not None else None
+        return sellers if sellers is not None else None # return None if no sellers found
 
 
-        
+    # Get all products in a category
     @staticmethod
     def get_all_categories():
         rows = app.db.execute('''
@@ -237,7 +240,7 @@ class Product:
         return rows  
 
 
-
+    # get top 5 products using sql query
     @staticmethod
     def get_topfive_products():
         rows = app.db.execute('''
