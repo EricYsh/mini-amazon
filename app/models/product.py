@@ -207,7 +207,7 @@ class Product:
     @staticmethod
     def get_sellers(product_id):
         sellers = app.db.execute('''
-            SELECT u.id, u.firstname, u.lastname, u.email, si.quantity, ph.price AS current_price
+            SELECT u.id, u.firstname, u.lastname, u.email, si.quantity, ph.price AS current_price, si.id AS inventory_id
             FROM Users u
             JOIN SellerInventories si ON u.id = si.sellerid
             JOIN (
