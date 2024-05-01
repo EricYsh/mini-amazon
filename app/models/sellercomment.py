@@ -36,3 +36,28 @@ class SellerComment:
                         'id': row[4]
                      } for row in results]
         return comments
+    
+    @staticmethod
+    def get_comment_by_id(comment_id):
+        sqlstr = """
+        SELECT id, sellerid, userid, comment, date_commented, rate
+        FROM SellerComments
+        WHERE id = :comment_id;
+        """
+        result = app.db.execute(sqlstr, comment_id=comment_id)
+        if result:
+            return SellerComment(*result[0])
+        return None
+
+    def update(self):
+        sqlstr = """
+        UPDATE SellerComments
+        SET comment = :comment, rate = :rate, date_commented = current_timestamp
+        WHERE id = :id;
+        """
+        app.db.execute(sqlstr, id=self.id, comment=self.comment, rate=self.rate)
+
+    @staticmethod
+    def delete_comment(comment_id):
+        sqlstr = "DELETE FROM SellerComments WHERE id = :comment_id;"
+        app.db.execute(sqlstr, comment_id=comment_id)
