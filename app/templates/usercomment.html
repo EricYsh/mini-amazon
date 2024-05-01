@@ -22,18 +22,12 @@
         <td>{{ comment.comment }}</td>
         <td>{{ comment.rate }}</td>
         <td>{{ comment.time_commented }}</td>
-        <td><button class="btn btn-primary">Edit</button></td>
+        <td><a href="{{ url_for('usercomment.edit_product_comment', comment_id=comment.id) }}" class="btn btn-primary">Edit</a></td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your comments!</p>
-{% endif %}
-
 <br><br>
-
-{% if current_user.is_authenticated %}
 <h2>Your Comment for Seller:</h2>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-custom" style="background-color: #00539B; color: rgb(8, 8, 8);">
@@ -52,13 +46,13 @@
         <td>{{ comment.comment }}</td>
         <td>{{ comment.rate }}</td>
         <td>{{ comment.date_commented }}</td>
-        <td><button class="btn btn-primary">Edit</button></td>
+        <td><a href="{{ url_for('usercomment.edit_seller_comment', comment_id=comment.id) }}" class="btn btn-primary">Edit</a></td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p>
+<p><a href="{{ url_for('users.login') }}">Log in</a> to view your comments.</p>
 {% endif %}
 
 {% endblock %}
