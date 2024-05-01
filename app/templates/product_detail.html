@@ -89,6 +89,7 @@
     {% endfor %}
 </div>
 
+{% if current_user.is_authenticated %}
 <form action="{{ url_for('product.add_comment') }}" method="POST">
   <label for="inputText">Comment: </label>
   <input type="text" class="inputcomment" name="comment"><br>
@@ -103,7 +104,7 @@
 
   <button type="submit">Submit</button>
 </form>
-
+{% endif %}
 </div>
 <script>
   document.addEventListener('DOMContentLoaded', (event) => {

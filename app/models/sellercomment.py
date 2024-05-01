@@ -23,7 +23,7 @@ class SellerComment:
     @staticmethod
     def get_seller_comments_by_user(userid):
         sqlstr = """
-        SELECT comment, rate, date_commented, sellerid
+        SELECT id, comment, rate, date_commented, sellerid
         FROM SellerComments
         WHERE userid = :userid
         ORDER BY date_commented DESC
