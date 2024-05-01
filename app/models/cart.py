@@ -45,18 +45,18 @@ class Cart:
     @staticmethod
     def get_all_by_uid(uid, saved_for_later=False):
         rows = app.db.execute('''
-SELECT p.name, p.image, ph.price, c.quantity, p.id, c.id, si.id, si.sellerid
-FROM Carts c
-JOIN SellerInventories si ON c.sellerinventoryid = si.id
-JOIN Products p ON si.productid = p.id
-JOIN PriceHistory ph ON ph.inventoryid = si.id
-JOIN (
-    SELECT inventoryid, MAX(time_changed) AS max_time
-    FROM PriceHistory
-    GROUP BY inventoryid
-) ph2 ON ph.inventoryid = ph2.inventoryid AND ph.time_changed = ph2.max_time
-WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
-''',
+                SELECT p.name, p.image, ph.price, c.quantity, p.id, c.id, si.id, si.sellerid
+                FROM Carts c
+                JOIN SellerInventories si ON c.sellerinventoryid = si.id
+                JOIN Products p ON si.productid = p.id
+                JOIN PriceHistory ph ON ph.inventoryid = si.id
+                JOIN (
+                    SELECT inventoryid, MAX(time_changed) AS max_time
+                    FROM PriceHistory
+                    GROUP BY inventoryid
+                ) ph2 ON ph.inventoryid = ph2.inventoryid AND ph.time_changed = ph2.max_time
+                WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
+                ''',
                               uid=uid,
                               saved_for_later=saved_for_later)
         # Create a list of dictionaries for each row in the query result
@@ -66,21 +66,24 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
     
     # a method for entering a new object into the database
     @staticmethod
-    def add_cart_item(userid, quantity, saved_for_later, productid):
+    def add_cart_item(userid, quantity, saved_for_later, productid, sellerinventoryid):
         try:
             # First, find the sellerinventoryid and sellerid for the given productid
             seller_inventory_row = app.db.execute("""
-        SELECT si.id, si.sellerid
-        FROM SellerInventories si
-        JOIN Products p ON si.productid = p.id
-        WHERE p.id = :productid
-        """, productid=productid)
+                    SELECT si.id, si.sellerid
+                    FROM SellerInventories si
+                    JOIN Products p ON si.productid = p.id
+                    WHERE p.id = :productid
+                    """, productid=productid)
 
-            if len(seller_inventory_row) > 1:
+            if len(seller_inventory_row) < 1:
+                print("Product ID:", productid)
+                print("Multiple seller inventory found for the given product.")
+                print(seller_inventory_row)
                 print("No seller inventory found for the given product.")
                 return None, False
         
-            sellerinventoryid, sellerid = seller_inventory_row[0]
+            # sellerinventoryid, sellerid = seller_inventory_row[0]
 
             print('Found sellerinventoryid:', sellerinventoryid, 'for productid:', productid)
                   
@@ -120,21 +123,30 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
             return False
         
     @staticmethod
-    def move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id, quantity, userid):
+    def move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id, quantity, userid, productid):
         try:
             # Check if the cart item exists
             existing_item = app.db.execute("""
-            SELECT id, quantity, sellerinventoryid
-            FROM Carts
-            WHERE userid = :userid AND saved_for_later = :in_cart
-            """, userid=userid, in_cart=in_cart)
-            existing_cart_id, existing_quantity, sellerinventoryid = existing_item[0]
+                SELECT c.id, c.quantity, c.sellerinventoryid
+                FROM Carts AS c
+                JOIN SellerInventories si ON c.sellerinventoryid = si.id
+                JOIN Products p ON si.productid = p.id
+                WHERE userid = :userid AND saved_for_later = :in_cart AND p.id = :productid
+                """, userid=userid, in_cart=in_cart, productid=productid)
+            # Initialize variables with default values
+            existing_cart_id = None
+            existing_quantity = None
+            sellerinventoryid = None
+            print(f'Existing cart item found or not: {existing_item}')
+            # Check if existing_item is not empty
+            if existing_item:
+                existing_cart_id, existing_quantity, sellerinventoryid = existing_item[0]
             print(f'Existing cart item found with ID {existing_cart_id} and quantity {existing_quantity}')
             print(f'Adding {quantity} to existing quantity {existing_quantity}')
             ## If the item already exists in the cart, MEANWHILE, they are belong to the same seller, update the quantity
             print(f'Existing sellerinventoryid: {sellerinventoryid}, seller_inventory_id: {seller_inventory_id}')
             print(type(sellerinventoryid), type(seller_inventory_id))
-            if sellerinventoryid == int(seller_inventory_id):
+            if existing_item and sellerinventoryid == int(seller_inventory_id):
                 print('Same seller, updating quantity')
                 # Existing item found, update the quantity
                 new_quantity = existing_quantity + int(quantity)
@@ -144,7 +156,12 @@ WHERE c.userid = :uid AND c.saved_for_later = :saved_for_later;
                     SET quantity = :quantity, saved_for_later = :saved_for_later
                     WHERE id = :cart_id
                     """, quantity=new_quantity, cart_id=existing_cart_id, saved_for_later=in_cart)
-            else:
+                # Remove the item from the cart
+                app.db.execute("""
+                    DELETE FROM Carts
+                    WHERE id = :cart_id
+                    """, cart_id=cart_id)
+            elif not existing_item:
                 # the item does not exist in the cart, OR it belongs to anther seller, add it to the cart
                 app.db.execute("""
                     UPDATE Carts
