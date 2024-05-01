@@ -48,25 +48,6 @@ def edit_product_comment(comment_id):
 
     return render_template('edit_comment.html', form=form, comment_id=comment_id)
 
-
-@bp.route('/edit_seller_comment/<int:comment_id>', methods=['GET', 'POST'])
-@login_required
-def edit_seller_comment(comment_id):
-    comment = SellerComment.get_comment_by_id(comment_id)
-    if comment.user_id != current_user.id:
-        flash('Unauthorized access.', 'danger')
-        return redirect(url_for('usercomment.usercomments'))
-
-    form = EditSellerCommentForm(obj=comment)
-    if form.validate_on_submit():
-        comment.comment = form.comment.data
-        comment.rate = form.rate.data
-        comment.save()
-        flash('Comment updated successfully.', 'success')
-        return redirect(url_for('usercomment.usercomments'))
-
-    return render_template('edit_comment.html', form=form, comment_id=comment_id)
-
 @bp.route('/delete_product_comment/<int:comment_id>', methods=['POST'])
 @login_required
 def delete_product_comment(comment_id):
@@ -83,8 +64,31 @@ def delete_product_comment(comment_id):
     flash('Comment deleted successfully.', 'success')
     return redirect(url_for('usercomment.usercomments'))
 
+@bp.route('/edit_seller_comment/<int:comment_id>', methods=['GET', 'POST'])
+@login_required
+def edit_seller_comment(comment_id):
+    comment = SellerComment.get_comment_by_id(comment_id)
+    if not comment:
+        flash('No comment found.', 'error')
+        return redirect(url_for('usercomment.usercomments'))
+
+    form = EditSellerCommentForm(obj=comment)
+    if form.validate_on_submit():
+        comment.comment = form.comment.data
+        comment.rate = form.rate.data
+        comment.update()
+        flash('Comment updated successfully.', 'success')
+        return redirect(url_for('usercomment.usercomments'))
+
+    # Ensure 'comment' is passed to the template here
+    return render_template('edit_seller_comment.html', form=form, comment=comment)
+
+
 @bp.route('/delete_seller_comment/<int:comment_id>', methods=['POST'])
 @login_required
 def delete_seller_comment(comment_id):
-    return None
+    SellerComment.delete_comment(comment_id)
+    flash('Comment deleted successfully.', 'success')
+    return redirect(url_for('usercomment.usercomments'))
+
     
