@@ -23,7 +23,16 @@ engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
 class SellerInventory:
+    # Constructor for the SellerInventory class
     def __init__(self, id, sellerid, productid, quantity):
+        """
+        Initializes a new instance of the SellerInventory class.
+        Parameters:
+            id (int): The unique identifier for the inventory record.
+            sellerid (int): The identifier for the seller owning this inventory.
+            productid (int): The identifier for the product in this inventory.
+            quantity (int): The current quantity of the product in this inventory.
+        """
         self.id = id
         self.sellerid = sellerid
         self.productid = productid
@@ -31,6 +40,14 @@ class SellerInventory:
 
     @staticmethod
     def get_all_by_uid(uid):
+        """
+        Retrieves all inventory entries for a given user (seller).
+        Parameters:
+            uid (int): The unique identifier of the seller.
+        Returns:
+            list of dicts: A list of dictionaries containing product name, image, price, quantity, and inventory ID.
+        """
+        # Query to get all inventory items for a given user ID
         rows = app.db.execute('''
 SELECT p.name, p.image, pri.price, s.quantity, s.id
 FROM SellerInventories AS s
@@ -45,11 +62,25 @@ WHERE s.sellerid = :uid;
                         uid=uid
         )
         inventory_rows = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3], 'id': row[4]} for row in rows]
-        return inventory_rows
+        return inventory_rows # Return the formatted results as a list of dictionaries
 
 
     @staticmethod
     def insert_new_product(uid, name, description, image, price, quantity, category):
+        """
+        Inserts a new product into the database or updates the inventory if the product already exists.
+        Parameters:
+            uid (int): The seller's user ID.
+            name (str): Name of the product.
+            description (str): Description of the product.
+            image (str): Image URL or path for the product.
+            price (float): Price of the product.
+            quantity (int): Initial stock quantity of the product.
+            category (int): Category ID of the product.
+        Returns:
+            str: '1' if the operation is successful, '0' otherwise.
+        """
+         # Method to insert a new product or update inventory if it already exists
         session = Session()
         try:
             existing_product = session.execute(
@@ -58,6 +89,7 @@ WHERE s.sellerid = :uid;
             ).fetchone()
             # print("existing_product:", existing_product)
             if not existing_product:
+                # Insert new product if it does not exist
                 result = session.execute(
                     text('''
                     INSERT INTO Products (name, description, image, categoryid)
@@ -68,6 +100,7 @@ WHERE s.sellerid = :uid;
                 )
                 product_id = result.fetchone()[0]
             else:
+                # If product exists, use the existing product ID
                 product_id = existing_product[0]
                 print("product_id:", product_id)
             existing_inventory = session.execute(
@@ -143,6 +176,13 @@ WHERE s.sellerid = :uid;
 
     @staticmethod
     def edit_product(product_id, price, quantity):
+        """
+        Edits an existing product's quantity and price in the inventory.
+        Parameters:
+            product_id (int): The ID of the product in the inventory.
+            price (float): New price of the product.
+            quantity (int): New quantity of the product.
+        """
         session = Session()
         try:
             session.execute(
@@ -170,6 +210,13 @@ WHERE s.sellerid = :uid;
 
     @staticmethod
     def get_quantity_by_id(id):
+        """
+        Retrieves the quantity of a product by its inventory ID.
+        Parameters:
+            id (int): The inventory ID of the product.
+        Returns:
+            int: The quantity of the product.
+        """
         row = app.db.execute('''
                         SELECT quantity
                         FROM SellerInventories
@@ -182,6 +229,14 @@ WHERE s.sellerid = :uid;
     
     @staticmethod
     def update_inventory_quantity(sellerinventoryid, quantity):
+        """
+        Updates the quantity of an existing inventory record.
+        Parameters:
+            sellerinventoryid (int): The ID of the inventory record.
+            quantity (int): The new quantity to set.
+        Returns:
+            bool: True if the update was successful, False otherwise.
+        """
         try:
             app.db.execute('''
                 UPDATE SellerInventories
