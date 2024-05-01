@@ -23,6 +23,7 @@ class EditSellerCommentForm(FlaskForm):
 def usercomments():
     product_comments = ProductComment.get_product_comments_by_user(current_user.id)
     seller_comments = SellerComment.get_seller_comments_by_user(current_user.id)
+    print(product_comments)
     return render_template('usercomment.html', product_comments=product_comments, seller_comments=seller_comments)
 
 @bp.route('/edit_product_comment/<int:comment_id>', methods=['GET', 'POST'])
