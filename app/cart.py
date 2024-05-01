@@ -2,12 +2,8 @@ from flask import render_template
 from flask_login import current_user
 from flask import redirect, url_for, request, flash
 
-from .models.product import Product
 from .models.cart import Cart
 
-from .models.orderitem import OrderItem
-from .models.user import User
-from .models.order import Order
 
 from flask import Blueprint
 bp = Blueprint('cart', __name__)
@@ -34,8 +30,10 @@ def cart_add(product_id):
     if current_user.is_authenticated:
         # Retrieve quantity from the form data
         quantity = request.form.get('quantity', type=int, default=1)
-        success = Cart.add_cart_item(current_user.id, quantity, False, product_id)
-        print("Add successfully", success)
+        inventory_id = request.form.get('inventory_id', type=int)
+        print("inventory id", inventory_id)
+        success = Cart.add_cart_item(current_user.id, quantity, False, product_id, inventory_id)
+        print("Add successfully or not?", success)
     else:
         # TODO redirect it to an error page
         return None
@@ -48,8 +46,9 @@ def cart_add_saved_for_later(product_id):
     # add a product to the current user's cart's saved for later list
     if current_user.is_authenticated:
         print("Received form data:", request.form)
+        inventory_id = request.form.get('inventory_id', type=int)
         quantity = request.form.get('quantity', type=int, default=1)
-        success = Cart.add_cart_item(current_user.id, quantity, True, product_id)
+        success = Cart.add_cart_item(current_user.id, quantity, True, product_id, inventory_id)
         print("Save for later successfully", success)
     else:
         # TODO redirect it to an error page
@@ -63,11 +62,12 @@ def cart_and_save():
     in_cart = request.form.get('in_cart')
     seller_inventory_id = request.form.get('sellerinventoryid')
     quantity = request.form.get('quantity')
+    product_id = request.form.get('product_id')
     print("Received form data:", request.form)
     if cart_id is None:
         flash('Invalid request.', 'error')
     
-    success = Cart.move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id, quantity, current_user.id)
+    success = Cart.move_to_from_saved_for_later(cart_id, in_cart, seller_inventory_id, quantity, current_user.id, product_id)
     if success:
         flash('Item moved.', 'success')
     else:
