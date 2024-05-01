@@ -36,9 +36,9 @@ ORDER BY time_brought DESC
     @staticmethod
     def set_fulfillment(oid):
         rows = app.db.execute('''
-UPDATE order
-SET orderstatus = 'fulfilled'
-WHERE id = oid
+UPDATE orders
+SET order_status = 'fulfilled'
+WHERE id = :oid
 ''',
                               oid=oid)
 
