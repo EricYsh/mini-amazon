@@ -474,8 +474,8 @@ input[type="number"]::-webkit-outer-spin-button {
 .inputcomment {
     width: 1500px;  
     height: 40px; 
-    font-size: 16px; 
-    padding: 4px; 
+    font-size: 16px;
+    padding: 4px;
 }
 
 .star-rating1 {
