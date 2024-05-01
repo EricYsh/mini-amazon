@@ -105,11 +105,12 @@
                         </div>
 
                         <p class="product-price">$ {{ product.price }}</p>
-                        {% if current_user.is_authenticated %}
+                        <!-- {% if current_user.is_authenticated %}
                         <form action="{{ url_for('cart.cart_add', product_id=product.id) }}" method="POST">
+                            <input type="hidden" name="inventory_id" value="{{ product.inventory_id }}">
                             <input class="btn btn-primary" type="submit" value="Add to cart"/>
                         </form>
-                        {% endif %}
+                        {% endif %} -->
                     </div>
                 </div>
                 {% endfor %}

@@ -21,9 +21,6 @@
                 <th scope="row">{{ item.name }}</th>
                 <td><img src="{{ item.image }}" alt="{{ item.name }}" class="img-fluid" style="max-width: 100px;"></td>
                 <td class="item-price">${{ item.price }}</td>
-                <!-- <td>
-                  <input type="number" name="quantity" class="quantity-input" value="{{ item.quantity}}" min="1">
-                </td> -->
                 <td>
                     <button type="button" class="btn btn-light btn-sm quantity-change" data-operation="decrement" data-cartid="{{ item.cartid }}">-</button>
                     <span class="mx-2">{{ item.quantity }}</span>
@@ -35,6 +32,7 @@
                       <input type="hidden" name="in_cart" value="true">
                       <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
                       <input type="hidden" name="quantity" value="{{ item.quantity }}">
+                      <input type="hidden" name="product_id" value="{{ item.productid }}">
                       <button type="submit" class="btn btn-info btn-sm">Save for Later</button>
                     </form>
                     <form method="POST" action="{{ url_for('cart.remove') }}">
@@ -93,6 +91,7 @@
                       <input type="hidden" name="in_cart" value="false">
                       <input type="hidden" name="sellerinventoryid" value="{{ item.sellerinventoryid }}">
                       <input type="hidden" name="quantity" value="{{ item.quantity }}">
+                      <input type="hidden" name="product_id" value="{{ item.productid }}">
                       <button type="submit" class="btn btn-primary btn-sm">Add Back to Cart</button>
                     </form>
                     <form method="POST" action="{{ url_for('cart.remove') }}">
