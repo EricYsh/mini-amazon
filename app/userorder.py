@@ -53,7 +53,7 @@ def checkout():
     for item in cart_items:
         inventory_quantity = SellerInventory.get_quantity_by_id(item['sellerinventoryid'])
         if inventory_quantity < item['quantity']:
-            flash(f"Insufficient inventory for {item.product.name}.", "danger")
+            flash(f"Insufficient inventory for {item['name']}.", "danger")
             return redirect(url_for('cart.cart'))
 
     # All checks passed, proceed with order creation
