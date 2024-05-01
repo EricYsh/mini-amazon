@@ -23,7 +23,7 @@ class SellerComment:
     @staticmethod
     def get_seller_comments_by_user(userid):
         sqlstr = """
-        SELECT comment, rate, date_commented, sellerid
+        SELECT comment, rate, date_commented, sellerid, id
         FROM SellerComments
         WHERE userid = :userid
         ORDER BY date_commented DESC
@@ -32,6 +32,7 @@ class SellerComment:
         results = app.db.execute(sqlstr, userid=userid)
         comments = [{'comment': row[0], 'rate': row[1],
                      'date_commented': row[2],
-                     'sellerid': row[3]
+                     'sellerid': row[3],
+                        'id': row[4]
                      } for row in results]
         return comments
