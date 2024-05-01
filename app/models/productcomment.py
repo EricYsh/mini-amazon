@@ -24,27 +24,40 @@ class ProductComment:
     @staticmethod
     def get_product_comments_by_user(userid):
         sqlstr = """
-        SELECT comment, rate, time_commented, productid
+        SELECT id, productid, userid, comment, time_commented, rate
         FROM ProductComments
         WHERE userid = :userid
         ORDER BY time_commented DESC
         LIMIT 5;
         """
         results = app.db.execute(sqlstr, userid=userid)
-        comments = [{'comment': row[0], 'rate': row[1],
-                     'time_commented': row[2],
-                     'productid': row[3]
-                     } for row in results]
-        return comments
+        return [ProductComment(*row) for row in results]
 
+    @staticmethod
+    def get_comment_by_id(comment_id):
+        sqlstr = """
+        SELECT id, productid, userid, comment, time_commented, rate
+        FROM ProductComments
+        WHERE id = :comment_id;
+        """
+        result = app.db.execute(sqlstr, comment_id=comment_id)
+        if result:
+            return ProductComment(*result[0])
+        return None
 
+    def update(self):
+        sqlstr = """
+        UPDATE ProductComments
+        SET comment = :comment, rate = :rate, time_commented = current_timestamp
+        WHERE id = :id;
+        """
+        app.db.execute(sqlstr, id=self.id, comment=self.comment, rate=self.rate)
 
     @staticmethod
     def insert_comment(comment, product_id, rating, user_id):
         sqlstr = """
         INSERT INTO ProductComments (productid, userid, comment, rate, time_commented) 
-        VALUES (:product_id, :user_id, :comment, :rating, date_trunc('second', current_timestamp));
+        VALUES (:product_id, :user_id, :comment, :rating, current_timestamp);
         """
-        results = app.db.execute(sqlstr, product_id=product_id, user_id=user_id, comment=comment, rating=rating)
-   
+        app.db.execute(sqlstr, product_id=product_id, user_id=user_id, comment=comment, rating=rating)
 
