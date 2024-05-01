@@ -65,3 +65,19 @@ def edit_seller_comment(comment_id):
         return redirect(url_for('usercomment.usercomments'))
 
     return render_template('edit_comment.html', form=form, comment_id=comment_id)
+
+@bp.route('/delete_product_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def delete_product_comment(comment_id):
+    comment = ProductComment.get_comment_by_id(comment_id)
+    if not comment:
+        flash('No comment found with the given ID.', 'error')
+        return redirect(url_for('usercomment.usercomments'))
+    
+    if comment.userid != current_user.id:
+        flash('Unauthorized access.', 'danger')
+        return redirect(url_for('usercomment.usercomments'))
+
+    ProductComment.delete_comment(comment_id)
+    flash('Comment deleted successfully.', 'success')
+    return redirect(url_for('usercomment.usercomments'))

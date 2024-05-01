@@ -61,3 +61,7 @@ class ProductComment:
         """
         app.db.execute(sqlstr, product_id=product_id, user_id=user_id, comment=comment, rating=rating)
 
+    @staticmethod
+    def delete_comment(comment_id):
+        sqlstr = "DELETE FROM ProductComments WHERE id = :comment_id;"
+        app.db.execute(sqlstr, comment_id=comment_id)

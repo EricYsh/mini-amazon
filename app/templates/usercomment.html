@@ -22,7 +22,12 @@
         <td>{{ comment.comment }}</td>
         <td>{{ comment.rate }}</td>
         <td>{{ comment.time_commented }}</td>
-        <td><a href="{{ url_for('usercomment.edit_product_comment', comment_id=comment.id) }}" class="btn btn-primary">Edit</a></td>
+        <td>
+            <a href="{{ url_for('usercomment.edit_product_comment', comment_id=comment.id) }}" class="btn btn-primary">Edit</a>
+            <form action="{{ url_for('usercomment.delete_product_comment', comment_id=comment.id) }}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</button>
+            </form>
+        </td>
       </tr>
     {% endfor %}
   </tbody>
@@ -46,13 +51,18 @@
         <td>{{ comment.comment }}</td>
         <td>{{ comment.rate }}</td>
         <td>{{ comment.date_commented }}</td>
-        <td><a href="{{ url_for('usercomment.edit_seller_comment', comment_id=comment.id) }}" class="btn btn-primary">Edit</a></td>
+        <td>
+            <a href="{{ url_for('usercomment.edit_seller_comment', comment_id=comment.id) }}" class="btn btn-primary">Edit</a>
+            <form action="{{ url_for('usercomment.delete_seller_comment', comment_id=comment.id) }}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</button>
+            </form>
+        </td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to view your comments.</p>
+<p><a href="{{ url_for('users.login') }}">Log in</a to view your comments.</p>
 {% endif %}
 
 {% endblock %}
