@@ -82,3 +82,9 @@ def delete_product_comment(comment_id):
     ProductComment.delete_comment(comment_id)
     flash('Comment deleted successfully.', 'success')
     return redirect(url_for('usercomment.usercomments'))
+
+@bp.route('/delete_seller_comment/<int:comment_id>', methods=['POST'])
+@login_required
+def delete_seller_comment(comment_id):
+    return None
+    
