@@ -11,7 +11,7 @@ from .models.orderitem import OrderItem
 from flask import Blueprint, jsonify
 bp = Blueprint('users', __name__)
 
-
+# Form for user login
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -19,6 +19,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign In')
 
 
+# Route to handle login logic
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -37,7 +38,7 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
-
+# Form for user registration
 class RegistrationForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired()])
     lastname = StringField('Last Name', validators=[DataRequired()])
@@ -49,12 +50,12 @@ class RegistrationForm(FlaskForm):
     address = StringField('Address', validators=[DataRequired()])  
     isSeller = BooleanField('Register as seller')
     submit = SubmitField('Register')
-
+    # Validate email uniqueness
     def validate_email(self, email):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
 
-
+# Route to handle registration logic
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -83,7 +84,7 @@ def logout():
     return redirect(url_for('index.index'))
 
 
-
+# Form for editing user profile
 class UserProfileForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     firstname = StringField('First Name', validators=[DataRequired()])
@@ -93,14 +94,14 @@ class UserProfileForm(FlaskForm):
     new_password = PasswordField('New Password', validators=[Optional()])
     balance = DecimalField('Balance', validators=[InputRequired()])
     submit = SubmitField('Update Profile')
-
+    # Validate email for uniqueness with exclusion
     def validate_email(self, email):
         if User.email_exists(email.data, exclude_user_id=current_user.id):
             raise ValidationError('This email is already in use by another account.')
 
 
 
-
+# Route to display and edit user profile
 @bp.route('/profile', methods=['GET'])
 def user_profile():
     user_info = User.show_user_profile(current_user.id)  
@@ -113,7 +114,7 @@ def user_profile():
         purchases = OrderItem.get_user_purchases(current_user.id)
     
     return render_template('user_profile.html', user=user_info, purchases=purchases)
-
+# Route to edit profile with POST request handling
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     user = User.get(current_user.id)
@@ -141,6 +142,7 @@ def edit_profile():
 
     return render_template('edit_profile.html', form=form)
 
+# Route to fetch filter options for user purchases
 @bp.route('/get-filter-options', methods=['GET'])
 def get_filter_options():
     filter_type = request.args.get('type')
@@ -148,6 +150,7 @@ def get_filter_options():
     options = OrderItem.get_filter_options(filter_type, user_id)
     return jsonify(options)
 
+# Route to fetch filtered user purchases based on filter criteria
 @bp.route('/get-filtered-purchases')
 def get_filtered_purchases():
     user_id = current_user.id  
@@ -158,6 +161,7 @@ def get_filtered_purchases():
     
     return jsonify(purchases)
 
+# Route to get purchases by category for visualization purposes
 @bp.route('/get-purchases-by-category', methods=['GET'])
 def get_purchases_by_category():
     user_id = current_user.id

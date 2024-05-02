@@ -1,48 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Container for the profile edit form -->
 <div class="container mt-5">
     <h2>Edit Your Profile</h2>
+    <!-- Form for profile editing, posts back to the same route -->
     <form action="" method="post">
         {{ form.hidden_tag() }}
-        
+        <!-- Form group for email with label and text input -->
         <div class="form-group">
             {{ form.email.label(class="form-label") }}
             {{ form.email(class="form-control") }}  
         </div>
-        
+        <!-- Form group for first name -->
         <div class="form-group">
             {{ form.firstname.label(class="form-label") }}
             {{ form.firstname(class="form-control") }}
         </div>
-        
+        <!-- Form group for last name -->
         <div class="form-group">
             {{ form.lastname.label(class="form-label") }}
             {{ form.lastname(class="form-control") }}
         </div>
-        
+        <!-- Form group for address -->
         <div class="form-group">
             {{ form.address.label(class="form-label") }}
             {{ form.address(class="form-control") }}
         </div>
-        
+        <!-- Checkbox for selecting seller status -->
         <div class="form-group">
             <div class="form-check">
                 {{ form.isSeller(class="form-check-input") }}
                 {{ form.isSeller.label(class="form-check-label") }}
             </div>
         </div>
-        
+        <!-- Input for balance, typically used to show the user's account balance -->
         <div class="form-group">
             {{ form.balance.label(class="form-label") }}
             {{ form.balance(class="form-control") }}
         </div>
-        
+        <!-- Optional password input for updating the user's password -->
         <div class="form-group">
             {{ form.new_password.label(class="form-label") }}
             {{ form.new_password(class="form-control") }}
         </div>
-        
+        <!-- Submit button for the form -->
         <button type="submit" class="btn btn-primary">Update Profile</button>
     </form>
 </div>

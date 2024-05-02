@@ -1,20 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<!-- Main container for alignment and spacing -->
 <div class="container mt-5">
     <div class="row">
+        <!-- Central column with a medium width, centered horizontally -->
         <div class="col-md-8 offset-md-2">
+            <!-- Card component for better visual structuring with a shadow effect -->
             <div class="card shadow">
                 <div class="card-body">
+                    <!-- Card title centered -->
                     <h1 class="card-title text-center">Register</h1>
+                    <!-- Form for registration data submission, method POST for data security -->
                     <form action="" method="post" class="mt-4">
                         {{ form.hidden_tag() }}
-
+                        <!-- Macro for rendering form fields with consistent styling -->
                         {% macro render_field(field) %}
                         <div class="form-group">
                             {{ field.label(class_="form-label") }}
                             {{ field(class_="form-control", size=32) }}
+                            <!-- Display errors for each field if any -->
                             {% if field.errors %}
                                 {% for error in field.errors %}
                                     <div class="invalid-feedback" style="display:block;">{{ error }}</div>
@@ -22,14 +27,14 @@
                             {% endif %}
                         </div>
                         {% endmacro %}
-
+                        <!-- Using the macro to render each field -->
                         {{ render_field(form.firstname) }}
                         {{ render_field(form.lastname) }}
                         {{ render_field(form.email) }}
                         {{ render_field(form.password) }}
                         {{ render_field(form.password2) }}
                         {{ render_field(form.address) }}
-
+                        <!-- Checkbox for specifying if the user is a seller -->
                         <div class="form-group form-check">
                             {{ form.isSeller(class_="form-check-input") }}
                             {{ form.isSeller.label(class_="form-check-label") }} Are you a seller?
@@ -39,7 +44,7 @@
                                 {% endfor %}
                             {% endif %}
                         </div>
-
+                        <!-- Submission button, centered -->
                         <div class="form-group text-center">
                             {{ form.submit(class_="btn btn-primary") }}
                         </div>
