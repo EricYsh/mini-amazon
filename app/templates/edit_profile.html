@@ -4,6 +4,24 @@
 <!-- Container for the profile edit form -->
 <div class="container mt-5">
     <h2>Edit Your Profile</h2>
+
+
+    <!-- Display flash messages if any -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{% if category == 'error' %}danger{% else %}{{ category }}{% endif %} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+
+
     <!-- Form for profile editing, posts back to the same route -->
     <form action="" method="post">
         {{ form.hidden_tag() }}

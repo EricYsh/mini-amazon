@@ -97,7 +97,9 @@ class UserProfileForm(FlaskForm):
     # Validate email for uniqueness with exclusion
     def validate_email(self, email):
         if User.email_exists(email.data, exclude_user_id=current_user.id):
+            flash('This email is already in use by another account.')
             raise ValidationError('This email is already in use by another account.')
+            
 
 
 
@@ -121,24 +123,26 @@ def edit_profile():
     form = UserProfileForm(obj=user)
     
     if form.validate_on_submit():
-        user_updates = {
-            'email': form.email.data,
-            'firstname': form.firstname.data,
-            'lastname': form.lastname.data,
-            'address': form.address.data,
-            'isSeller': form.isSeller.data,
-            'balance': form.balance.data  
-        }
         
-        if form.new_password.data:
-            user_updates['password'] = User.set_password(form.new_password.data)
+            print('badbad')
+            user_updates = {
+                'email': form.email.data,
+                'firstname': form.firstname.data,
+                'lastname': form.lastname.data,
+                'address': form.address.data,
+                'isSeller': form.isSeller.data,
+                'balance': form.balance.data  
+            }
+        
+            if form.new_password.data:
+                user_updates['password'] = User.set_password(form.new_password.data)
 
-        success = User.update_user_profile(current_user.id, **user_updates)
-        if success:
-            flash('Your profile has been updated.')
-            return redirect(url_for('users.user_profile')) 
-        else:
-            flash('Failed to update profile.')
+            success = User.update_user_profile(current_user.id, **user_updates)
+            if success:
+                flash('Your profile has been updated.')
+            else:
+                flash('Failed to update profile.')
+            return redirect(url_for('users.user_profile'))
 
     return render_template('edit_profile.html', form=form)
 
