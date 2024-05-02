@@ -96,6 +96,7 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // Target all increase and decrease buttons
     document.querySelectorAll('.increase-quantity').forEach(button => {
         button.addEventListener('click', function() {
             const input = this.closest('.quantity-controls').querySelector('.quantity-input');
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.value = currentValue + 1;
         });
     });
-
+    // Decrease button
     document.querySelectorAll('.decrease-quantity').forEach(button => {
         button.addEventListener('click', function() {
             const input = this.closest('.quantity-controls').querySelector('.quantity-input');
