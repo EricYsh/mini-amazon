@@ -9,6 +9,7 @@ from flask import Blueprint
 bp = Blueprint('cart', __name__)
 
 
+# route to display the cart page
 @bp.route('/cart')
 def cart():
     # get all cart items from the database for current user and display them
@@ -24,6 +25,7 @@ def cart():
                        items_saved=cart_items_saved)
 
 
+# route to add a product to the cart
 @bp.route('/cart/add/<int:product_id>', methods=['POST'])
 def cart_add(product_id):
     # add a product to the current user's cart
@@ -40,7 +42,7 @@ def cart_add(product_id):
     return redirect(url_for('cart.cart'))
 
 
-
+# route to add a product to the saved for later list
 @bp.route('/cart/add_saved_for_later/<int:product_id>', methods=['POST'])
 def cart_add_saved_for_later(product_id):
     # add a product to the current user's cart's saved for later list
@@ -55,6 +57,8 @@ def cart_add_saved_for_later(product_id):
         return None
     return redirect(url_for('cart.cart'))
 
+
+# route to move a product from the cart to the saved for later list
 @bp.route('/cart', methods=['POST'])
 def cart_and_save():
     # move a product from the cart to the saved for later list
@@ -76,6 +80,7 @@ def cart_and_save():
     return redirect(url_for('cart.cart'))
 
 
+# route to remove a product from the cart
 @bp.route('/cart', methods=['POST'])
 def remove():
     """
@@ -101,6 +106,7 @@ def remove():
     return redirect(url_for('cart.cart'))
 
 
+# route to update the quantity of a product in the cart
 @bp.route('/cart/update_quantity/<int:cart_id>', methods=['POST'])
 def update_quantity(cart_id):
     new_quantity = request.json.get('quantity')
@@ -108,9 +114,3 @@ def update_quantity(cart_id):
         success = Cart.update_quantity(cart_id, new_quantity)
         return {'success': success}
     return {'success': False}
-
-
-# @bp.route('/cart', methods=['POST'])
-# def checkout():
-#     print("Checking out")
-#     return redirect(url_for('cart.user_order_detail'))

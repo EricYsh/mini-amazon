@@ -6,6 +6,7 @@ from flask import Blueprint
 bp = Blueprint('trend', __name__)
 
 
+# Route to display the top 5 trending products
 @bp.route('/trend', methods=['GET'])
 def trend():
     # get top 5 products

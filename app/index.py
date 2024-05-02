@@ -10,6 +10,7 @@ from flask import Blueprint
 bp = Blueprint('index', __name__)
 
 
+# Route to display the index page which is change to redirect to product page
 @bp.route('/')
 def index():
     total_products = Product.get_product_number()

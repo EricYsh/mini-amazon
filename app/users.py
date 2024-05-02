@@ -11,6 +11,7 @@ from .models.orderitem import OrderItem
 from flask import Blueprint, jsonify
 bp = Blueprint('users', __name__)
 
+
 # Form for user login
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -38,6 +39,7 @@ def login():
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
 
+
 # Form for user registration
 class RegistrationForm(FlaskForm):
     firstname = StringField('First Name', validators=[DataRequired()])
@@ -54,6 +56,7 @@ class RegistrationForm(FlaskForm):
     def validate_email(self, email):
         if User.email_exists(email.data):
             raise ValidationError('Already a user with this email.')
+
 
 # Route to handle registration logic
 @bp.route('/register', methods=['GET', 'POST'])
@@ -78,6 +81,7 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
+# Route to handle user logout
 @bp.route('/logout')
 def logout():
     logout_user()
@@ -101,8 +105,6 @@ class UserProfileForm(FlaskForm):
             raise ValidationError('This email is already in use by another account.')
             
 
-
-
 # Route to display and edit user profile
 @bp.route('/profile', methods=['GET'])
 def user_profile():
@@ -116,6 +118,8 @@ def user_profile():
         purchases = OrderItem.get_user_purchases(current_user.id)
     
     return render_template('user_profile.html', user=user_info, purchases=purchases)
+
+
 # Route to edit profile with POST request handling
 @bp.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
@@ -145,6 +149,7 @@ def edit_profile():
 
     return render_template('edit_profile.html', form=form)
 
+
 # Route to fetch filter options for user purchases
 @bp.route('/get-filter-options', methods=['GET'])
 def get_filter_options():
@@ -152,6 +157,7 @@ def get_filter_options():
     user_id = current_user.id  
     options = OrderItem.get_filter_options(filter_type, user_id)
     return jsonify(options)
+
 
 # Route to fetch filtered user purchases based on filter criteria
 @bp.route('/get-filtered-purchases')
@@ -163,6 +169,7 @@ def get_filtered_purchases():
     purchases = OrderItem.get_filtered_purchases(user_id, filter_type, filter_value)
     
     return jsonify(purchases)
+
 
 # Route to get purchases by category for visualization purposes
 @bp.route('/get-purchases-by-category', methods=['GET'])

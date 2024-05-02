@@ -2,11 +2,12 @@
 
 {% block content %}
 <script src="{{ url_for('static', filename='js/product.js') }}"></script>
+<!-- The homepage -->
 <div class="container">
     <div class="row">
         <div class="col-md-2">
             <div class="filters">
-                
+                <!-- Display all filters -->
                 <div class="filter-item">
                     <h5 data-toggle="collapse" href="#ratingCollapse" role="button" aria-expanded="false" aria-controls="ratingCollapse" style="cursor:pointer;">
                         Rating Above<i class="fas fa-chevron-down"></i> 
@@ -37,18 +38,6 @@
                         </form>
                     </div>
                 </div>
-
-                
-                <!-- <div class="filter-item">
-                    <h5 data-toggle="collapse" href="#topRatedSellersCollapse" role="button" aria-expanded="false" aria-controls="topRatedSellersCollapse" style="cursor:pointer;">
-                        Top Rated Sellers <i class="fas fa-chevron-down"></i>
-                    </h5>
-                    <div class="collapse" id="topRatedSellersCollapse">
-                        <input type="checkbox" name="top_sellers" class="form-check-input">
-                        <label class="form-check-label">Only from top rated sellers</label>
-                    </div>
-                </div> -->
-
             </div>
         </div>
         
@@ -105,12 +94,6 @@
                         </div>
 
                         <p class="product-price">$ {{ product.price }}</p>
-                        <!-- {% if current_user.is_authenticated %}
-                        <form action="{{ url_for('cart.cart_add', product_id=product.id) }}" method="POST">
-                            <input type="hidden" name="inventory_id" value="{{ product.inventory_id }}">
-                            <input class="btn btn-primary" type="submit" value="Add to cart"/>
-                        </form>
-                        {% endif %} -->
                     </div>
                 </div>
                 {% endfor %}

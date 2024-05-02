@@ -31,11 +31,10 @@ class User(UserMixin):
     @staticmethod
     def get_by_auth(email, password):
         rows = app.db.execute("""
-SELECT password, id, email, firstname, lastname, address, isSeller, balance
-FROM Users
-WHERE email = :email
-""",
-                              email=email)
+                SELECT password, id, email, firstname, lastname, address, isSeller, balance
+                FROM Users
+                WHERE email = :email
+                """, email=email)
         if not rows:  # email not found
             return None
         elif not check_password_hash(rows[0][0], password):
@@ -47,10 +46,10 @@ WHERE email = :email
     @staticmethod
     def email_exists(email, exclude_user_id=None):
         query = """
-SELECT id
-FROM Users
-WHERE email = :email
-"""
+            SELECT id
+            FROM Users
+            WHERE email = :email
+            """
         params = {'email': email}
         if exclude_user_id is not None:
             query += "AND id != :exclude_user_id"
@@ -63,10 +62,10 @@ WHERE email = :email
     def register(email, password, firstname, lastname,address, isSeller=False):
         try:
             rows = app.db.execute("""
-INSERT INTO Users(email, password, firstname, lastname, address, isSeller, balance)
-VALUES(:email, :password, :firstname, :lastname, :address, :isSeller, :balance)
-RETURNING id
-""",
+                    INSERT INTO Users(email, password, firstname, lastname, address, isSeller, balance)
+                    VALUES(:email, :password, :firstname, :lastname, :address, :isSeller, :balance)
+                    RETURNING id
+                    """,
                               email=email,
                               password=generate_password_hash(password),
                               firstname=firstname, 
@@ -86,11 +85,10 @@ RETURNING id
     @login.user_loader
     def get(id):
         rows = app.db.execute("""
-SELECT id, email, firstname, lastname, address, isSeller, balance
-FROM Users
-WHERE id = :id
-""",
-                              id=id)
+                SELECT id, email, firstname, lastname, address, isSeller, balance
+                FROM Users
+                WHERE id = :id
+                """, id=id)
         return User(*(rows[0])) if rows else None
 
 
@@ -98,11 +96,10 @@ WHERE id = :id
     def show_user_profile(id):
         # Execute a database query to fetch detailed information for a user
         row = app.db.execute("""
-select email, firstname, lastname, address, isSeller, balance
-from Users
-where id = :id
-""",
-                              id = id)
+                select email, firstname, lastname, address, isSeller, balance
+                from Users
+                where id = :id
+                """, id = id)
 
         return {
         'email': row[0][0], 
@@ -137,22 +134,34 @@ where id = :id
     @staticmethod
     def get_user_balance(id):
         row = app.db.execute("""
-                                select balance
-                                from Users
-                                where id = :id
-                                """,
-                              id = id)
+            select balance
+            from Users
+            where id = :id
+            """, id = id)
         return row[0][0]
     
     @staticmethod
     def update_user_balance(id, amount):
         try:
             app.db.execute("""
-                            UPDATE Users
-                            SET balance = balance - :amount
-                            WHERE id = :id
-                            """,
-                            id=id, amount=amount)
+            UPDATE Users
+            SET balance = balance - :amount
+            WHERE id = :id
+            """, id=id, amount=amount)
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
+        
+    
+    @staticmethod
+    def update_seller_balance(id, amount):
+        try:
+            app.db.execute("""
+                UPDATE Users
+                SET balance = balance + :amount
+                WHERE id = :id
+                """, id=id, amount=amount)
             return True
         except Exception as e:
             print(str(e))
@@ -163,14 +172,14 @@ where id = :id
     def public_profile(id):
     # Retrieve basic user data; include email and address if user is a seller
         user_sql = """
-    SELECT id, firstname, lastname, isSeller, balance, email, address
-    FROM Users
-    WHERE id = :id
-    """
+                SELECT id, firstname, lastname, isSeller, balance, email, address
+                FROM Users
+                WHERE id = :id
+                """
         user_row = app.db.execute(user_sql, id=id)
         if not user_row:
             return None
-    
+
         user_data = {
         'id': user_row[0][0],
         'email': user_row[0][5], 
@@ -185,12 +194,12 @@ where id = :id
         if user_row[0][3]:  # isSeller is True
         # Retrieve comments about the seller
             comments_sql = """
-        SELECT SC.comment, SC.date_commented, SC.rate, U.firstname, U.lastname
-        FROM SellerComments SC
-        JOIN Users U ON SC.userid = U.id
-        WHERE SC.sellerid = :id
-        ORDER BY SC.date_commented DESC
-        """
+                        SELECT SC.comment, SC.date_commented, SC.rate, U.firstname, U.lastname
+                        FROM SellerComments SC
+                        JOIN Users U ON SC.userid = U.id
+                        WHERE SC.sellerid = :id
+                        ORDER BY SC.date_commented DESC
+                        """
             comments = app.db.execute(comments_sql, id=id)
             user_data['comments'] = [{
             'comment': comment[0],
@@ -200,4 +209,3 @@ where id = :id
             } for comment in comments]
 
         return user_data
-    

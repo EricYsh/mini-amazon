@@ -8,12 +8,14 @@ from flask import Blueprint
 bp = Blueprint('clientorder', __name__)
 
 
+# Route to display client order
 @bp.route('/clientorder', methods=['GET'])
 def clientorder():
     client_items = OrderItem.get_client_item(current_user.id)
     return render_template('client_order.html', client_items=client_items)
 
 
+# Route to display order detail
 @bp.route('/clientorderdetial', methods=['POST'])
 def clientorderdetail():
     item_info ={
@@ -31,14 +33,13 @@ def clientorderdetail():
 
 
     return render_template('order_detail.html', user_info=user_info, item_info=item_info)
-    # return render_template('order_detail.html')
 
 
+# Route to fulfill order
 @bp.route('/fulfillorder', methods=['POST'])
 def fulfillorder():
     item_id = request.form['item_id']
     
-
     # # update current orderitem
     OrderItem.fulfill_orderitem(item_id)
 
@@ -51,4 +52,3 @@ def fulfillorder():
 
 
     return redirect(url_for('clientorder.clientorder'))
-    # return render_template('order_detail.html')

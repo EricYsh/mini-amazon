@@ -11,17 +11,20 @@ from flask import Blueprint
 bp = Blueprint('userorder', __name__)
 
 
+# Route to view all orders
 @bp.route('/userorder', methods=['GET'])
 def userorder():
     orders = Order.get_order_by_user_id(current_user.id)    
     return render_template('user_order_detail.html', orders=orders)
 
+# Route to view order details
 @bp.route('/userorder/<int:order_id>', methods=['GET'])
 def view_order(order_id):
     order_items = OrderItem.get_order_items_by_order_id(order_id)
     order = Order.get_order_by_id(order_id)
     return render_template('user_orderitem_detail.html', order_items=order_items, order=order)
 
+# Route to checkout the cart
 @bp.route('/checkout', methods=['POST'])
 def checkout():
     if not current_user.is_authenticated:
@@ -35,21 +38,20 @@ def checkout():
         flash("Your cart is empty.", "warning")
         return redirect(url_for('cart.cart'))
     
-    # cart_items = [{'name': row[0], 'image': row[1], 'price': row[2], 'quantity': row[3], 
-    #                    'productid': row[4], 'cartid': row[5], 'sellerinventoryid': row[6], 'sellerid': row[7]} for row in rows]
-
     # Check user balance and inventory availability
     total_cost = 0
     for item in cart_items:
         total_cost += item['quantity'] * item['price']
     print(f"Total cost: {total_cost}")
 
+    # First Check Balance
     user_balance = User.get_user_balance(current_user.id)
     print(f"User balance: {user_balance}")
     if user_balance < total_cost:
         flash("Insufficient balance to complete the purchase.", "danger")
         return redirect(url_for('cart.cart'))
 
+    # Second Check inventory availability
     for item in cart_items:
         inventory_quantity = SellerInventory.get_quantity_by_id(item['sellerinventoryid'])
         if inventory_quantity < item['quantity']:
@@ -78,6 +80,9 @@ def checkout():
 
     # Deduct total cost from user's balance
     User.update_user_balance(current_user.id, total_cost)
+    # Add income to sellers balance
+    # for item in cart_items:
+    #     User.update_seller_balance(item['sellerid'], item['price'] * item['quantity'])
 
     flash("Checkout successful!", "success")
     return redirect(url_for('userorder.userorder'))

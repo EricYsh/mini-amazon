@@ -4,7 +4,7 @@
 <h2>Order Details: #{{ order.id }}</h2>
 <p>Order Status: {{ order.order_status }}</p>
 <p>Order Time: {{ order.time_brought }}</p>
-
+<!-- Display All order items -->
 <table class='table'>
   <thead>
     <tr>
@@ -18,7 +18,7 @@
   <tbody>
     {% for item in order_items %}
     <tr>
-      <td>{{ item.product_name }}</td>  <!-- Assuming you have product name in OrderItem -->
+      <td>{{ item.product_name }}</td>
       <td><img src="{{ item.product_image }}" alt="{{ item.product_name }}" class="img-fluid" style="max-width: 100px;"></td>
       <td>{{ item.quantity }}</td>
       <td>{{ item.brought_price }}</td>

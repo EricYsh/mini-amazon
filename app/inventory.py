@@ -12,6 +12,7 @@ from flask import Blueprint
 bp = Blueprint('inventory', __name__)
 
 
+# Route to display the inventory
 @bp.route('/inventory')
 def inventory():
     # get all cart items from the database for current user and display them
@@ -25,6 +26,7 @@ def inventory():
                        items=inventory_items)
 
 
+# Route to add a new product
 @bp.route('/add_product', methods=['POST'])
 def add_product():
     """
@@ -49,7 +51,9 @@ def add_product():
             return redirect(url_for('inventory.inventory'))
         else:
             return redirect(url_for('product.product_add'))
-    
+
+
+# Route to edit a product
 @bp.route('/edit_product', methods=['POST'])
 def edit_product():
     """
@@ -66,6 +70,7 @@ def edit_product():
 
     return redirect(url_for('inventory.inventory'))
 
+# Route to remove a product
 @bp.route('/remove_product', methods=['POST'])
 def remove_product():
     """
