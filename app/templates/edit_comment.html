@@ -3,16 +3,37 @@
 {% block content %}
 <form action="" method="post">
     {{ form.hidden_tag() }}
-    <div>
-        {{ form.comment.label }}
-        {{ form.comment(size=32) }}
+
+    <div class="form-group">
+        {{ form.comment.label(class="form-label") }}
+        <textarea class="form-control" id="comment" name="comment" rows="4" cols="50">{{ form.comment.data }}</textarea>
+        {% if form.comment.errors %}
+            <div class="alert alert-danger">
+                {% for error in form.comment.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
-    <div>
-        {{ form.rate.label }}
-        {{ form.rate }}
+
+    <div class="form-group">
+        {{ form.rate.label(class="form-label") }}
+        <select class="form-control" id="rate" name="rate">
+            {% for i in range(1, 6) %}
+            <option value="{{ i }}" {% if form.rate.data|string == i|string %} selected {% endif %}>{{ i }}</option>
+            {% endfor %}
+        </select>
+        {% if form.rate.errors %}
+            <div class="alert alert-danger">
+                {% for error in form.rate.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
-    <div>
-        {{ form.submit() }}
+
+    <div class="form-group">
+        {{ form.submit(class="btn btn-primary") }}
     </div>
 </form>
 {% endblock %}
