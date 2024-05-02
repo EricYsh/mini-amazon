@@ -24,6 +24,7 @@ class OrderItem:
 
     @staticmethod
     def get_user_purchases(user_id):
+        # SQL query to retrieve purchase details of a specific user
         query = """
         SELECT 
             P.name AS product_name,
@@ -44,7 +45,9 @@ class OrderItem:
 
     @staticmethod
     def get_filter_options(filter_type, user_id):
+        # Determine which type of filter to apply and construct corresponding SQL query
         if filter_type == "item":
+            # Query to get distinct product names ordered by a user
             query = """
         SELECT DISTINCT P.name AS product_name
         FROM Orders O
@@ -57,6 +60,7 @@ class OrderItem:
             return [{'name': row[0]} for row in rows]
         
         elif filter_type == "seller":
+            # Query to get distinct seller names who sold items to the user
             query = """
         SELECT DISTINCT U.firstname || ' ' || U.lastname AS seller_name, U.id AS seller_id
         FROM Orders O
@@ -69,6 +73,7 @@ class OrderItem:
             return [{'name': row[0], 'id': row[1]} for row in rows]
 
         elif filter_type == "date":
+            # Query to get distinct dates of purchases made by the user, formatted as YYYY-MM-DD
             query = """
         SELECT DISTINCT TO_CHAR(O.time_brought, 'YYYY-MM-DD') AS order_date
         FROM Orders O
@@ -79,12 +84,13 @@ class OrderItem:
             return [{'date': row[0]} for row in rows]
         
         else:
+            # If filter type does not match any case, return an empty list
             return []
         
 
     @staticmethod
     def get_filtered_purchases(user_id, filter_type, filter_value):
-        # 构建基础查询
+        # Base query to select purchase details of a user
         query_base = """
             SELECT OI.productid, P.name AS product_name, OI.brought_price, OI.quantity, 
             TO_CHAR(O.time_brought, 'YYYY-MM-DD HH24:MI:SS') AS order_time, O.order_status, O.id
@@ -94,10 +100,12 @@ class OrderItem:
             WHERE O.userid = :user_id
         """
         
-        # 添加针对不同筛选类型的条件
+        # Add specific filtering conditions based on filter_type
         if filter_type == "item":
+            # Filter purchases by product name
             query = query_base + " AND P.name = :filter_value ORDER BY P.name;"
         elif filter_type == "seller":
+            # Filter purchases by seller's ID 
             query = """
             SELECT OI.productid, P.name AS product_name, OI.brought_price, OI.quantity,
             TO_CHAR(O.time_brought, 'YYYY-MM-DD HH24:MI:SS') AS order_time, O.order_status, O.id
@@ -108,11 +116,12 @@ class OrderItem:
             WHERE O.userid = :user_id AND U.id = :filter_value AND U.isSeller = TRUE
         """
         elif filter_type == "date":
+            # Filter purchases by the date of purchase
             query = query_base + " AND TO_CHAR(O.time_brought, 'YYYY-MM-DD') = :filter_value ORDER BY O.time_brought DESC;"
         else:
-            return []  # 如果筛选类型不匹配，则返回空列表
+            return []  
 
-        # 执行查询
+        
         rows = app.db.execute(query, user_id=user_id, filter_value=filter_value)
         return [{
             'product_id': row[0],

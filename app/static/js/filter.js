@@ -1,36 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // 功能：切换筛选选项的可见性
+    // Toggle visibility of filter options
     function toggleFilterOptions(filterId) {
         var filterElement = document.getElementById(filterId);
         filterElement.style.display = filterElement.style.display === 'none' ? 'block' : 'none';
     }
 
-    // 获取筛选选项的数据并更新选择菜单
+    // Fetch and populate filter options 
     function fetchFilterOptions(filterType) {
         var url = `/get-filter-options?type=${filterType}`;
         fetch(url)
         .then(response => response.json())
         .then(data => {
             const selectElement = document.getElementById(filterType + 'Filter');
-            selectElement.innerHTML = '';  // 清空现有选项
-            // 添加一个空选项作为默认选项
+            selectElement.innerHTML = '';  
+            // Create a default option that prompts the user to select an option
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = '-- Select an option --';
             selectElement.appendChild(defaultOption);
-
+            // Populate select element with options from the server
             data.forEach(option => {
                 const optionElement = document.createElement('option');
-                optionElement.value = option.id || option.date || option.name;  // 根据数据类型设置value
-                optionElement.textContent = option.name || option.date;  // 根据数据类型设置显示文本
+                optionElement.value = option.id || option.date || option.name;  
+                optionElement.textContent = option.name || option.date;  
                 selectElement.appendChild(optionElement);
             });
-            toggleFilterOptions(filterType + 'Filter');  // 显示下拉菜单
+            toggleFilterOptions(filterType + 'Filter');  
         })
         .catch(error => console.error('Error fetching filter options:', error));
     }
 
-    // 绑定按钮事件，触发筛选选项数据的获取
+    // Event listeners for filter buttons
     document.getElementById('itemFilterBtn').addEventListener('click', function() {
         fetchFilterOptions('item');
     });
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updatePurchaseHistory('', '');
     });
 
-    // 监听下拉选项的变化并更新购买历史表格
+    // Event listener for changes in filter selection
     ['itemFilter', 'sellerFilter', 'dateFilter'].forEach(filter => {
         document.getElementById(filter).addEventListener('change', function() {
             const filterType = this.id.replace('Filter', '');
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 更新购买历史表格
+    // Update the page to show filtered purchases
     function updatePurchaseHistory(filterType, filterValue) {
         const url = new URL(window.location.href);
         url.searchParams.set('filter_type', filterType);
@@ -64,11 +64,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// 从服务器获取按类别划分的购买数据
+// Fetch and display purchases by category using Chart.js
 fetch('/get-purchases-by-category')
   .then(response => response.json())
   .then(categoryData => {
-    // 绘制购买数量饼图
+    // Setup pie chart for purchase quantities
     const quantityPieCtx = document.getElementById('quantityPieChart').getContext('2d');
     new Chart(quantityPieCtx, {
       type: 'pie',
@@ -86,7 +86,7 @@ fetch('/get-purchases-by-category')
       }
     });
 
-    // 绘制购买总金额柱状图
+    // Setup bar chart for total purchase amounts
     const amountBarCtx = document.getElementById('amountBarChart').getContext('2d');
     new Chart(amountBarCtx, {
       type: 'bar',
@@ -103,7 +103,7 @@ fetch('/get-purchases-by-category')
         responsive: true,
         plugins: {
             legend: {
-              display: false}}
+              display: false}}// Option to hide the legend
       }
     });
   })

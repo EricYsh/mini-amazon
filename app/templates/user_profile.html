@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Main container for content centered with a margin top -->
 <div class="container mt-5">
     <h2 class="text-center mb-4">User Profile</h2>
-    
+
+    <!-- Display flash messages if any -->
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="alert alert-success text-center">
@@ -13,8 +15,9 @@
             </div>
         {% endif %}
     {% endwith %}
-    
+    <!-- Check if user is authenticated -->
     {% if current_user.is_authenticated %}
+    <!-- User information displayed in a vertical list group -->
         <div class="list-group text-center">
             <div class="list-group-item">Email: <strong>{{ user.email }}</strong></div>
             <div class="list-group-item">First Name: <strong>{{ user.firstname }}</strong></div>
@@ -23,13 +26,14 @@
             <div class="list-group-item">Seller Status: <strong>{{ 'Yes' if user.isSeller else 'No' }}</strong></div>
             <div class="list-group-item">Balance: <strong>{{ user.balance }}</strong></div>
         </div>
-        
+        <!-- Button to edit user profile -->
         <div class="mt-4 mb-2 text-center">
             <a href="{{ url_for('users.edit_profile') }}" class="btn btn-primary">Edit Profile</a>
         </div>
-
+      <!-- Display purchase information if there are any -->
       {% if purchases %}
         <br><br>
+        <!-- Section for graphical display of purchases by category -->
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="d-flex flex-column align-items-center">
@@ -53,25 +57,22 @@
         <!-- Purchase History Section -->
         <h3>Your Purchase History:</h3>
         <div>
-            <!-- 筛选按钮和下拉菜单 -->
+            <!-- Interactive filters for the purchase history -->
             <button id="itemFilterBtn">Filter by Item</button>
-            <select id="itemFilter" style="display:none;">
-                <!-- 动态填充项目选项 -->
+            <select id="itemFilter" style="display:none;">                
             </select>
 
             <button id="sellerFilterBtn">Filter by Seller</button>
-            <select id="sellerFilter" style="display:none;">
-                <!-- 动态填充卖家选项 -->
+            <select id="sellerFilter" style="display:none;">               
             </select>
 
             <button id="dateFilterBtn">Filter by Date</button>
-            <select id="dateFilter" style="display:none;">
-                <!-- 动态填充日期选项 -->
+            <select id="dateFilter" style="display:none;">               
             </select>
 
             <button id="showAllBtn">Show All</button>
         </div>
-        
+        <!-- Dynamic table for displaying filtered purchase history -->
         <table class='table table-hover table-bordered'>
           <thead class="thead-custom" style="background-color: #d0d9e1; color:#212569;">
             <tr>
@@ -97,6 +98,7 @@
       {% else %}
       <h2> No Purchases History <h2>
       {% endif %}
+      <!-- Return to home page link -->
         <div class="mt-2 text-right">
             <a href="{{ url_for('index.index') }}" class="btn btn-secondary">Return to Home</a>
         </div>
@@ -108,7 +110,7 @@
     {% endif %}
 </div>
 
-<!-- 引入JavaScript -->
+<!-- JavaScript resources -->
 <script src="{{ url_for('static', filename='js/filter.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {% endblock %}

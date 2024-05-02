@@ -77,8 +77,8 @@ RETURNING id
             id = rows[0][0]
             return User.get(id)
         except Exception as e:
-            # likely email already in use; better error checking and reporting needed;
-            # the following simply prints the error to the console:
+            # likely email already in use; 
+            # the following simply prints the error:
             print(str(e))
             return None
 
@@ -96,6 +96,7 @@ WHERE id = :id
 
     @staticmethod
     def show_user_profile(id):
+        # Execute a database query to fetch detailed information for a user
         row = app.db.execute("""
 select email, firstname, lastname, address, isSeller, balance
 from Users
@@ -117,12 +118,14 @@ where id = :id
 
     @staticmethod
     def update_user_profile(id, **kwargs):
+        # Check if a new password was provided 
         if 'new_password' in kwargs:
             kwargs['password'] = User.set_password(kwargs['new_password'])
             del kwargs['new_password']  
-
+        # Construct the SQL update statement dynamically based on the keys provided in kwargs
         update_stmt = ", ".join(f"{key} = :{key}" for key in kwargs.keys())
         try:
+            # Execute the SQL update statement to update user details
             sql = f"UPDATE Users SET {update_stmt} WHERE id = :id"
             app.db.execute(sql, id=id, **kwargs)
             return True
