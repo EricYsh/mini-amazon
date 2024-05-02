@@ -1,23 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<!-- Main container for editing seller comments -->
 <div class="container mt-5">
     <h2>Edit Seller Comment</h2>
+    <!-- Form setup to submit seller comment updates via POST method -->
     <form action="{{ url_for('usercomment.edit_seller_comment', comment_id=comment.id) }}" method="post">
+        <!-- CSRF token for form security -->
         {{ form.hidden_tag() }}
+        <!-- Form group for comment text area -->
         <div class="form-group">
             <label for="comment">Comment</label>
+            <!-- Textarea for editing the comment, pre-populated with existing comment data -->
             <textarea class="form-control" id="comment" name="comment" rows="3">{{ form.comment.data }}</textarea>
         </div>
+        <!-- Form group for selecting the rate -->
         <div class="form-group">
             <label for="rate">Rate</label>
+            <!-- Dropdown for selecting the rate, options 1 through 5 -->
             <select class="form-control" id="rate" name="rate">
                 {% for i in range(1, 6) %}
-                    <option value="{{ i }}" {% if form.rate.data == i %} selected {% endif %}>{{ i }}</option>
+                <!-- Options dynamically generated; current rate is selected by default -->
+                <option value="{{ i }}" {% if form.rate.data == i %} selected {% endif %}>{{ i }}</option>
                 {% endfor %}
             </select>
         </div>
+        <!-- Submit button for the form -->
         <button type="submit" class="btn btn-primary">Update Comment</button>
     </form>
 </div>

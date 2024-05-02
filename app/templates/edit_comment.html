@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Form for editing and submitting a comment and its rate -->
 <form action="" method="post">
+    <!-- Include CSRF token for security -->
     {{ form.hidden_tag() }}
 
+    <!-- Form group for comment text area -->
     <div class="form-group">
+        <!-- Label for the comment field with applied styling -->
         {{ form.comment.label(class="form-label") }}
+        <!-- Text area for inputting comment, pre-populated with existing data if available -->
         <textarea class="form-control" id="comment" name="comment" rows="4" cols="50">{{ form.comment.data }}</textarea>
+        <!-- Error handling for the comment field -->
         {% if form.comment.errors %}
             <div class="alert alert-danger">
+                <!-- Loop through and display all comment errors -->
                 {% for error in form.comment.errors %}
                     <p>{{ error }}</p>
                 {% endfor %}
@@ -16,15 +23,21 @@
         {% endif %}
     </div>
 
+    <!-- Form group for selecting the comment rate -->
     <div class="form-group">
+        <!-- Label for the rate field with applied styling -->
         {{ form.rate.label(class="form-label") }}
+        <!-- Dropdown for selecting the rate between 1 to 5 -->
         <select class="form-control" id="rate" name="rate">
+            <!-- Loop through numbers 1 to 5 to create dropdown options -->
             {% for i in range(1, 6) %}
             <option value="{{ i }}" {% if form.rate.data|string == i|string %} selected {% endif %}>{{ i }}</option>
             {% endfor %}
         </select>
+        <!-- Error handling for the rate field -->
         {% if form.rate.errors %}
             <div class="alert alert-danger">
+                <!-- Loop through and display all rate errors -->
                 {% for error in form.rate.errors %}
                     <p>{{ error }}</p>
                 {% endfor %}
@@ -32,6 +45,7 @@
         {% endif %}
     </div>
 
+    <!-- Submit button for the form -->
     <div class="form-group">
         {{ form.submit(class="btn btn-primary") }}
     </div>
