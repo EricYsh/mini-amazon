@@ -16,7 +16,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for comment in product_comments %}
+    {% for comment in product_comments %} <!-- Loop through each comment related to products -->
       <tr>
         <th scope="row">{{ comment.productid }}</th>
         <td>{{ comment.comment }}</td>
@@ -45,7 +45,7 @@
     </tr>
   </thead>
   <tbody>
-    {% for comment in seller_comments %}
+    {% for comment in seller_comments %}  <!-- Loop through each comment related to sellers -->
       <tr>
         <th scope="row">{{ comment.sellerid }}</th>
         <td>{{ comment.comment }}</td>

@@ -5,6 +5,7 @@ from .models.orderitem import OrderItem
 
 bp = Blueprint('purchases', __name__)
 
+# Route to display all user purchases
 @bp.route('/user_purchases')
 @login_required
 def user_purchases():

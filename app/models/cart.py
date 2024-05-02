@@ -161,7 +161,7 @@ class Cart:
                     DELETE FROM Carts
                     WHERE id = :cart_id
                     """, cart_id=cart_id)
-            elif not existing_item:
+            else:
                 # the item does not exist in the cart, OR it belongs to anther seller, add it to the cart
                 app.db.execute("""
                     UPDATE Carts
