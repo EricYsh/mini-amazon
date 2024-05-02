@@ -1,38 +1,38 @@
-{% extends "base.html" %}
+{% extends "base.html" %} <!-- Extends from the base template -->
 
-{% block content %}
+{% block content %} <!-- Begins the content block -->
 
-<br><br>
-{% if current_user.is_authenticated %}
-<h2>Client's Order:</h2>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-custom" style="background-color: #00539B; color: rgb(18, 18, 19);">
-    <tr>
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Purchase Time</th>
-      <th scope="col">Fulfillment</th>
-      <th scope="col">detail</th>
+<br><br> <!-- Adds two line breaks for spacing -->
+{% if current_user.is_authenticated %} <!-- Checks if the current user is authenticated (logged in) -->
+<h2>Client's Order:</h2> <!-- Displays heading for client orders -->
+<table class='table table-hover table-bordered container'> <!-- Creates a responsive table with hover effect, border, and contained within a Bootstrap container -->
+  <thead class="thead-custom" style="background-color: #00539B; color: rgb(18, 18, 19);"> <!-- Table header with custom style -->
+    <tr> <!-- Table row for header -->
+      <th scope="col">Product Name</th> <!-- Column header for product name -->
+      <th scope="col">Price</th> <!-- Column header for price -->
+      <th scope="col">Quantity</th> <!-- Column header for quantity -->
+      <th scope="col">Purchase Time</th> <!-- Column header for purchase time -->
+      <th scope="col">Fulfillment</th> <!-- Column header for fulfillment status -->
+      <th scope="col">Detail</th> <!-- Column header for additional details -->
     </tr>
   </thead>
-  <tbody>
-    {% for item in client_items %}
-      <tr>
-        <th scope="row">{{ item.product_name }}</th>
-        <td>{{ item.brought_price }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.order_time }}</td>
-        <td>{{ item.order_status }}</td>
-        <td>
-          <form action="{{ url_for('clientorder.clientorderdetail') }}" method="POST">
-            <input type="hidden" name="product_name" value="{{ item.product_name }}">
-            <input type="hidden" name="brought_price" value="{{ item.brought_price }}">
-            <input type="hidden" name="quantity" value="{{ item.quantity }}">
-            <input type="hidden" name="order_time" value="{{ item.order_time }}">
-            <input type="hidden" name="order_status" value="{{ item.order_status }}">
-            <input type="hidden" name="id" value="{{ item.orderitem_id }}">
-            <button type="submit" class="btn btn-primary">Check Detail</button>
+  <tbody> <!-- Table body starts -->
+    {% for item in client_items %} <!-- Loops through each item in client_items -->
+      <tr> <!-- Table row for each item -->
+        <th scope="row">{{ item.product_name }}</th> <!-- Displays product name -->
+        <td>{{ item.brought_price }}</td> <!-- Displays price -->
+        <td>{{ item.quantity }}</td> <!-- Displays quantity -->
+        <td>{{ item.order_time }}</td> <!-- Displays purchase time -->
+        <td>{{ item.order_status }}</td> <!-- Displays order status (fulfilled or not) -->
+        <td> <!-- Cell for detail button -->
+          <form action="{{ url_for('clientorder.clientorderdetail') }}" method="POST"> <!-- Form to post details request -->
+            <input type="hidden" name="product_name" value="{{ item.product_name }}"> <!-- Hidden field for product name -->
+            <input type="hidden" name="brought_price" value="{{ item.brought_price }}"> <!-- Hidden field for price -->
+            <input type="hidden" name="quantity" value="{{ item.quantity }}"> <!-- Hidden field for quantity -->
+            <input type="hidden" name="order_time" value="{{ item.order_time }}"> <!-- Hidden field for order time -->
+            <input type="hidden" name="order_status" value="{{ item.order_status }}"> <!-- Hidden field for order status -->
+            <input type="hidden" name="id" value="{{ item.orderitem_id }}"> <!-- Hidden field for item ID -->
+            <button type="submit" class="btn btn-primary">Check Detail</button> <!-- Button to submit the form for more details -->
           </form>
         </td>
       </tr>
@@ -40,7 +40,7 @@
   </tbody>
 </table>
 {% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to view your purchase history!</p>
+<p><a href="{{ url_for('users.login') }}">Log in</a> to view your purchase history!</p> <!-- Prompts unauthenticated users to log in to view their history -->
 {% endif %}
 
-{% endblock %}
+{% endblock %} <!-- Ends the content block -->

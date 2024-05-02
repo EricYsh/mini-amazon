@@ -1,76 +1,69 @@
-{% extends "base.html" %}
+{% extends "base.html" %} <!-- Extends from the base template -->
 
-{% block content %}
+{% block content %} <!-- Begins the content block -->
 
-<br><br>
-{% if current_user.is_authenticated %}
-{% if current_user.isSeller %}
+<br><br> <!-- Adds two line breaks for visual spacing -->
+{% if current_user.is_authenticated %} <!-- Checks if the current user is authenticated (logged in) -->
+  {% if current_user.isSeller %} <!-- Checks if the current user is registered as a seller -->
 
-<h2>Your Inventory:</h2>
+    <h2>Your Inventory:</h2> <!-- Displays the title for the inventory section -->
 
-  <div>
+    <div> <!-- Container for the Add Product button -->
+      <button type="button" class="btn btn-primary" onclick="window.location='{{ url_for('product.product_add') }}';">
+        Add Product <!-- Button to add a new product -->
+      </button>
+    </div>
 
-  <button type="button" class="btn btn-primary" onclick="window.location='{{ url_for('product.product_add') }}';">
-    Add Product
-  </button>
-</div>
-
-
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-custom" style="background-color: #00539B; color: rgb(18, 32, 46);">
-    <tr>
-      <th scope="col">Product Name</th>
-      <th scope="col">Product Image</th>
-      <th scope="col">Price</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Edit</th>
-      <th scope="col">Remove</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in items%}
-      {% if item.quantity > 0 %}
-        <tr>
-          <th scope="row">{{item.name}}</th>
-          <td>{{item.image}}</td>
-          <td>{{item.price}}</td>
-          <td>{{item.quantity}}</td>
-          <td>
-            <form action="{{ url_for('product.product_edit') }}" method="POST">
-              <input type="hidden" name="item_name" value="{{ item.name }}">
-              <input type="hidden" name="item_image" value="{{ item.image }}">
-              <input type="hidden" name="item_price" value="{{ item.price }}">
-              <input type="hidden" name="item_quantity" value="{{ item.quantity }}">
-              <input type="hidden" name="item_id" value="{{ item.id }}">
-              <button type="submit" class="btn btn-primary">Edit</button>
-            </form>
-          </td>
-          <td>
-            <form action="{{ url_for('inventory.remove_product') }}" method="POST">
-              <input type="hidden" name="item_name" value="{{ item.name }}">
-              <input type="hidden" name="item_image" value="{{ item.image }}">
-              <input type="hidden" name="item_price" value="{{ item.price }}">
-              <input type="hidden" name="item_quantity" value="{{ item.quantity }}">
-              <input type="hidden" name="item_id" value="{{ item.id }}">
-              <button type="submit" class="btn btn-primary">Remove</button>
-            </form>
-          </td>
+    <table class='table table-hover table-bordered container'> <!-- Creates a table with hover effects and borders, contained within a Bootstrap container -->
+      <thead class="thead-custom" style="background-color: #00539B; color: rgb(18, 32, 46);"> <!-- Table header with custom style -->
+        <tr> <!-- Table row for header -->
+          <th scope="col">Product Name</th> <!-- Column header for product name -->
+          <th scope="col">Product Image</th> <!-- Column header for product image -->
+          <th scope="col">Price</th> <!-- Column header for price -->
+          <th scope="col">Quantity</th> <!-- Column header for quantity -->
+          <th scope="col">Edit</th> <!-- Column header for editing products -->
+          <th scope="col">Remove</th> <!-- Column header for removing products -->
         </tr>
-      {% endif %}
-    {% endfor %}
-  </tbody>
-</table>
+      </thead>
+      <tbody> <!-- Table body starts -->
+        {% for item in items%} <!-- Loops through each item in the 'items' list -->
+          {% if item.quantity > 0 %} <!-- Checks if the item quantity is greater than zero -->
+            <tr> <!-- Table row for each item -->
+              <th scope="row">{{item.name}}</th> <!-- Displays product name -->
+              <td>{{item.image}}</td> <!-- Displays product image -->
+              <td>{{item.price}}</td> <!-- Displays product price -->
+              <td>{{item.quantity}}</td> <!-- Displays product quantity -->
+              <td> <!-- Cell for edit button -->
+                <form action="{{ url_for('product.product_edit') }}" method="POST"> <!-- Form for submitting product edits -->
+                  <input type="hidden" name="item_name" value="{{ item.name }}"> <!-- Hidden field for product name -->
+                  <input type="hidden" name="item_image" value="{{ item.image }}"> <!-- Hidden field for product image -->
+                  <input type="hidden" name="item_price" value="{{ item.price }}"> <!-- Hidden field for product price -->
+                  <input type="hidden" name="item_quantity" value="{{ item.quantity }}"> <!-- Hidden field for product quantity -->
+                  <input type="hidden" name="item_id" value="{{ item.id }}"> <!-- Hidden field for product ID -->
+                  <button type="submit" class="btn btn-primary">Edit</button> <!-- Button to submit the form for editing -->
+                </form>
+              </td>
+              <td> <!-- Cell for remove button -->
+                <form action="{{ url_for('inventory.remove_product') }}" method="POST"> <!-- Form for submitting product removal -->
+                  <input type="hidden" name="item_name" value="{{ item.name }}"> <!-- Hidden field for product name -->
+                  <input type="hidden" name="item_image" value="{{ item.image }}"> <!-- Hidden field for product image -->
+                  <input type="hidden" name="item_price" value="{{ item.price }}"> <!-- Hidden field for product price -->
+                  <input type="hidden" name="item_quantity" value="{{ item.quantity }}"> <!-- Hidden field for product quantity -->
+                  <input type="hidden" name="item_id" value="{{ item.id }}"> <!-- Hidden field for product ID -->
+                  <button type="submit" class="btn btn-primary">Remove</button> <!-- Button to submit the form for removal -->
+                </form>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+    <h2>Please sign up as seller first</h2> <!-- Message displayed if user is not registered as a seller -->
+  {% endif %}
 {% else %}
-<h2>Please sign up as seller first</h2>
-{% endif%}
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p>
+  <p><a href="{{ url_for('users.login') }}">Log in</a> to see your cart items!</p> <!-- Message prompting user to log in if not authenticated -->
 {% endif %}
 
-
-
-
-
-
-{% endblock %}
-
+{% endblock %} <!-- Ends the content block -->

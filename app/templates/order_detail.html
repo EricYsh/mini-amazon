@@ -1,27 +1,26 @@
-{% extends "base.html" %}
+{% extends "base.html" %} <!-- Extends from a base template file -->
 
-{% block content %}
+{% block content %} <!-- Starts the content block -->
 
-<br><br>
-{% if current_user.is_authenticated %}
-<h2>Order detail:</h2>
-<!-- show address, date, total amount, fulfillment status, name of buyer -->
-<div class="container mt-5">
-  <div class="card">
-      <div class="card-body">
-          <h4 class="card-title">{{ user_info.firstname }} {{ user_info.lastname }}</h4>
-          <br></br>
-          <p class="card-text"><strong>Email:</strong> {{ user_info.email }}</p>
-          <p class="card-text"><strong>Address:</strong> {{ user_info.address }}</p>
-          <p class="card-text"><strong>product_name:</strong> {{ item_info.product_name }}</p>
-          <p class="card-text"><strong>brought_price:</strong> {{ item_info.brought_price }}</p>
-          <p class="card-text"><strong>quantity:</strong> {{ item_info.quantity }}</p>
-          <p class="card-text"><strong>order_time:</strong> {{ item_info.order_time }}</p>
-          <p class="card-text"><strong>order_status:</strong> {{ item_info.order_status }}</p>
-          {% if item_info.order_status == 'False' %}
-            <form action="{{ url_for('clientorder.fulfillorder') }}" method="POST">
-              <input type="hidden" name="item_id" value="{{ item_info.item_id }}">
-              <button type="submit" class="btn btn-primary">Fulfill</button>
+<br><br> <!-- Adds two line breaks for visual spacing -->
+{% if current_user.is_authenticated %} <!-- Checks if the current user is authenticated (logged in) -->
+<h2>Order detail:</h2> <!-- Displays the title: Order Detail -->
+<div class="container mt-5"> <!-- Container with top margin for spacing -->
+  <div class="card"> <!-- Card layout starts -->
+      <div class="card-body"> <!-- Card content area -->
+          <h4 class="card-title">{{ user_info.firstname }} {{ user_info.lastname }}</h4> <!-- Displays user's full name -->
+          <br> <!-- Line break -->
+          <p class="card-text"><strong>Email:</strong> {{ user_info.email }}</p> <!-- Displays user's email -->
+          <p class="card-text"><strong>Address:</strong> {{ user_info.address }}</p> <!-- Displays user's address -->
+          <p class="card-text"><strong>Product Name:</strong> {{ item_info.product_name }}</p> <!-- Displays product name -->
+          <p class="card-text"><strong>Purchase Price:</strong> {{ item_info.brought_price }}</p> <!-- Displays purchase price -->
+          <p class="card-text"><strong>Quantity:</strong> {{ item_info.quantity }}</p> <!-- Displays quantity purchased -->
+          <p class="card-text"><strong>Order Time:</strong> {{ item_info.order_time }}</p> <!-- Displays order time -->
+          <p class="card-text"><strong>Order Status:</strong> {{ item_info.order_status }}</p> <!-- Displays order status -->
+          {% if item_info.order_status == 'False' %} <!-- Checks if the order status is not completed -->
+            <form action="{{ url_for('clientorder.fulfillorder') }}" method="POST"> <!-- Form to submit for order fulfillment -->
+              <input type="hidden" name="item_id" value="{{ item_info.item_id }}"> <!-- Hidden field containing item ID -->
+              <button type="submit" class="btn btn-primary">Fulfill</button> <!-- Button to submit form for fulfillment -->
             </form>      
           {% endif %}
       </div>
@@ -29,8 +28,7 @@
 </div>
 
 {% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to view your purchase history!</p>
+<p><a href="{{ url_for('users.login') }}">Log in</a> to view your purchase history!</p> <!-- If user is not logged in, display login link -->
 {% endif %}
 
-{% endblock %}
-
+{% endblock %} <!-- Ends the content block -->
