@@ -124,7 +124,6 @@ def edit_profile():
     
     if form.validate_on_submit():
         
-            print('badbad')
             user_updates = {
                 'email': form.email.data,
                 'firstname': form.firstname.data,
