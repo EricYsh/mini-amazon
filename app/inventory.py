@@ -27,6 +27,13 @@ def inventory():
 
 @bp.route('/add_product', methods=['POST'])
 def add_product():
+    """
+    Handles the addition of a new product to the inventory through a POST request.
+    Collects product details from the form and adds them to the database.
+    Redirects:
+        Success: Redirects to the inventory page.
+        Failure: Redirects to the add product page to retry the input.
+    """
     if request.method == 'POST':
         name = request.form['productName']
         image = request.form['productImage']
@@ -45,6 +52,12 @@ def add_product():
     
 @bp.route('/edit_product', methods=['POST'])
 def edit_product():
+    """
+    Edits an existing product in the inventory via a POST request.
+    Updates product details like price and quantity in the database based on form input.
+    Redirects:
+        Always redirects back to the inventory page after the operation.
+    """
     product_id = request.form['productid']
     price = request.form['productPrice']
     quantity = request.form['productQuantity']
@@ -55,7 +68,12 @@ def edit_product():
 
 @bp.route('/remove_product', methods=['POST'])
 def remove_product():
-
+    """
+    Removes a product from the inventory or sets its quantity to zero.
+    Processes item details from the form and updates the inventory accordingly.
+    Redirects:
+        Always redirects back to the inventory page after the operation.
+    """
     item_details = {
         'name': request.form['item_name'],
         'image': request.form['item_image'],
